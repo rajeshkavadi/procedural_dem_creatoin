@@ -1,0 +1,9 @@
+source;share/dem_mapping/hook/pythonpath.ps1
+source;share/dem_mapping/hook/pythonpath.dsv
+source;share/dem_mapping/hook/pythonpath.sh
+source;share/dem_mapping/hook/ament_prefix_path.ps1
+source;share/dem_mapping/hook/ament_prefix_path.dsv
+source;share/dem_mapping/hook/ament_prefix_path.sh
+source;../../build/dem_mapping/share/dem_mapping/hook/pythonpath_develop.ps1
+source;../../build/dem_mapping/share/dem_mapping/hook/pythonpath_develop.dsv
+source;../../build/dem_mapping/share/dem_mapping/hook/pythonpath_develop.sh

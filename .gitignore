@@ -1,0 +1,4 @@
+# ROS bag files
+*.bag
+*.db3
+*.pcd

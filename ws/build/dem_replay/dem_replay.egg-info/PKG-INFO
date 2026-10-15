@@ -1,0 +1,12 @@
+Metadata-Version: 2.1
+Name: dem-replay
+Version: 0.1.0
+Summary: Timestamp-preserving ROS 2 bag replay and sensor stream tools.
+Home-page: UNKNOWN
+Maintainer: rajesh
+Maintainer-email: user@example.com
+License: Apache-2.0
+Platform: UNKNOWN
+
+UNKNOWN
+

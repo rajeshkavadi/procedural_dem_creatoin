@@ -1,0 +1,11 @@
+Traceback (most recent call last):
+  File "/home/rajesh/proc_dem_creation/ws/install/dem_replay/lib/dem_replay/record_odom", line 33, in <module>
+    sys.exit(load_entry_point('dem-replay', 'console_scripts', 'record_odom')())
+  File "/home/rajesh/proc_dem_creation/ws/build/dem_replay/dem_replay/record_odom.py", line 100, in main
+    node = OdomRecorder(args.topic, args.type, args.out, args.every,
+  File "/home/rajesh/proc_dem_creation/ws/build/dem_replay/dem_replay/record_odom.py", line 51, in __init__
+    self.get_logger().info(f'recording {topic} ({msgtype.__name__}) '
+AttributeError: 'str' object has no attribute '__name__'. Did you mean: '__ne__'?
+[ros2run]: Process exited with failure 1
+[INFO] [1792049316.964153310] [record_odom]: recording /Odometry (Odometry) -> /home/rajesh/proc_dem_creation/out/odom.csv
+[ros2run]: Killed

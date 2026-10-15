@@ -1,0 +1,51 @@
+dem_node:
+  ros__parameters:
+    # ---- input ----------------------------------------------------------
+    cloud_topic: /mid360/livox/lidar
+    # registered: clouds are already in the mapper frame (FAST-LIO2 output)
+    # pose:       raw scans are transformed with the live pose stream
+    mode: registered
+    pose_topic: /Odometry
+    pose_type: nav_msgs/msg/Odometry
+    output_frame: camera_init
+    motion_comp: true
+    pose_timeout: 0.5
+    # body <- lidar extrinsic (row-major 4x4); identity means "cloud is
+    # already expressed in the body frame / the offset is negligible"
+    T_body_lidar: [1.0, 0.0, 0.0, 0.0,
+                   0.0, 1.0, 0.0, 0.0,
+                   0.0, 0.0, 1.0, 0.0,
+                   0.0, 0.0, 0.0, 1.0]
+
+    # ---- elevation grid -------------------------------------------------
+    resolution: 0.2          # metres per cell (0.2 m for the demo)
+    # 400 x 400 m covers the ~230 m GNSS/road extent of this recording;
+    # enlarge (or shift the origin) for longer trajectories - check the
+    # trajectory first: ros2 topic echo /dem_node/trajectory
+    size_x: 400.0
+    size_y: 400.0
+    origin_x: -200.0
+    origin_y: -200.0
+    aggregation: min         # min | mean  (algorithm-testing options)
+
+    # ---- filtering (modular, see dem_mapping/ground_filters.py) ---------
+    ground_filter: height_band   # height_band | z_range | none
+    band_below: 6.0              # keep points up to 6 m below the vehicle
+    band_above: 4.0              # and up to 4 m above it
+    z_min: -100.0                # used by the z_range filter
+    z_max: 100.0
+    min_range: 1.0               # blind zone / self-hits
+    max_range: 60.0
+    max_points_per_scan: 12000   # CPU budget guard
+
+    # ---- publishing -----------------------------------------------------
+    image_rate: 1.0
+    cloud_rate: 1.0
+    cloud_max_cells: 150000
+    occupancy_rate: 1.0
+    occ_z_min: -6.0
+    occ_z_max: 4.0
+    trajectory_rate: 2.0
+    stats_rate: 2.0
+    # non-empty => final grid saved on shutdown (also used by ~/save)
+    save_dir: "/home/rajesh/proc_dem_creation/out"

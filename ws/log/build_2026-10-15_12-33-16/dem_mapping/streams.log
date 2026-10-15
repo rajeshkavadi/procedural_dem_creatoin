@@ -1,0 +1,19 @@
+[2.383s] Invoking command in '/home/rajesh/proc_dem_creation/ws/build/dem_mapping': PYTHONPATH=/home/rajesh/proc_dem_creation/ws/build/dem_mapping/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/rajesh/proc_dem_creation/ws/install/dem_mapping/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/rajesh/proc_dem_creation/ws/build/dem_mapping/build --no-deps symlink_data
+[2.807s] running develop
+[3.082s] running egg_info
+[3.083s] writing dem_mapping.egg-info/PKG-INFO
+[3.083s] writing dependency_links to dem_mapping.egg-info/dependency_links.txt
+[3.083s] writing entry points to dem_mapping.egg-info/entry_points.txt
+[3.084s] writing requirements to dem_mapping.egg-info/requires.txt
+[3.084s] writing top-level names to dem_mapping.egg-info/top_level.txt
+[3.087s] reading manifest file 'dem_mapping.egg-info/SOURCES.txt'
+[3.090s] writing manifest file 'dem_mapping.egg-info/SOURCES.txt'
+[3.097s] running build_ext
+[3.098s] Creating /home/rajesh/proc_dem_creation/ws/install/dem_mapping/lib/python3.10/site-packages/dem-mapping.egg-link (link to .)
+[3.099s] Installing dem_node script to /home/rajesh/proc_dem_creation/ws/install/dem_mapping/lib/dem_mapping
+[3.100s] Installing georef_export script to /home/rajesh/proc_dem_creation/ws/install/dem_mapping/lib/dem_mapping
+[3.100s] Installing gnss_align script to /home/rajesh/proc_dem_creation/ws/install/dem_mapping/lib/dem_mapping
+[3.100s] 
+[3.100s] Installed /home/rajesh/proc_dem_creation/ws/build/dem_mapping
+[3.100s] running symlink_data
+[3.206s] Invoked command in '/home/rajesh/proc_dem_creation/ws/build/dem_mapping' returned '0': PYTHONPATH=/home/rajesh/proc_dem_creation/ws/build/dem_mapping/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/rajesh/proc_dem_creation/ws/install/dem_mapping/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/rajesh/proc_dem_creation/ws/build/dem_mapping/build --no-deps symlink_data

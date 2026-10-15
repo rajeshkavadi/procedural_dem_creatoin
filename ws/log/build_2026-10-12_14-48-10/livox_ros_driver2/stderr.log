@@ -1,0 +1,4 @@
+/home/rajesh/proc_dem_creation/ws/src/livox_ros_driver2/src/comm/pub_handler.cpp: In member function ‘void livox_ros::LidarPubHandler::ProcessDoubleEchoPoint(livox_ros::RawPacket&)’:
+/home/rajesh/proc_dem_creation/ws/src/livox_ros_driver2/src/comm/pub_handler.cpp:466:12: warning: unused variable ‘index’ [-Wunused-variable]
+  466 |   uint32_t index = 0;
+      |            ^~~~~

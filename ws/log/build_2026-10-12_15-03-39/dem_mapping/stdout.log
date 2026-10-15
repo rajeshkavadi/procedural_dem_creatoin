@@ -1,0 +1,23 @@
+running develop
+running egg_info
+creating dem_mapping.egg-info
+writing dem_mapping.egg-info/PKG-INFO
+writing dependency_links to dem_mapping.egg-info/dependency_links.txt
+writing entry points to dem_mapping.egg-info/entry_points.txt
+writing requirements to dem_mapping.egg-info/requires.txt
+writing top-level names to dem_mapping.egg-info/top_level.txt
+writing manifest file 'dem_mapping.egg-info/SOURCES.txt'
+reading manifest file 'dem_mapping.egg-info/SOURCES.txt'
+writing manifest file 'dem_mapping.egg-info/SOURCES.txt'
+running build_ext
+Creating /home/rajesh/proc_dem_creation/ws/install/dem_mapping/lib/python3.10/site-packages/dem-mapping.egg-link (link to .)
+Installing dem_node script to /home/rajesh/proc_dem_creation/ws/install/dem_mapping/lib/dem_mapping
+Installing gnss_align script to /home/rajesh/proc_dem_creation/ws/install/dem_mapping/lib/dem_mapping
+
+Installed /home/rajesh/proc_dem_creation/ws/build/dem_mapping
+running symlink_data
+creating /home/rajesh/proc_dem_creation/ws/install/dem_mapping/share/ament_index
+creating /home/rajesh/proc_dem_creation/ws/install/dem_mapping/share/ament_index/resource_index
+creating /home/rajesh/proc_dem_creation/ws/install/dem_mapping/share/ament_index/resource_index/packages
+symbolically linking /home/rajesh/proc_dem_creation/ws/build/dem_mapping/resource/dem_mapping -> /home/rajesh/proc_dem_creation/ws/install/dem_mapping/share/ament_index/resource_index/packages
+symbolically linking /home/rajesh/proc_dem_creation/ws/build/dem_mapping/package.xml -> /home/rajesh/proc_dem_creation/ws/install/dem_mapping/share/dem_mapping

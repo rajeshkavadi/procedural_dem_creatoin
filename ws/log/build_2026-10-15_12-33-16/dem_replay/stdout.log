@@ -1,0 +1,20 @@
+running develop
+running egg_info
+writing dem_replay.egg-info/PKG-INFO
+writing dependency_links to dem_replay.egg-info/dependency_links.txt
+writing entry points to dem_replay.egg-info/entry_points.txt
+writing requirements to dem_replay.egg-info/requires.txt
+writing top-level names to dem_replay.egg-info/top_level.txt
+reading manifest file 'dem_replay.egg-info/SOURCES.txt'
+writing manifest file 'dem_replay.egg-info/SOURCES.txt'
+running build_ext
+Creating /home/rajesh/proc_dem_creation/ws/install/dem_replay/lib/python3.10/site-packages/dem-replay.egg-link (link to .)
+Installing bag_convert script to /home/rajesh/proc_dem_creation/ws/install/dem_replay/lib/dem_replay
+Installing imu_relay script to /home/rajesh/proc_dem_creation/ws/install/dem_replay/lib/dem_replay
+Installing inspect_bag script to /home/rajesh/proc_dem_creation/ws/install/dem_replay/lib/dem_replay
+Installing record_odom script to /home/rajesh/proc_dem_creation/ws/install/dem_replay/lib/dem_replay
+Installing replay script to /home/rajesh/proc_dem_creation/ws/install/dem_replay/lib/dem_replay
+Installing stream_monitor script to /home/rajesh/proc_dem_creation/ws/install/dem_replay/lib/dem_replay
+
+Installed /home/rajesh/proc_dem_creation/ws/build/dem_replay
+running symlink_data
