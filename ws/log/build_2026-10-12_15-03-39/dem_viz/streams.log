@@ -1,0 +1,24 @@
+[1.884s] Invoking command in '/home/rajesh/proc_dem_creation/ws/build/dem_viz': PYTHONPATH=/home/rajesh/proc_dem_creation/ws/build/dem_viz/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/rajesh/proc_dem_creation/ws/install/dem_viz/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/rajesh/proc_dem_creation/ws/build/dem_viz/build --no-deps symlink_data
+[2.203s] running develop
+[2.398s] running egg_info
+[2.398s] creating dem_viz.egg-info
+[2.400s] writing dem_viz.egg-info/PKG-INFO
+[2.400s] writing dependency_links to dem_viz.egg-info/dependency_links.txt
+[2.401s] writing entry points to dem_viz.egg-info/entry_points.txt
+[2.401s] writing requirements to dem_viz.egg-info/requires.txt
+[2.401s] writing top-level names to dem_viz.egg-info/top_level.txt
+[2.402s] writing manifest file 'dem_viz.egg-info/SOURCES.txt'
+[2.402s] reading manifest file 'dem_viz.egg-info/SOURCES.txt'
+[2.403s] writing manifest file 'dem_viz.egg-info/SOURCES.txt'
+[2.406s] running build_ext
+[2.406s] Creating /home/rajesh/proc_dem_creation/ws/install/dem_viz/lib/python3.10/site-packages/dem-viz.egg-link (link to .)
+[2.407s] Installing heatmap script to /home/rajesh/proc_dem_creation/ws/install/dem_viz/lib/dem_viz
+[2.407s] 
+[2.407s] Installed /home/rajesh/proc_dem_creation/ws/build/dem_viz
+[2.408s] running symlink_data
+[2.408s] creating /home/rajesh/proc_dem_creation/ws/install/dem_viz/share/ament_index
+[2.408s] creating /home/rajesh/proc_dem_creation/ws/install/dem_viz/share/ament_index/resource_index
+[2.408s] creating /home/rajesh/proc_dem_creation/ws/install/dem_viz/share/ament_index/resource_index/packages
+[2.409s] symbolically linking /home/rajesh/proc_dem_creation/ws/build/dem_viz/resource/dem_viz -> /home/rajesh/proc_dem_creation/ws/install/dem_viz/share/ament_index/resource_index/packages
+[2.409s] symbolically linking /home/rajesh/proc_dem_creation/ws/build/dem_viz/package.xml -> /home/rajesh/proc_dem_creation/ws/install/dem_viz/share/dem_viz
+[2.470s] Invoked command in '/home/rajesh/proc_dem_creation/ws/build/dem_viz' returned '0': PYTHONPATH=/home/rajesh/proc_dem_creation/ws/build/dem_viz/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/rajesh/proc_dem_creation/ws/install/dem_viz/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/rajesh/proc_dem_creation/ws/build/dem_viz/build --no-deps symlink_data

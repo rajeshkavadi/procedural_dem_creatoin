@@ -1,0 +1,73 @@
+[0.126s] Invoking command in '/home/rajesh/proc_dem_creation/ws/build/fast_lio': AMENT_PREFIX_PATH=/home/rajesh/proc_dem_creation/ws/install/livox_ros_driver2:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/rajesh/proc_dem_creation/ws/install/livox_ros_driver2:/opt/ros/humble LD_LIBRARY_PATH=/home/rajesh/proc_dem_creation/ws/install/livox_ros_driver2/lib:${LD_LIBRARY_PATH} PYTHONPATH=/home/rajesh/proc_dem_creation/ws/install/livox_ros_driver2/local/lib/python3.10/dist-packages:${PYTHONPATH} /usr/bin/cmake /home/rajesh/proc_dem_creation/ws/src/FAST_LIO -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/home/rajesh/proc_dem_creation/ws/install/fast_lio
+[0.291s] Current CPU archtecture: x86_64
+[0.305s] Processer number:  8
+[0.305s] core for MP: 3
+[0.326s] -- Found PythonLibs: /usr/lib/x86_64-linux-gnu/libpython3.10.so (found version "3.10.12") 
+[0.378s] -- Found ament_cmake: 1.3.14 (/opt/ros/humble/share/ament_cmake/cmake)
+[0.661s] -- Override CMake install command with custom implementation using symlinks instead of copying resources
+[0.739s] -- Found rclcpp: 16.0.21 (/opt/ros/humble/share/rclcpp/cmake)
+[1.016s] -- Found rosidl_generator_c: 3.1.9 (/opt/ros/humble/share/rosidl_generator_c/cmake)
+[1.025s] -- Found rosidl_adapter: 3.1.9 (/opt/ros/humble/share/rosidl_adapter/cmake)
+[1.054s] -- Found rosidl_generator_cpp: 3.1.9 (/opt/ros/humble/share/rosidl_generator_cpp/cmake)
+[1.094s] -- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+[1.135s] -- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+[1.258s] -- Found rmw_implementation_cmake: 6.1.4 (/opt/ros/humble/share/rmw_implementation_cmake/cmake)
+[1.268s] -- Found rmw_fastrtps_cpp: 6.2.10 (/opt/ros/humble/share/rmw_fastrtps_cpp/cmake)
+[7.147s] -- Using RMW implementation 'rmw_fastrtps_cpp' as default
+[7.370s] -- Found rclcpp_components: 16.0.21 (/opt/ros/humble/share/rclcpp_components/cmake)
+[7.442s] -- Found geometry_msgs: 4.9.2 (/opt/ros/humble/share/geometry_msgs/cmake)
+[7.493s] -- Found nav_msgs: 4.9.2 (/opt/ros/humble/share/nav_msgs/cmake)
+[7.541s] -- Found sensor_msgs: 4.9.2 (/opt/ros/humble/share/sensor_msgs/cmake)
+[7.590s] -- Found std_srvs: 4.9.2 (/opt/ros/humble/share/std_srvs/cmake)
+[7.627s] -- Found visualization_msgs: 4.9.2 (/opt/ros/humble/share/visualization_msgs/cmake)
+[7.687s] -- Found pcl_ros: 2.4.5 (/opt/ros/humble/share/pcl_ros/cmake)
+[7.801s] -- Eigen found (include: /usr/include/eigen3, version: 3.4.0)
+[9.557s] -- FLANN found (include: /usr/include, lib: /usr/lib/x86_64-linux-gnu/libflann_cpp.so)
+[14.279s] -- OpenNI found (version: 1.5.4.0, include: /usr/include/ni, lib: /usr/lib/libOpenNI.so;libusb::libusb)
+[14.291s] -- OpenNI2 found (version: 2.2.0.33, include: /usr/include/openni2, lib: /usr/lib/x86_64-linux-gnu/libOpenNI2.so;libusb::libusb)
+[16.855s] -- Eigen found (include: /usr/include/eigen3, version: 3.4.0)
+[16.871s] -- OpenNI found (version: 1.5.4.0, include: /usr/include/ni, lib: /usr/lib/libOpenNI.so;libusb::libusb)
+[16.884s] -- OpenNI2 found (version: 2.2.0.33, include: /usr/include/openni2, lib: /usr/lib/x86_64-linux-gnu/libOpenNI2.so;libusb::libusb)
+[19.113s] -- Found Qhull version 8.0.2
+[21.335s] -- OpenNI found (version: 1.5.4.0, include: /usr/include/ni, lib: /usr/lib/libOpenNI.so;libusb::libusb)
+[23.656s] -- Found eigen3_cmake_module: 0.1.1 (/opt/ros/humble/share/eigen3_cmake_module/cmake)
+[23.660s] -- Ensuring Eigen3 include directory is part of orocos-kdl CMake target
+[23.859s] -- Found livox_ros_driver2: 1.0.0 (/home/rajesh/proc_dem_creation/ws/install/livox_ros_driver2/share/livox_ros_driver2/cmake)
+[23.913s] -- Found rosidl_default_generators: 1.2.1 (/opt/ros/humble/share/rosidl_default_generators/cmake)
+[23.947s] CMake Warning (dev) at CMakeLists.txt:81 (find_package):
+[23.947s]   Policy CMP0074 is not set: find_package uses <PackageName>_ROOT variables.
+[23.947s]   Run "cmake --help-policy CMP0074" for policy details.  Use the cmake_policy
+[23.948s]   command to set the policy and suppress this warning.
+[23.948s] 
+[23.948s]   CMake variable PCL_ROOT is set to:
+[23.948s] 
+[23.948s]     /usr
+[23.948s] 
+[23.948s]   For compatibility, CMake is ignoring the variable.
+[23.949s] This warning is for project developers.  Use -Wno-dev to suppress it.
+[23.949s] 
+[23.963s] Eigen:/usr/include/eigen3
+[23.963s] -- PCL: /usr/include/pcl-1.12
+[24.514s] -- Found ament_cmake_ros: 0.10.1 (/opt/ros/humble/share/ament_cmake_ros/cmake)
+[25.158s] -- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+[25.400s] -- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+[25.448s] -- Found python_cmake_module: 0.10.0 (/opt/ros/humble/share/python_cmake_module/cmake)
+[25.496s] -- Found PythonLibs: /usr/lib/x86_64-linux-gnu/libpython3.10.so (found suitable version "3.10.12", minimum required is "3.5") 
+[25.496s] -- Using PYTHON_EXECUTABLE: /usr/bin/python3
+[25.496s] -- Using PYTHON_INCLUDE_DIRS: /usr/include/python3.10
+[25.496s] -- Using PYTHON_LIBRARIES: /usr/lib/x86_64-linux-gnu/libpython3.10.so
+[25.733s] -- Configuring done
+[26.184s] -- Generating done
+[26.230s] -- Build files have been written to: /home/rajesh/proc_dem_creation/ws/build/fast_lio
+[26.274s] Invoked command in '/home/rajesh/proc_dem_creation/ws/build/fast_lio' returned '0': AMENT_PREFIX_PATH=/home/rajesh/proc_dem_creation/ws/install/livox_ros_driver2:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/rajesh/proc_dem_creation/ws/install/livox_ros_driver2:/opt/ros/humble LD_LIBRARY_PATH=/home/rajesh/proc_dem_creation/ws/install/livox_ros_driver2/lib:${LD_LIBRARY_PATH} PYTHONPATH=/home/rajesh/proc_dem_creation/ws/install/livox_ros_driver2/local/lib/python3.10/dist-packages:${PYTHONPATH} /usr/bin/cmake /home/rajesh/proc_dem_creation/ws/src/FAST_LIO -DAMENT_CMAKE_SYMLINK_INSTALL=1 -DCMAKE_INSTALL_PREFIX=/home/rajesh/proc_dem_creation/ws/install/fast_lio
+[26.277s] Invoking command in '/home/rajesh/proc_dem_creation/ws/build/fast_lio': AMENT_PREFIX_PATH=/home/rajesh/proc_dem_creation/ws/install/livox_ros_driver2:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/rajesh/proc_dem_creation/ws/install/livox_ros_driver2:/opt/ros/humble LD_LIBRARY_PATH=/home/rajesh/proc_dem_creation/ws/install/livox_ros_driver2/lib:${LD_LIBRARY_PATH} PYTHONPATH=/home/rajesh/proc_dem_creation/ws/install/livox_ros_driver2/local/lib/python3.10/dist-packages:${PYTHONPATH} /usr/bin/cmake --build /home/rajesh/proc_dem_creation/ws/build/fast_lio -- -j8 -l8
+[26.371s] Consolidate compiler generated dependencies of target fast_lio__rosidl_generator_c
+[26.378s] failed to create symbolic link '/home/rajesh/proc_dem_creation/ws/build/fast_lio/ament_cmake_python/fast_lio/fast_lio' because existing path cannot be removed: Is a directory
+[26.378s] gmake[2]: *** [CMakeFiles/ament_cmake_python_symlink_fast_lio.dir/build.make:70: CMakeFiles/ament_cmake_python_symlink_fast_lio] Error 1
+[26.379s] gmake[1]: *** [CMakeFiles/Makefile2:442: CMakeFiles/ament_cmake_python_symlink_fast_lio.dir/all] Error 2
+[26.379s] gmake[1]: *** Waiting for unfinished jobs....
+[26.389s] [  2%] Built target fast_lio__rs
+[26.389s] [  5%] Built target fast_lio__cpp
+[26.397s] [ 13%] Built target fast_lio__rosidl_generator_c
+[26.398s] gmake: *** [Makefile:146: all] Error 2
+[26.404s] Invoked command in '/home/rajesh/proc_dem_creation/ws/build/fast_lio' returned '2': AMENT_PREFIX_PATH=/home/rajesh/proc_dem_creation/ws/install/livox_ros_driver2:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/rajesh/proc_dem_creation/ws/install/livox_ros_driver2:/opt/ros/humble LD_LIBRARY_PATH=/home/rajesh/proc_dem_creation/ws/install/livox_ros_driver2/lib:${LD_LIBRARY_PATH} PYTHONPATH=/home/rajesh/proc_dem_creation/ws/install/livox_ros_driver2/local/lib/python3.10/dist-packages:${PYTHONPATH} /usr/bin/cmake --build /home/rajesh/proc_dem_creation/ws/build/fast_lio -- -j8 -l8

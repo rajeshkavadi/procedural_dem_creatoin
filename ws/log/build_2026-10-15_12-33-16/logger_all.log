@@ -1,0 +1,234 @@
+[0.366s] DEBUG:colcon:Command line arguments: ['/usr/bin/colcon', 'build', '--packages-select', 'dem_replay', 'dem_mapping', '--symlink-install']
+[0.366s] DEBUG:colcon:Parsed command line arguments: Namespace(log_base=None, log_level=None, verb_name='build', build_base='build', install_base='install', merge_install=False, symlink_install=True, test_result_base=None, continue_on_error=False, executor='parallel', parallel_workers=8, event_handlers=None, ignore_user_meta=False, metas=['./colcon.meta'], base_paths=['.'], packages_ignore=None, packages_ignore_regex=None, paths=None, packages_up_to=None, packages_up_to_regex=None, packages_above=None, packages_above_and_dependencies=None, packages_above_depth=None, packages_select_by_dep=None, packages_skip_by_dep=None, packages_skip_up_to=None, packages_select_build_failed=False, packages_skip_build_finished=False, packages_select_test_failures=False, packages_skip_test_passed=False, packages_select=['dem_replay', 'dem_mapping'], packages_skip=None, packages_select_regex=None, packages_skip_regex=None, packages_start=None, packages_end=None, allow_overriding=[], cmake_args=None, cmake_target=None, cmake_target_skip_unavailable=False, cmake_clean_cache=False, cmake_clean_first=False, cmake_force_configure=False, ament_cmake_args=None, catkin_cmake_args=None, catkin_skip_building_tests=False, verb_parser=<colcon_defaults.argument_parser.defaults.DefaultArgumentsDecorator object at 0x71177a5593f0>, verb_extension=<colcon_core.verb.build.BuildVerb object at 0x71177a558ee0>, main=<bound method BuildVerb.main of <colcon_core.verb.build.BuildVerb object at 0x71177a558ee0>>)
+[0.929s] Level 1:colcon.colcon_core.package_discovery:discover_packages(colcon_meta) check parameters
+[0.929s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) check parameters
+[0.929s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) check parameters
+[0.929s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) check parameters
+[0.929s] Level 1:colcon.colcon_core.package_discovery:discover_packages(colcon_meta) discover
+[0.929s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) discover
+[0.929s] INFO:colcon.colcon_core.package_discovery:Crawling recursively for packages in '/home/rajesh/proc_dem_creation/ws'
+[0.930s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['ignore', 'ignore_ament_install']
+[0.930s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'ignore'
+[0.930s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'ignore_ament_install'
+[0.930s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['colcon_pkg']
+[0.930s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'colcon_pkg'
+[0.930s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['colcon_meta']
+[0.930s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'colcon_meta'
+[0.930s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['ros']
+[0.930s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'ros'
+[0.953s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['cmake', 'python']
+[0.953s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'cmake'
+[0.953s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'python'
+[0.953s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['python_setup_py']
+[0.953s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'python_setup_py'
+[0.953s] Level 1:colcon.colcon_core.package_identification:_identify(build) by extensions ['ignore', 'ignore_ament_install']
+[0.953s] Level 1:colcon.colcon_core.package_identification:_identify(build) by extension 'ignore'
+[0.953s] Level 1:colcon.colcon_core.package_identification:_identify(build) ignored
+[0.953s] Level 1:colcon.colcon_core.package_identification:_identify(install) by extensions ['ignore', 'ignore_ament_install']
+[0.953s] Level 1:colcon.colcon_core.package_identification:_identify(install) by extension 'ignore'
+[0.953s] Level 1:colcon.colcon_core.package_identification:_identify(install) ignored
+[0.954s] Level 1:colcon.colcon_core.package_identification:_identify(log) by extensions ['ignore', 'ignore_ament_install']
+[0.954s] Level 1:colcon.colcon_core.package_identification:_identify(log) by extension 'ignore'
+[0.954s] Level 1:colcon.colcon_core.package_identification:_identify(log) ignored
+[0.954s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['ignore', 'ignore_ament_install']
+[0.954s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'ignore'
+[0.954s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'ignore_ament_install'
+[0.954s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['colcon_pkg']
+[0.954s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'colcon_pkg'
+[0.954s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['colcon_meta']
+[0.954s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'colcon_meta'
+[0.955s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['ros']
+[0.955s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'ros'
+[0.955s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['cmake', 'python']
+[0.955s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'cmake'
+[0.955s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'python'
+[0.955s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['python_setup_py']
+[0.955s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'python_setup_py'
+[0.955s] Level 1:colcon.colcon_core.package_identification:_identify(src/FAST_LIO) by extensions ['ignore', 'ignore_ament_install']
+[0.955s] Level 1:colcon.colcon_core.package_identification:_identify(src/FAST_LIO) by extension 'ignore'
+[0.955s] Level 1:colcon.colcon_core.package_identification:_identify(src/FAST_LIO) by extension 'ignore_ament_install'
+[0.955s] Level 1:colcon.colcon_core.package_identification:_identify(src/FAST_LIO) by extensions ['colcon_pkg']
+[0.955s] Level 1:colcon.colcon_core.package_identification:_identify(src/FAST_LIO) by extension 'colcon_pkg'
+[0.955s] Level 1:colcon.colcon_core.package_identification:_identify(src/FAST_LIO) by extensions ['colcon_meta']
+[0.955s] Level 1:colcon.colcon_core.package_identification:_identify(src/FAST_LIO) by extension 'colcon_meta'
+[0.955s] Level 1:colcon.colcon_core.package_identification:_identify(src/FAST_LIO) by extensions ['ros']
+[0.955s] Level 1:colcon.colcon_core.package_identification:_identify(src/FAST_LIO) by extension 'ros'
+[0.960s] DEBUG:colcon.colcon_core.package_identification:Package 'src/FAST_LIO' with type 'ros.ament_cmake' and name 'fast_lio'
+[0.960s] Level 1:colcon.colcon_core.package_identification:_identify(src/dem_bringup) by extensions ['ignore', 'ignore_ament_install']
+[0.960s] Level 1:colcon.colcon_core.package_identification:_identify(src/dem_bringup) by extension 'ignore'
+[0.961s] Level 1:colcon.colcon_core.package_identification:_identify(src/dem_bringup) by extension 'ignore_ament_install'
+[0.961s] Level 1:colcon.colcon_core.package_identification:_identify(src/dem_bringup) by extensions ['colcon_pkg']
+[0.961s] Level 1:colcon.colcon_core.package_identification:_identify(src/dem_bringup) by extension 'colcon_pkg'
+[0.961s] Level 1:colcon.colcon_core.package_identification:_identify(src/dem_bringup) by extensions ['colcon_meta']
+[0.961s] Level 1:colcon.colcon_core.package_identification:_identify(src/dem_bringup) by extension 'colcon_meta'
+[0.961s] Level 1:colcon.colcon_core.package_identification:_identify(src/dem_bringup) by extensions ['ros']
+[0.961s] Level 1:colcon.colcon_core.package_identification:_identify(src/dem_bringup) by extension 'ros'
+[0.962s] DEBUG:colcon.colcon_core.package_identification:Package 'src/dem_bringup' with type 'ros.ament_cmake' and name 'dem_bringup'
+[0.963s] Level 1:colcon.colcon_core.package_identification:_identify(src/dem_mapping) by extensions ['ignore', 'ignore_ament_install']
+[0.963s] Level 1:colcon.colcon_core.package_identification:_identify(src/dem_mapping) by extension 'ignore'
+[0.963s] Level 1:colcon.colcon_core.package_identification:_identify(src/dem_mapping) by extension 'ignore_ament_install'
+[0.963s] Level 1:colcon.colcon_core.package_identification:_identify(src/dem_mapping) by extensions ['colcon_pkg']
+[0.963s] Level 1:colcon.colcon_core.package_identification:_identify(src/dem_mapping) by extension 'colcon_pkg'
+[0.963s] Level 1:colcon.colcon_core.package_identification:_identify(src/dem_mapping) by extensions ['colcon_meta']
+[0.963s] Level 1:colcon.colcon_core.package_identification:_identify(src/dem_mapping) by extension 'colcon_meta'
+[0.963s] Level 1:colcon.colcon_core.package_identification:_identify(src/dem_mapping) by extensions ['ros']
+[0.963s] Level 1:colcon.colcon_core.package_identification:_identify(src/dem_mapping) by extension 'ros'
+[0.965s] DEBUG:colcon.colcon_core.package_identification:Package 'src/dem_mapping' with type 'ros.ament_python' and name 'dem_mapping'
+[0.965s] Level 1:colcon.colcon_core.package_identification:_identify(src/dem_replay) by extensions ['ignore', 'ignore_ament_install']
+[0.966s] Level 1:colcon.colcon_core.package_identification:_identify(src/dem_replay) by extension 'ignore'
+[0.966s] Level 1:colcon.colcon_core.package_identification:_identify(src/dem_replay) by extension 'ignore_ament_install'
+[0.966s] Level 1:colcon.colcon_core.package_identification:_identify(src/dem_replay) by extensions ['colcon_pkg']
+[0.966s] Level 1:colcon.colcon_core.package_identification:_identify(src/dem_replay) by extension 'colcon_pkg'
+[0.966s] Level 1:colcon.colcon_core.package_identification:_identify(src/dem_replay) by extensions ['colcon_meta']
+[0.966s] Level 1:colcon.colcon_core.package_identification:_identify(src/dem_replay) by extension 'colcon_meta'
+[0.966s] Level 1:colcon.colcon_core.package_identification:_identify(src/dem_replay) by extensions ['ros']
+[0.966s] Level 1:colcon.colcon_core.package_identification:_identify(src/dem_replay) by extension 'ros'
+[0.968s] DEBUG:colcon.colcon_core.package_identification:Package 'src/dem_replay' with type 'ros.ament_python' and name 'dem_replay'
+[0.968s] Level 1:colcon.colcon_core.package_identification:_identify(src/dem_viz) by extensions ['ignore', 'ignore_ament_install']
+[0.969s] Level 1:colcon.colcon_core.package_identification:_identify(src/dem_viz) by extension 'ignore'
+[0.969s] Level 1:colcon.colcon_core.package_identification:_identify(src/dem_viz) by extension 'ignore_ament_install'
+[0.969s] Level 1:colcon.colcon_core.package_identification:_identify(src/dem_viz) by extensions ['colcon_pkg']
+[0.969s] Level 1:colcon.colcon_core.package_identification:_identify(src/dem_viz) by extension 'colcon_pkg'
+[0.969s] Level 1:colcon.colcon_core.package_identification:_identify(src/dem_viz) by extensions ['colcon_meta']
+[0.969s] Level 1:colcon.colcon_core.package_identification:_identify(src/dem_viz) by extension 'colcon_meta'
+[0.969s] Level 1:colcon.colcon_core.package_identification:_identify(src/dem_viz) by extensions ['ros']
+[0.969s] Level 1:colcon.colcon_core.package_identification:_identify(src/dem_viz) by extension 'ros'
+[0.970s] DEBUG:colcon.colcon_core.package_identification:Package 'src/dem_viz' with type 'ros.ament_python' and name 'dem_viz'
+[0.971s] Level 1:colcon.colcon_core.package_identification:_identify(src/livox_ros_driver2) by extensions ['ignore', 'ignore_ament_install']
+[0.971s] Level 1:colcon.colcon_core.package_identification:_identify(src/livox_ros_driver2) by extension 'ignore'
+[0.971s] Level 1:colcon.colcon_core.package_identification:_identify(src/livox_ros_driver2) by extension 'ignore_ament_install'
+[0.971s] Level 1:colcon.colcon_core.package_identification:_identify(src/livox_ros_driver2) by extensions ['colcon_pkg']
+[0.971s] Level 1:colcon.colcon_core.package_identification:_identify(src/livox_ros_driver2) by extension 'colcon_pkg'
+[0.971s] Level 1:colcon.colcon_core.package_identification:_identify(src/livox_ros_driver2) by extensions ['colcon_meta']
+[0.971s] Level 1:colcon.colcon_core.package_identification:_identify(src/livox_ros_driver2) by extension 'colcon_meta'
+[0.971s] Level 1:colcon.colcon_core.package_identification:_identify(src/livox_ros_driver2) by extensions ['ros']
+[0.971s] Level 1:colcon.colcon_core.package_identification:_identify(src/livox_ros_driver2) by extension 'ros'
+[0.973s] DEBUG:colcon.colcon_core.package_identification:Package 'src/livox_ros_driver2' with type 'ros.ament_cmake' and name 'livox_ros_driver2'
+[0.974s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) using defaults
+[0.974s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) discover
+[0.974s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) using defaults
+[0.974s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) discover
+[0.974s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) using defaults
+[1.007s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'dem_viz' in 'src/dem_viz'
+[1.007s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'livox_ros_driver2' in 'src/livox_ros_driver2'
+[1.007s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'fast_lio' in 'src/FAST_LIO'
+[1.007s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'dem_bringup' in 'src/dem_bringup'
+[1.008s] Level 1:colcon.colcon_core.package_discovery:discover_packages(prefix_path) check parameters
+[1.008s] Level 1:colcon.colcon_core.package_discovery:discover_packages(prefix_path) discover
+[1.013s] DEBUG:colcon.colcon_installed_package_information.package_discovery:Found 274 installed packages in /opt/ros/humble
+[1.014s] Level 1:colcon.colcon_core.package_discovery:discover_packages(prefix_path) using defaults
+[1.050s] Level 5:colcon.colcon_core.verb:set package 'dem_mapping' build argument 'cmake_args' from command line to 'None'
+[1.050s] Level 5:colcon.colcon_core.verb:set package 'dem_mapping' build argument 'cmake_target' from command line to 'None'
+[1.050s] Level 5:colcon.colcon_core.verb:set package 'dem_mapping' build argument 'cmake_target_skip_unavailable' from command line to 'False'
+[1.050s] Level 5:colcon.colcon_core.verb:set package 'dem_mapping' build argument 'cmake_clean_cache' from command line to 'False'
+[1.050s] Level 5:colcon.colcon_core.verb:set package 'dem_mapping' build argument 'cmake_clean_first' from command line to 'False'
+[1.050s] Level 5:colcon.colcon_core.verb:set package 'dem_mapping' build argument 'cmake_force_configure' from command line to 'False'
+[1.050s] Level 5:colcon.colcon_core.verb:set package 'dem_mapping' build argument 'ament_cmake_args' from command line to 'None'
+[1.050s] Level 5:colcon.colcon_core.verb:set package 'dem_mapping' build argument 'catkin_cmake_args' from command line to 'None'
+[1.050s] Level 5:colcon.colcon_core.verb:set package 'dem_mapping' build argument 'catkin_skip_building_tests' from command line to 'False'
+[1.050s] DEBUG:colcon.colcon_core.verb:Building package 'dem_mapping' with the following arguments: {'ament_cmake_args': None, 'build_base': '/home/rajesh/proc_dem_creation/ws/build/dem_mapping', 'catkin_cmake_args': None, 'catkin_skip_building_tests': False, 'cmake_args': None, 'cmake_clean_cache': False, 'cmake_clean_first': False, 'cmake_force_configure': False, 'cmake_target': None, 'cmake_target_skip_unavailable': False, 'install_base': '/home/rajesh/proc_dem_creation/ws/install/dem_mapping', 'merge_install': False, 'path': '/home/rajesh/proc_dem_creation/ws/src/dem_mapping', 'symlink_install': True, 'test_result_base': None}
+[1.050s] Level 5:colcon.colcon_core.verb:set package 'dem_replay' build argument 'cmake_args' from command line to 'None'
+[1.051s] Level 5:colcon.colcon_core.verb:set package 'dem_replay' build argument 'cmake_target' from command line to 'None'
+[1.051s] Level 5:colcon.colcon_core.verb:set package 'dem_replay' build argument 'cmake_target_skip_unavailable' from command line to 'False'
+[1.051s] Level 5:colcon.colcon_core.verb:set package 'dem_replay' build argument 'cmake_clean_cache' from command line to 'False'
+[1.051s] Level 5:colcon.colcon_core.verb:set package 'dem_replay' build argument 'cmake_clean_first' from command line to 'False'
+[1.051s] Level 5:colcon.colcon_core.verb:set package 'dem_replay' build argument 'cmake_force_configure' from command line to 'False'
+[1.051s] Level 5:colcon.colcon_core.verb:set package 'dem_replay' build argument 'ament_cmake_args' from command line to 'None'
+[1.051s] Level 5:colcon.colcon_core.verb:set package 'dem_replay' build argument 'catkin_cmake_args' from command line to 'None'
+[1.051s] Level 5:colcon.colcon_core.verb:set package 'dem_replay' build argument 'catkin_skip_building_tests' from command line to 'False'
+[1.051s] DEBUG:colcon.colcon_core.verb:Building package 'dem_replay' with the following arguments: {'ament_cmake_args': None, 'build_base': '/home/rajesh/proc_dem_creation/ws/build/dem_replay', 'catkin_cmake_args': None, 'catkin_skip_building_tests': False, 'cmake_args': None, 'cmake_clean_cache': False, 'cmake_clean_first': False, 'cmake_force_configure': False, 'cmake_target': None, 'cmake_target_skip_unavailable': False, 'install_base': '/home/rajesh/proc_dem_creation/ws/install/dem_replay', 'merge_install': False, 'path': '/home/rajesh/proc_dem_creation/ws/src/dem_replay', 'symlink_install': True, 'test_result_base': None}
+[1.051s] INFO:colcon.colcon_core.executor:Executing jobs using 'parallel' executor
+[1.052s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:run_until_complete
+[1.052s] INFO:colcon.colcon_ros.task.ament_python.build:Building ROS package in '/home/rajesh/proc_dem_creation/ws/src/dem_mapping' with build type 'ament_python'
+[1.052s] Level 1:colcon.colcon_core.shell:create_environment_hook('dem_mapping', 'ament_prefix_path')
+[1.060s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_core.shell.bat': Not used on non-Windows systems
+[1.060s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/rajesh/proc_dem_creation/ws/install/dem_mapping/share/dem_mapping/hook/ament_prefix_path.ps1'
+[1.062s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/rajesh/proc_dem_creation/ws/install/dem_mapping/share/dem_mapping/hook/ament_prefix_path.dsv'
+[1.062s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/rajesh/proc_dem_creation/ws/install/dem_mapping/share/dem_mapping/hook/ament_prefix_path.sh'
+[1.064s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[1.064s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[1.067s] INFO:colcon.colcon_ros.task.ament_python.build:Building ROS package in '/home/rajesh/proc_dem_creation/ws/src/dem_replay' with build type 'ament_python'
+[1.067s] Level 1:colcon.colcon_core.shell:create_environment_hook('dem_replay', 'ament_prefix_path')
+[1.067s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/rajesh/proc_dem_creation/ws/install/dem_replay/share/dem_replay/hook/ament_prefix_path.ps1'
+[1.069s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/rajesh/proc_dem_creation/ws/install/dem_replay/share/dem_replay/hook/ament_prefix_path.dsv'
+[1.069s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/rajesh/proc_dem_creation/ws/install/dem_replay/share/dem_replay/hook/ament_prefix_path.sh'
+[1.070s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[1.070s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[1.422s] INFO:colcon.colcon_core.task.python.build:Building Python package in '/home/rajesh/proc_dem_creation/ws/src/dem_mapping'
+[1.422s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[1.423s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[1.853s] INFO:colcon.colcon_core.task.python.build:Building Python package in '/home/rajesh/proc_dem_creation/ws/src/dem_replay'
+[1.854s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[1.854s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[2.905s] DEBUG:colcon.colcon_core.task.python.build:Available setuptools commands: build_ext, dist_info, bdist_wheel, bdist, update_catalog, build_scripts, install, install_lib, register, rotate, compile_catalog, build_clib, alias, install_data, easy_install, init_catalog, upload_docs, saveopts, check, symlink_data, bdist_rpm, build_py, install_headers, test, clean, install_egg_info, install_scripts, upload, bdist_egg, develop, setopt, sdist, bdist_dumb, extract_messages, build, egg_info
+[2.915s] DEBUG:colcon.colcon_core.task.python.build:Available setuptools commands: build_ext, dist_info, bdist_wheel, bdist, update_catalog, build_scripts, install, install_lib, register, rotate, compile_catalog, build_clib, alias, install_data, easy_install, init_catalog, upload_docs, saveopts, check, symlink_data, bdist_rpm, build_py, install_headers, test, clean, install_egg_info, install_scripts, upload, bdist_egg, develop, setopt, sdist, bdist_dumb, extract_messages, build, egg_info
+[3.385s] DEBUG:colcon.colcon_core.task.python.build:Available setuptools 'develop' options: --zip-ok, --upgrade, --no-user-cfg, --egg-path, --uninstall, --optimize, --force-installation-into-system-dir, --help, --find-links, --no-deps, --script-dir, --multi-version, --prefix, --quiet, --version, --build-directory, --local-snapshots-ok, --site-dirs, --no-find-links, --allow-hosts, --index-url, --user, --verbose, --always-unzip, --exclude-scripts, --dry-run, --editable, --install-layout, --always-copy, --record, --install-dir
+[3.396s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/rajesh/proc_dem_creation/ws/build/dem_replay': PYTHONPATH=/home/rajesh/proc_dem_creation/ws/build/dem_replay/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/rajesh/proc_dem_creation/ws/install/dem_replay/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/rajesh/proc_dem_creation/ws/build/dem_replay/build --no-deps symlink_data
+[3.432s] DEBUG:colcon.colcon_core.task.python.build:Available setuptools 'develop' options: --zip-ok, --upgrade, --no-user-cfg, --egg-path, --uninstall, --optimize, --force-installation-into-system-dir, --help, --find-links, --no-deps, --script-dir, --multi-version, --prefix, --quiet, --version, --build-directory, --local-snapshots-ok, --site-dirs, --no-find-links, --allow-hosts, --index-url, --user, --verbose, --always-unzip, --exclude-scripts, --dry-run, --editable, --install-layout, --always-copy, --record, --install-dir
+[3.435s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/rajesh/proc_dem_creation/ws/build/dem_mapping': PYTHONPATH=/home/rajesh/proc_dem_creation/ws/build/dem_mapping/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/rajesh/proc_dem_creation/ws/install/dem_mapping/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/rajesh/proc_dem_creation/ws/build/dem_mapping/build --no-deps symlink_data
+[4.186s] Level 1:colcon.colcon_core.shell:create_environment_hook('dem_replay', 'pythonpath_develop')
+[4.187s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/rajesh/proc_dem_creation/ws/build/dem_replay/share/dem_replay/hook/pythonpath_develop.ps1'
+[4.187s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/rajesh/proc_dem_creation/ws/build/dem_replay' returned '0': PYTHONPATH=/home/rajesh/proc_dem_creation/ws/build/dem_replay/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/rajesh/proc_dem_creation/ws/install/dem_replay/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/rajesh/proc_dem_creation/ws/build/dem_replay/build --no-deps symlink_data
+[4.189s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/rajesh/proc_dem_creation/ws/build/dem_replay/share/dem_replay/hook/pythonpath_develop.dsv'
+[4.190s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/rajesh/proc_dem_creation/ws/build/dem_replay/share/dem_replay/hook/pythonpath_develop.sh'
+[4.214s] Level 1:colcon.colcon_core.environment:checking '/home/rajesh/proc_dem_creation/ws/install/dem_replay' for CMake module files
+[4.216s] Level 1:colcon.colcon_core.environment:checking '/home/rajesh/proc_dem_creation/ws/install/dem_replay' for CMake config files
+[4.219s] Level 1:colcon.colcon_core.environment:checking '/home/rajesh/proc_dem_creation/ws/install/dem_replay/lib'
+[4.219s] Level 1:colcon.colcon_core.environment:checking '/home/rajesh/proc_dem_creation/ws/install/dem_replay/bin'
+[4.219s] Level 1:colcon.colcon_core.environment:checking '/home/rajesh/proc_dem_creation/ws/install/dem_replay/lib/pkgconfig/dem_replay.pc'
+[4.220s] Level 1:colcon.colcon_core.environment:checking '/home/rajesh/proc_dem_creation/ws/install/dem_replay/lib/python3.10/site-packages'
+[4.220s] Level 1:colcon.colcon_core.shell:create_environment_hook('dem_replay', 'pythonpath')
+[4.220s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/rajesh/proc_dem_creation/ws/install/dem_replay/share/dem_replay/hook/pythonpath.ps1'
+[4.224s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/rajesh/proc_dem_creation/ws/install/dem_replay/share/dem_replay/hook/pythonpath.dsv'
+[4.225s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/rajesh/proc_dem_creation/ws/install/dem_replay/share/dem_replay/hook/pythonpath.sh'
+[4.231s] Level 1:colcon.colcon_core.environment:checking '/home/rajesh/proc_dem_creation/ws/install/dem_replay/bin'
+[4.231s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(dem_replay)
+[4.232s] INFO:colcon.colcon_core.shell:Creating package script '/home/rajesh/proc_dem_creation/ws/install/dem_replay/share/dem_replay/package.ps1'
+[4.236s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/rajesh/proc_dem_creation/ws/install/dem_replay/share/dem_replay/package.dsv'
+[4.241s] INFO:colcon.colcon_core.shell:Creating package script '/home/rajesh/proc_dem_creation/ws/install/dem_replay/share/dem_replay/package.sh'
+[4.247s] INFO:colcon.colcon_core.shell:Creating package script '/home/rajesh/proc_dem_creation/ws/install/dem_replay/share/dem_replay/package.bash'
+[4.250s] INFO:colcon.colcon_core.shell:Creating package script '/home/rajesh/proc_dem_creation/ws/install/dem_replay/share/dem_replay/package.zsh'
+[4.253s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/rajesh/proc_dem_creation/ws/install/dem_replay/share/colcon-core/packages/dem_replay)
+[4.257s] Level 1:colcon.colcon_core.shell:create_environment_hook('dem_mapping', 'pythonpath_develop')
+[4.258s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/rajesh/proc_dem_creation/ws/build/dem_mapping/share/dem_mapping/hook/pythonpath_develop.ps1'
+[4.259s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/rajesh/proc_dem_creation/ws/build/dem_mapping' returned '0': PYTHONPATH=/home/rajesh/proc_dem_creation/ws/build/dem_mapping/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/rajesh/proc_dem_creation/ws/install/dem_mapping/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/rajesh/proc_dem_creation/ws/build/dem_mapping/build --no-deps symlink_data
+[4.263s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/rajesh/proc_dem_creation/ws/build/dem_mapping/share/dem_mapping/hook/pythonpath_develop.dsv'
+[4.265s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/rajesh/proc_dem_creation/ws/build/dem_mapping/share/dem_mapping/hook/pythonpath_develop.sh'
+[4.267s] Level 1:colcon.colcon_core.environment:checking '/home/rajesh/proc_dem_creation/ws/install/dem_mapping' for CMake module files
+[4.268s] Level 1:colcon.colcon_core.environment:checking '/home/rajesh/proc_dem_creation/ws/install/dem_mapping' for CMake config files
+[4.271s] Level 1:colcon.colcon_core.environment:checking '/home/rajesh/proc_dem_creation/ws/install/dem_mapping/lib'
+[4.271s] Level 1:colcon.colcon_core.environment:checking '/home/rajesh/proc_dem_creation/ws/install/dem_mapping/bin'
+[4.271s] Level 1:colcon.colcon_core.environment:checking '/home/rajesh/proc_dem_creation/ws/install/dem_mapping/lib/pkgconfig/dem_mapping.pc'
+[4.271s] Level 1:colcon.colcon_core.environment:checking '/home/rajesh/proc_dem_creation/ws/install/dem_mapping/lib/python3.10/site-packages'
+[4.271s] Level 1:colcon.colcon_core.shell:create_environment_hook('dem_mapping', 'pythonpath')
+[4.272s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/rajesh/proc_dem_creation/ws/install/dem_mapping/share/dem_mapping/hook/pythonpath.ps1'
+[4.273s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/rajesh/proc_dem_creation/ws/install/dem_mapping/share/dem_mapping/hook/pythonpath.dsv'
+[4.274s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/rajesh/proc_dem_creation/ws/install/dem_mapping/share/dem_mapping/hook/pythonpath.sh'
+[4.275s] Level 1:colcon.colcon_core.environment:checking '/home/rajesh/proc_dem_creation/ws/install/dem_mapping/bin'
+[4.275s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(dem_mapping)
+[4.277s] INFO:colcon.colcon_core.shell:Creating package script '/home/rajesh/proc_dem_creation/ws/install/dem_mapping/share/dem_mapping/package.ps1'
+[4.280s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/rajesh/proc_dem_creation/ws/install/dem_mapping/share/dem_mapping/package.dsv'
+[4.281s] INFO:colcon.colcon_core.shell:Creating package script '/home/rajesh/proc_dem_creation/ws/install/dem_mapping/share/dem_mapping/package.sh'
+[4.282s] INFO:colcon.colcon_core.shell:Creating package script '/home/rajesh/proc_dem_creation/ws/install/dem_mapping/share/dem_mapping/package.bash'
+[4.282s] INFO:colcon.colcon_core.shell:Creating package script '/home/rajesh/proc_dem_creation/ws/install/dem_mapping/share/dem_mapping/package.zsh'
+[4.283s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/rajesh/proc_dem_creation/ws/install/dem_mapping/share/colcon-core/packages/dem_mapping)
+[4.283s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:closing loop
+[4.284s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:loop closed
+[4.284s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:run_until_complete finished with '0'
+[4.284s] DEBUG:colcon.colcon_core.event_reactor:joining thread
+[4.335s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_notification.desktop_notification.notify_send': Could not find 'notify-send'
+[4.336s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_notification.desktop_notification.terminal_notifier': Not used on non-Darwin systems
+[4.336s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_notification.desktop_notification.win32': Not used on non-Windows systems
+[4.336s] INFO:colcon.colcon_notification.desktop_notification:Sending desktop notification using 'notify2'
+[4.336s] DEBUG:colcon.colcon_notification.desktop_notification.notify2:Failed to initialize notify2: org.freedesktop.DBus.Error.FileNotFound: Failed to connect to socket /run/user/1000/bus: No such file or directory
+[4.336s] DEBUG:colcon.colcon_core.event_reactor:joined thread
+[4.337s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/rajesh/proc_dem_creation/ws/install/local_setup.ps1'
+[4.339s] INFO:colcon.colcon_core.shell:Creating prefix util module '/home/rajesh/proc_dem_creation/ws/install/_local_setup_util_ps1.py'
+[4.341s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/rajesh/proc_dem_creation/ws/install/setup.ps1'
+[4.343s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/rajesh/proc_dem_creation/ws/install/local_setup.sh'
+[4.344s] INFO:colcon.colcon_core.shell:Creating prefix util module '/home/rajesh/proc_dem_creation/ws/install/_local_setup_util_sh.py'
+[4.345s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/rajesh/proc_dem_creation/ws/install/setup.sh'
+[4.347s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/rajesh/proc_dem_creation/ws/install/local_setup.bash'
+[4.350s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/rajesh/proc_dem_creation/ws/install/setup.bash'
+[4.352s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/rajesh/proc_dem_creation/ws/install/local_setup.zsh'
+[4.353s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/rajesh/proc_dem_creation/ws/install/setup.zsh'

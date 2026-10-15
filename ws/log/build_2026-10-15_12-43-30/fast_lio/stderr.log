@@ -1,0 +1,21 @@
+Current CPU archtecture: x86_64
+Processer number:  8
+core for MP: 3
+CMake Warning (dev) at CMakeLists.txt:81 (find_package):
+  Policy CMP0074 is not set: find_package uses <PackageName>_ROOT variables.
+  Run "cmake --help-policy CMP0074" for policy details.  Use the cmake_policy
+  command to set the policy and suppress this warning.
+
+  CMake variable PCL_ROOT is set to:
+
+    /usr
+
+  For compatibility, CMake is ignoring the variable.
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+Eigen:/usr/include/eigen3
+failed to create symbolic link '/home/rajesh/proc_dem_creation/ws/build/fast_lio/ament_cmake_python/fast_lio/fast_lio' because existing path cannot be removed: Is a directory
+gmake[2]: *** [CMakeFiles/ament_cmake_python_symlink_fast_lio.dir/build.make:70: CMakeFiles/ament_cmake_python_symlink_fast_lio] Error 1
+gmake[1]: *** [CMakeFiles/Makefile2:442: CMakeFiles/ament_cmake_python_symlink_fast_lio.dir/all] Error 2
+gmake[1]: *** Waiting for unfinished jobs....
+gmake: *** [Makefile:146: all] Error 2

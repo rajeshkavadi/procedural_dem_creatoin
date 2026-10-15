@@ -1,0 +1,130 @@
+[0.050s] Invoking command in '/home/rajesh/proc_dem_creation/ws/build/fast_lio': AMENT_PREFIX_PATH=/home/rajesh/proc_dem_creation/ws/install/livox_ros_driver2:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/rajesh/proc_dem_creation/ws/install/livox_ros_driver2:/opt/ros/humble LD_LIBRARY_PATH=/home/rajesh/proc_dem_creation/ws/install/livox_ros_driver2/lib:${LD_LIBRARY_PATH} PYTHONPATH=/home/rajesh/proc_dem_creation/ws/install/livox_ros_driver2/local/lib/python3.10/dist-packages:${PYTHONPATH} /usr/bin/cmake /home/rajesh/proc_dem_creation/ws/src/FAST_LIO -DROS_EDITION=ROS2 -DDISTRO_ROS=humble -DCMAKE_INSTALL_PREFIX=/home/rajesh/proc_dem_creation/ws/install/fast_lio
+[0.160s] -- The C compiler identification is GNU 11.4.0
+[0.436s] -- The CXX compiler identification is GNU 11.4.0
+[0.664s] -- Detecting C compiler ABI info
+[0.792s] -- Detecting C compiler ABI info - done
+[0.799s] -- Check for working C compiler: /usr/bin/cc - skipped
+[0.799s] -- Detecting C compile features
+[0.800s] -- Detecting C compile features - done
+[0.814s] -- Detecting CXX compiler ABI info
+[0.938s] -- Detecting CXX compiler ABI info - done
+[0.945s] -- Check for working CXX compiler: /usr/bin/c++ - skipped
+[0.945s] -- Detecting CXX compile features
+[0.946s] -- Detecting CXX compile features - done
+[0.946s] Current CPU archtecture: x86_64
+[0.957s] Processer number:  8
+[0.957s] core for MP: 3
+[1.682s] -- Found PythonLibs: /usr/lib/x86_64-linux-gnu/libpython3.10.so (found version "3.10.12") 
+[1.719s] -- Found ament_cmake: 1.3.14 (/opt/ros/humble/share/ament_cmake/cmake)
+[1.869s] -- Found Python3: /usr/bin/python3 (found version "3.10.12") found components: Interpreter 
+[2.031s] -- Found rclcpp: 16.0.21 (/opt/ros/humble/share/rclcpp/cmake)
+[2.109s] -- Found rosidl_generator_c: 3.1.9 (/opt/ros/humble/share/rosidl_generator_c/cmake)
+[2.118s] -- Found rosidl_adapter: 3.1.9 (/opt/ros/humble/share/rosidl_adapter/cmake)
+[2.135s] -- Found rosidl_generator_cpp: 3.1.9 (/opt/ros/humble/share/rosidl_generator_cpp/cmake)
+[2.170s] -- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+[2.204s] -- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+[2.289s] -- Found rmw_implementation_cmake: 6.1.4 (/opt/ros/humble/share/rmw_implementation_cmake/cmake)
+[2.294s] -- Found rmw_fastrtps_cpp: 6.2.10 (/opt/ros/humble/share/rmw_fastrtps_cpp/cmake)
+[2.988s] -- Found OpenSSL: /usr/lib/x86_64-linux-gnu/libcrypto.so (found version "3.0.2")  
+[3.691s] -- Found FastRTPS: /opt/ros/humble/include  
+[5.007s] -- Using RMW implementation 'rmw_fastrtps_cpp' as default
+[5.024s] -- Looking for pthread.h
+[5.123s] -- Looking for pthread.h - found
+[5.123s] -- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+[5.220s] -- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Success
+[5.221s] -- Found Threads: TRUE  
+[5.416s] -- Found rclcpp_components: 16.0.21 (/opt/ros/humble/share/rclcpp_components/cmake)
+[5.481s] -- Found geometry_msgs: 4.9.2 (/opt/ros/humble/share/geometry_msgs/cmake)
+[5.512s] -- Found nav_msgs: 4.9.2 (/opt/ros/humble/share/nav_msgs/cmake)
+[5.549s] -- Found sensor_msgs: 4.9.2 (/opt/ros/humble/share/sensor_msgs/cmake)
+[5.583s] -- Found std_srvs: 4.9.2 (/opt/ros/humble/share/std_srvs/cmake)
+[5.685s] -- Found visualization_msgs: 4.9.2 (/opt/ros/humble/share/visualization_msgs/cmake)
+[5.751s] -- Found pcl_ros: 2.4.5 (/opt/ros/humble/share/pcl_ros/cmake)
+[5.837s] -- Checking for module 'eigen3'
+[5.846s] --   Found eigen3, version 3.4.0
+[5.875s] -- Found Eigen: /usr/include/eigen3 (Required is at least version "3.1") 
+[5.875s] -- Eigen found (include: /usr/include/eigen3, version: 3.4.0)
+[6.520s] -- Checking for module 'flann'
+[6.536s] --   Found flann, version 1.9.1
+[6.763s] -- Found FLANN: /usr/lib/x86_64-linux-gnu/libflann_cpp.so  
+[6.763s] -- FLANN found (include: /usr/include, lib: /usr/lib/x86_64-linux-gnu/libflann_cpp.so)
+[9.890s] -- Checking for module 'libusb-1.0'
+[9.901s] --   Found libusb-1.0, version 1.0.25
+[9.967s] -- Found libusb: /usr/lib/x86_64-linux-gnu/libusb-1.0.so  
+[9.968s] -- OpenNI found (version: 1.5.4.0, include: /usr/include/ni, lib: /usr/lib/libOpenNI.so;libusb::libusb)
+[10.080s] -- OpenNI2 found (version: 2.2.0.33, include: /usr/include/openni2, lib: /usr/lib/x86_64-linux-gnu/libOpenNI2.so;libusb::libusb)
+[11.079s] -- Eigen found (include: /usr/include/eigen3, version: 3.4.0)
+[11.085s] -- OpenNI found (version: 1.5.4.0, include: /usr/include/ni, lib: /usr/lib/libOpenNI.so;libusb::libusb)
+[11.092s] -- OpenNI2 found (version: 2.2.0.33, include: /usr/include/openni2, lib: /usr/lib/x86_64-linux-gnu/libOpenNI2.so;libusb::libusb)
+[12.136s] -- Found Qhull version 8.0.2
+[13.177s] -- OpenNI found (version: 1.5.4.0, include: /usr/include/ni, lib: /usr/lib/libOpenNI.so;libusb::libusb)
+[14.354s] -- Found PCL_COMMON: /usr/lib/x86_64-linux-gnu/libpcl_common.so  
+[14.355s] -- Found PCL_KDTREE: /usr/lib/x86_64-linux-gnu/libpcl_kdtree.so  
+[14.356s] -- Found PCL_OCTREE: /usr/lib/x86_64-linux-gnu/libpcl_octree.so  
+[14.358s] -- Found PCL_SEARCH: /usr/lib/x86_64-linux-gnu/libpcl_search.so  
+[14.360s] -- Found PCL_SAMPLE_CONSENSUS: /usr/lib/x86_64-linux-gnu/libpcl_sample_consensus.so  
+[14.362s] -- Found PCL_FILTERS: /usr/lib/x86_64-linux-gnu/libpcl_filters.so  
+[14.363s] -- Found PCL_2D: /usr/include/pcl-1.12  
+[14.363s] -- Found PCL_GEOMETRY: /usr/include/pcl-1.12  
+[14.365s] -- Found PCL_IO: /usr/lib/x86_64-linux-gnu/libpcl_io.so  
+[14.366s] -- Found PCL_FEATURES: /usr/lib/x86_64-linux-gnu/libpcl_features.so  
+[14.368s] -- Found PCL_ML: /usr/lib/x86_64-linux-gnu/libpcl_ml.so  
+[14.370s] -- Found PCL_SEGMENTATION: /usr/lib/x86_64-linux-gnu/libpcl_segmentation.so  
+[14.372s] -- Found PCL_VISUALIZATION: /usr/lib/x86_64-linux-gnu/libpcl_visualization.so  
+[14.376s] -- Found PCL_SURFACE: /usr/lib/x86_64-linux-gnu/libpcl_surface.so  
+[14.379s] -- Found PCL_REGISTRATION: /usr/lib/x86_64-linux-gnu/libpcl_registration.so  
+[14.380s] -- Found PCL_KEYPOINTS: /usr/lib/x86_64-linux-gnu/libpcl_keypoints.so  
+[14.382s] -- Found PCL_TRACKING: /usr/lib/x86_64-linux-gnu/libpcl_tracking.so  
+[14.383s] -- Found PCL_RECOGNITION: /usr/lib/x86_64-linux-gnu/libpcl_recognition.so  
+[14.384s] -- Found PCL_STEREO: /usr/lib/x86_64-linux-gnu/libpcl_stereo.so  
+[14.385s] -- Found PCL_APPS: /usr/lib/x86_64-linux-gnu/libpcl_apps.so  
+[14.386s] -- Found PCL_IN_HAND_SCANNER: /usr/include/pcl-1.12  
+[14.387s] -- Found PCL_MODELER: /usr/include/pcl-1.12  
+[14.387s] -- Found PCL_POINT_CLOUD_EDITOR: /usr/include/pcl-1.12  
+[14.388s] -- Found PCL_OUTOFCORE: /usr/lib/x86_64-linux-gnu/libpcl_outofcore.so  
+[14.390s] -- Found PCL_PEOPLE: /usr/lib/x86_64-linux-gnu/libpcl_people.so  
+[14.477s] -- Found eigen3_cmake_module: 0.1.1 (/opt/ros/humble/share/eigen3_cmake_module/cmake)
+[14.480s] -- Found Eigen3: TRUE (found version "3.4.0") 
+[14.480s] -- Ensuring Eigen3 include directory is part of orocos-kdl CMake target
+[14.627s] -- Found livox_ros_driver2: 1.0.0 (/home/rajesh/proc_dem_creation/ws/install/livox_ros_driver2/share/livox_ros_driver2/cmake)
+[14.653s] -- Found rosidl_default_generators: 1.2.1 (/opt/ros/humble/share/rosidl_default_generators/cmake)
+[14.674s] CMake Warning (dev) at CMakeLists.txt:81 (find_package):
+[14.674s]   Policy CMP0074 is not set: find_package uses <PackageName>_ROOT variables.
+[14.674s]   Run "cmake --help-policy CMP0074" for policy details.  Use the cmake_policy
+[14.674s]   command to set the policy and suppress this warning.
+[14.674s] 
+[14.674s]   CMake variable PCL_ROOT is set to:
+[14.674s] 
+[14.674s]     /usr
+[14.674s] 
+[14.674s]   For compatibility, CMake is ignoring the variable.
+[14.674s] This warning is for project developers.  Use -Wno-dev to suppress it.
+[14.674s] 
+[14.680s] Eigen:/usr/include/eigen3
+[14.680s] -- PCL: /usr/include/pcl-1.12
+[14.961s] -- Found ament_cmake_ros: 0.10.1 (/opt/ros/humble/share/ament_cmake_ros/cmake)
+[15.267s] -- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+[15.371s] -- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+[15.456s] -- Found PythonInterp: /usr/bin/python3 (found suitable version "3.10.12", minimum required is "3.6") 
+[15.464s] -- Found python_cmake_module: 0.10.0 (/opt/ros/humble/share/python_cmake_module/cmake)
+[15.485s] -- Found PythonLibs: /usr/lib/x86_64-linux-gnu/libpython3.10.so (found suitable version "3.10.12", minimum required is "3.5") 
+[15.485s] -- Using PYTHON_EXECUTABLE: /usr/bin/python3
+[15.485s] -- Using PYTHON_INCLUDE_DIRS: /usr/include/python3.10
+[15.485s] -- Using PYTHON_LIBRARIES: /usr/lib/x86_64-linux-gnu/libpython3.10.so
+[15.505s] -- Found PythonExtra: .so  
+[15.651s] -- Configuring done
+[15.658s] CMake Error at CMakeLists.txt:95 (add_executable):
+[15.658s]   Cannot find source file:
+[15.658s] 
+[15.658s]     include/ikd-Tree/ikd_Tree.cpp
+[15.658s] 
+[15.658s]   Tried extensions .c .C .c++ .cc .cpp .cxx .cu .mpp .m .M .mm .ixx .cppm .h
+[15.659s]   .hh .h++ .hm .hpp .hxx .in .txx .f .F .for .f77 .f90 .f95 .f03 .hip .ispc
+[15.659s] 
+[15.659s] 
+[15.664s] CMake Error at CMakeLists.txt:95 (add_executable):
+[15.664s]   No SOURCES given to target: fastlio_mapping
+[15.664s] 
+[15.664s] 
+[15.664s] CMake Generate step failed.  Build files cannot be regenerated correctly.
+[15.686s] Invoked command in '/home/rajesh/proc_dem_creation/ws/build/fast_lio' returned '1': AMENT_PREFIX_PATH=/home/rajesh/proc_dem_creation/ws/install/livox_ros_driver2:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/rajesh/proc_dem_creation/ws/install/livox_ros_driver2:/opt/ros/humble LD_LIBRARY_PATH=/home/rajesh/proc_dem_creation/ws/install/livox_ros_driver2/lib:${LD_LIBRARY_PATH} PYTHONPATH=/home/rajesh/proc_dem_creation/ws/install/livox_ros_driver2/local/lib/python3.10/dist-packages:${PYTHONPATH} /usr/bin/cmake /home/rajesh/proc_dem_creation/ws/src/FAST_LIO -DROS_EDITION=ROS2 -DDISTRO_ROS=humble -DCMAKE_INSTALL_PREFIX=/home/rajesh/proc_dem_creation/ws/install/fast_lio

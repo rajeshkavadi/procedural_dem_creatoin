@@ -1,0 +1,8 @@
+[console_scripts]
+bag_convert = dem_replay.bag_convert:main
+imu_relay = dem_replay.imu_relay_node:main
+inspect_bag = dem_replay.inspect_bag:main
+record_odom = dem_replay.record_odom:main
+replay = dem_replay.replay_node:main
+stream_monitor = dem_replay.stream_monitor_node:main
+

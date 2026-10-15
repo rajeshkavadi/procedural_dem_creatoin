@@ -1,0 +1,22 @@
+running develop
+running egg_info
+creating dem_viz.egg-info
+writing dem_viz.egg-info/PKG-INFO
+writing dependency_links to dem_viz.egg-info/dependency_links.txt
+writing entry points to dem_viz.egg-info/entry_points.txt
+writing requirements to dem_viz.egg-info/requires.txt
+writing top-level names to dem_viz.egg-info/top_level.txt
+writing manifest file 'dem_viz.egg-info/SOURCES.txt'
+reading manifest file 'dem_viz.egg-info/SOURCES.txt'
+writing manifest file 'dem_viz.egg-info/SOURCES.txt'
+running build_ext
+Creating /home/rajesh/proc_dem_creation/ws/install/dem_viz/lib/python3.10/site-packages/dem-viz.egg-link (link to .)
+Installing heatmap script to /home/rajesh/proc_dem_creation/ws/install/dem_viz/lib/dem_viz
+
+Installed /home/rajesh/proc_dem_creation/ws/build/dem_viz
+running symlink_data
+creating /home/rajesh/proc_dem_creation/ws/install/dem_viz/share/ament_index
+creating /home/rajesh/proc_dem_creation/ws/install/dem_viz/share/ament_index/resource_index
+creating /home/rajesh/proc_dem_creation/ws/install/dem_viz/share/ament_index/resource_index/packages
+symbolically linking /home/rajesh/proc_dem_creation/ws/build/dem_viz/resource/dem_viz -> /home/rajesh/proc_dem_creation/ws/install/dem_viz/share/ament_index/resource_index/packages
+symbolically linking /home/rajesh/proc_dem_creation/ws/build/dem_viz/package.xml -> /home/rajesh/proc_dem_creation/ws/install/dem_viz/share/dem_viz

@@ -1,0 +1,85 @@
+[0.000000] (-) TimerEvent: {}
+[0.000055] (-) JobUnselected: {'identifier': 'dem_bringup'}
+[0.000076] (-) JobUnselected: {'identifier': 'dem_viz'}
+[0.000089] (-) JobUnselected: {'identifier': 'fast_lio'}
+[0.000100] (-) JobUnselected: {'identifier': 'livox_ros_driver2'}
+[0.000113] (dem_mapping) JobQueued: {'identifier': 'dem_mapping', 'dependencies': OrderedDict()}
+[0.000127] (dem_replay) JobQueued: {'identifier': 'dem_replay', 'dependencies': OrderedDict()}
+[0.000139] (dem_mapping) JobStarted: {'identifier': 'dem_mapping'}
+[0.015646] (dem_replay) JobStarted: {'identifier': 'dem_replay'}
+[0.099359] (-) TimerEvent: {}
+[0.199704] (-) TimerEvent: {}
+[0.299890] (-) TimerEvent: {}
+[0.400140] (-) TimerEvent: {}
+[0.500674] (-) TimerEvent: {}
+[0.600900] (-) TimerEvent: {}
+[0.701096] (-) TimerEvent: {}
+[0.804141] (-) TimerEvent: {}
+[0.904633] (-) TimerEvent: {}
+[1.004959] (-) TimerEvent: {}
+[1.105226] (-) TimerEvent: {}
+[1.205822] (-) TimerEvent: {}
+[1.306351] (-) TimerEvent: {}
+[1.409435] (-) TimerEvent: {}
+[1.509893] (-) TimerEvent: {}
+[1.611026] (-) TimerEvent: {}
+[1.711167] (-) TimerEvent: {}
+[1.815979] (-) TimerEvent: {}
+[1.916243] (-) TimerEvent: {}
+[2.016508] (-) TimerEvent: {}
+[2.117965] (-) TimerEvent: {}
+[2.218343] (-) TimerEvent: {}
+[2.318649] (-) TimerEvent: {}
+[2.340198] (dem_replay) Command: {'cmd': ['/usr/bin/python3', '-W', 'ignore:setup.py install is deprecated', '-W', 'ignore:easy_install command is deprecated', 'setup.py', 'develop', '--editable', '--build-directory', '/home/rajesh/proc_dem_creation/ws/build/dem_replay/build', '--no-deps', 'symlink_data'], 'cwd': '/home/rajesh/proc_dem_creation/ws/build/dem_replay', 'env': OrderedDict([('LESSOPEN', '| /usr/bin/lesspipe %s'), ('AI_AGENT', 'opencode'), ('OPENCODE_SESSION_ID', 'ses_ec1da1cc2ffeV5pu2pIuZ1AINB'), ('USER', 'rajesh'), ('AGENT', '1'), ('SHLVL', '1'), ('LD_LIBRARY_PATH', '/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/x86_64-linux-gnu:/opt/ros/humble/lib'), ('WT_PROFILE_ID', '{9a267d21-b6f7-58d2-949f-70839323e092}'), ('HOME', '/home/rajesh'), ('OLDPWD', '/home/rajesh/proc_dem_creation'), ('ROS_PYTHON_VERSION', '3'), ('DBUS_SESSION_BUS_ADDRESS', 'unix:path=/run/user/1000/bus'), ('WSL_DISTRO_NAME', 'Ubuntu-22.04'), ('WAYLAND_DISPLAY', 'wayland-0'), ('ROS_DISTRO', 'humble'), ('LOGNAME', 'rajesh'), ('NAME', 'DESKTOP-2096VHA'), ('WSL_INTEROP', '/run/WSL/30739_interop'), ('PULSE_SERVER', 'unix:/mnt/wslg/PulseServer'), ('_', '/usr/bin/colcon'), ('ROS_VERSION', '2'), ('OPENCODE_TERMINAL', '1'), ('TERM', 'xterm-256color'), ('ROS_LOCALHOST_ONLY', '0'), ('OPENCODE', '1'), ('PATH', '/opt/ros/humble/bin:/home/rajesh/.local/bin:/home/rajesh/.opencode/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/lib/wsl/lib:/usr/lib/linux-tools/6.18.54.1-microsoft-standard-WSL2/bin:/mnt/c/WINDOWS/system32:/mnt/c/WINDOWS:/mnt/c/WINDOWS/System32/Wbem:/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/:/mnt/c/WINDOWS/System32/OpenSSH/:/mnt/c/Program Files/NVIDIA Corporation/SDK Manager:/mnt/c/Program Files/usbipd-win/:/mnt/c/Program Files/WSL/:/mnt/c/Users/admin/AppData/Local/Microsoft/WindowsApps:/mnt/c/Users/admin/AppData/Local/Programs/Microsoft VS Code/bin:/snap/bin'), ('WT_SESSION', '5d422889-5bc6-4f00-a42a-2e2823cbbc3a'), ('XDG_RUNTIME_DIR', '/run/user/1000'), ('DISPLAY', ':0'), ('LANG', 'C.UTF-8'), ('PERF_EXEC_PATH', '/usr/lib/linux-tools/6.18.54.1-microsoft-standard-WSL2/libexec/perf-core'), ('LS_COLORS', 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'), ('AMENT_PREFIX_PATH', '/opt/ros/humble'), ('SHELL', '/bin/bash'), ('LESSCLOSE', '/usr/bin/lesspipe %s %s'), ('PWD', '/home/rajesh/proc_dem_creation/ws/build/dem_replay'), ('XDG_DATA_DIRS', '/usr/local/share:/usr/share:/var/lib/snapd/desktop'), ('PYTHONPATH', '/home/rajesh/proc_dem_creation/ws/build/dem_replay/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/rajesh/proc_dem_creation/ws/install/dem_replay/lib/python3.10/site-packages:/opt/ros/humble/lib/python3.10/site-packages:/opt/ros/humble/local/lib/python3.10/dist-packages'), ('COLCON', '1'), ('WSL2_GUI_APPS_ENABLED', '1'), ('HOSTTYPE', 'x86_64'), ('WSLENV', 'WT_SESSION:WT_PROFILE_ID:')]), 'shell': False}
+[2.380637] (dem_mapping) Command: {'cmd': ['/usr/bin/python3', '-W', 'ignore:setup.py install is deprecated', '-W', 'ignore:easy_install command is deprecated', 'setup.py', 'develop', '--editable', '--build-directory', '/home/rajesh/proc_dem_creation/ws/build/dem_mapping/build', '--no-deps', 'symlink_data'], 'cwd': '/home/rajesh/proc_dem_creation/ws/build/dem_mapping', 'env': OrderedDict([('LESSOPEN', '| /usr/bin/lesspipe %s'), ('AI_AGENT', 'opencode'), ('OPENCODE_SESSION_ID', 'ses_ec1da1cc2ffeV5pu2pIuZ1AINB'), ('USER', 'rajesh'), ('AGENT', '1'), ('SHLVL', '1'), ('LD_LIBRARY_PATH', '/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/x86_64-linux-gnu:/opt/ros/humble/lib'), ('WT_PROFILE_ID', '{9a267d21-b6f7-58d2-949f-70839323e092}'), ('HOME', '/home/rajesh'), ('OLDPWD', '/home/rajesh/proc_dem_creation'), ('ROS_PYTHON_VERSION', '3'), ('DBUS_SESSION_BUS_ADDRESS', 'unix:path=/run/user/1000/bus'), ('WSL_DISTRO_NAME', 'Ubuntu-22.04'), ('WAYLAND_DISPLAY', 'wayland-0'), ('ROS_DISTRO', 'humble'), ('LOGNAME', 'rajesh'), ('NAME', 'DESKTOP-2096VHA'), ('WSL_INTEROP', '/run/WSL/30739_interop'), ('PULSE_SERVER', 'unix:/mnt/wslg/PulseServer'), ('_', '/usr/bin/colcon'), ('ROS_VERSION', '2'), ('OPENCODE_TERMINAL', '1'), ('TERM', 'xterm-256color'), ('ROS_LOCALHOST_ONLY', '0'), ('OPENCODE', '1'), ('PATH', '/opt/ros/humble/bin:/home/rajesh/.local/bin:/home/rajesh/.opencode/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/lib/wsl/lib:/usr/lib/linux-tools/6.18.54.1-microsoft-standard-WSL2/bin:/mnt/c/WINDOWS/system32:/mnt/c/WINDOWS:/mnt/c/WINDOWS/System32/Wbem:/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/:/mnt/c/WINDOWS/System32/OpenSSH/:/mnt/c/Program Files/NVIDIA Corporation/SDK Manager:/mnt/c/Program Files/usbipd-win/:/mnt/c/Program Files/WSL/:/mnt/c/Users/admin/AppData/Local/Microsoft/WindowsApps:/mnt/c/Users/admin/AppData/Local/Programs/Microsoft VS Code/bin:/snap/bin'), ('WT_SESSION', '5d422889-5bc6-4f00-a42a-2e2823cbbc3a'), ('XDG_RUNTIME_DIR', '/run/user/1000'), ('DISPLAY', ':0'), ('LANG', 'C.UTF-8'), ('PERF_EXEC_PATH', '/usr/lib/linux-tools/6.18.54.1-microsoft-standard-WSL2/libexec/perf-core'), ('LS_COLORS', 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'), ('AMENT_PREFIX_PATH', '/opt/ros/humble'), ('SHELL', '/bin/bash'), ('LESSCLOSE', '/usr/bin/lesspipe %s %s'), ('PWD', '/home/rajesh/proc_dem_creation/ws/build/dem_mapping'), ('XDG_DATA_DIRS', '/usr/local/share:/usr/share:/var/lib/snapd/desktop'), ('PYTHONPATH', '/home/rajesh/proc_dem_creation/ws/build/dem_mapping/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/rajesh/proc_dem_creation/ws/install/dem_mapping/lib/python3.10/site-packages:/opt/ros/humble/lib/python3.10/site-packages:/opt/ros/humble/local/lib/python3.10/dist-packages'), ('COLCON', '1'), ('WSL2_GUI_APPS_ENABLED', '1'), ('HOSTTYPE', 'x86_64'), ('WSLENV', 'WT_SESSION:WT_PROFILE_ID:')]), 'shell': False}
+[2.419017] (-) TimerEvent: {}
+[2.519782] (-) TimerEvent: {}
+[2.620021] (-) TimerEvent: {}
+[2.720614] (-) TimerEvent: {}
+[2.765920] (dem_replay) StdoutLine: {'line': b'running develop\n'}
+[2.807322] (dem_mapping) StdoutLine: {'line': b'running develop\n'}
+[2.820843] (-) TimerEvent: {}
+[2.921129] (-) TimerEvent: {}
+[3.021378] (-) TimerEvent: {}
+[3.033942] (dem_replay) StdoutLine: {'line': b'running egg_info\n'}
+[3.034132] (dem_replay) StdoutLine: {'line': b'writing dem_replay.egg-info/PKG-INFO\n'}
+[3.034242] (dem_replay) StdoutLine: {'line': b'writing dependency_links to dem_replay.egg-info/dependency_links.txt\n'}
+[3.034341] (dem_replay) StdoutLine: {'line': b'writing entry points to dem_replay.egg-info/entry_points.txt\n'}
+[3.034395] (dem_replay) StdoutLine: {'line': b'writing requirements to dem_replay.egg-info/requires.txt\n'}
+[3.034442] (dem_replay) StdoutLine: {'line': b'writing top-level names to dem_replay.egg-info/top_level.txt\n'}
+[3.041874] (dem_replay) StdoutLine: {'line': b"reading manifest file 'dem_replay.egg-info/SOURCES.txt'\n"}
+[3.042505] (dem_replay) StdoutLine: {'line': b"writing manifest file 'dem_replay.egg-info/SOURCES.txt'\n"}
+[3.048972] (dem_replay) StdoutLine: {'line': b'running build_ext\n'}
+[3.049283] (dem_replay) StdoutLine: {'line': b'Creating /home/rajesh/proc_dem_creation/ws/install/dem_replay/lib/python3.10/site-packages/dem-replay.egg-link (link to .)\n'}
+[3.050424] (dem_replay) StdoutLine: {'line': b'Installing bag_convert script to /home/rajesh/proc_dem_creation/ws/install/dem_replay/lib/dem_replay\n'}
+[3.050747] (dem_replay) StdoutLine: {'line': b'Installing imu_relay script to /home/rajesh/proc_dem_creation/ws/install/dem_replay/lib/dem_replay\n'}
+[3.051363] (dem_replay) StdoutLine: {'line': b'Installing inspect_bag script to /home/rajesh/proc_dem_creation/ws/install/dem_replay/lib/dem_replay\n'}
+[3.051595] (dem_replay) StdoutLine: {'line': b'Installing record_odom script to /home/rajesh/proc_dem_creation/ws/install/dem_replay/lib/dem_replay\n'}
+[3.051805] (dem_replay) StdoutLine: {'line': b'Installing replay script to /home/rajesh/proc_dem_creation/ws/install/dem_replay/lib/dem_replay\n'}
+[3.051965] (dem_replay) StdoutLine: {'line': b'Installing stream_monitor script to /home/rajesh/proc_dem_creation/ws/install/dem_replay/lib/dem_replay\n'}
+[3.052334] (dem_replay) StdoutLine: {'line': b'\n'}
+[3.052399] (dem_replay) StdoutLine: {'line': b'Installed /home/rajesh/proc_dem_creation/ws/build/dem_replay\n'}
+[3.052448] (dem_replay) StdoutLine: {'line': b'running symlink_data\n'}
+[3.081497] (dem_mapping) StdoutLine: {'line': b'running egg_info\n'}
+[3.082701] (dem_mapping) StdoutLine: {'line': b'writing dem_mapping.egg-info/PKG-INFO\n'}
+[3.082972] (dem_mapping) StdoutLine: {'line': b'writing dependency_links to dem_mapping.egg-info/dependency_links.txt\n'}
+[3.083209] (dem_mapping) StdoutLine: {'line': b'writing entry points to dem_mapping.egg-info/entry_points.txt\n'}
+[3.083635] (dem_mapping) StdoutLine: {'line': b'writing requirements to dem_mapping.egg-info/requires.txt\n'}
+[3.083736] (dem_mapping) StdoutLine: {'line': b'writing top-level names to dem_mapping.egg-info/top_level.txt\n'}
+[3.086695] (dem_mapping) StdoutLine: {'line': b"reading manifest file 'dem_mapping.egg-info/SOURCES.txt'\n"}
+[3.090267] (dem_mapping) StdoutLine: {'line': b"writing manifest file 'dem_mapping.egg-info/SOURCES.txt'\n"}
+[3.096929] (dem_mapping) StdoutLine: {'line': b'running build_ext\n'}
+[3.097952] (dem_mapping) StdoutLine: {'line': b'Creating /home/rajesh/proc_dem_creation/ws/install/dem_mapping/lib/python3.10/site-packages/dem-mapping.egg-link (link to .)\n'}
+[3.099344] (dem_mapping) StdoutLine: {'line': b'Installing dem_node script to /home/rajesh/proc_dem_creation/ws/install/dem_mapping/lib/dem_mapping\n'}
+[3.099853] (dem_mapping) StdoutLine: {'line': b'Installing georef_export script to /home/rajesh/proc_dem_creation/ws/install/dem_mapping/lib/dem_mapping\n'}
+[3.099963] (dem_mapping) StdoutLine: {'line': b'Installing gnss_align script to /home/rajesh/proc_dem_creation/ws/install/dem_mapping/lib/dem_mapping\n'}
+[3.100033] (dem_mapping) StdoutLine: {'line': b'\n'}
+[3.100093] (dem_mapping) StdoutLine: {'line': b'Installed /home/rajesh/proc_dem_creation/ws/build/dem_mapping\n'}
+[3.100141] (dem_mapping) StdoutLine: {'line': b'running symlink_data\n'}
+[3.121594] (-) TimerEvent: {}
+[3.133569] (dem_replay) CommandEnded: {'returncode': 0}
+[3.201464] (dem_replay) JobEnded: {'identifier': 'dem_replay', 'rc': 0}
+[3.204915] (dem_mapping) CommandEnded: {'returncode': 0}
+[3.225045] (-) TimerEvent: {}
+[3.231170] (dem_mapping) JobEnded: {'identifier': 'dem_mapping', 'rc': 0}
+[3.232250] (-) EventReactorShutdown: {}

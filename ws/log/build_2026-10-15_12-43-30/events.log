@@ -1,0 +1,348 @@
+[0.000000] (-) TimerEvent: {}
+[0.000318] (-) JobUnselected: {'identifier': 'dem_mapping'}
+[0.000383] (-) JobUnselected: {'identifier': 'dem_replay'}
+[0.000440] (-) JobUnselected: {'identifier': 'dem_viz'}
+[0.000473] (-) JobUnselected: {'identifier': 'livox_ros_driver2'}
+[0.000596] (fast_lio) JobQueued: {'identifier': 'fast_lio', 'dependencies': OrderedDict([('livox_ros_driver2', '/home/rajesh/proc_dem_creation/ws/install/livox_ros_driver2')])}
+[0.000689] (dem_bringup) JobQueued: {'identifier': 'dem_bringup', 'dependencies': OrderedDict([('dem_mapping', '/home/rajesh/proc_dem_creation/ws/install/dem_mapping'), ('dem_replay', '/home/rajesh/proc_dem_creation/ws/install/dem_replay'), ('dem_viz', '/home/rajesh/proc_dem_creation/ws/install/dem_viz'), ('livox_ros_driver2', '/home/rajesh/proc_dem_creation/ws/install/livox_ros_driver2'), ('fast_lio', '/home/rajesh/proc_dem_creation/ws/install/fast_lio')])}
+[0.001700] (fast_lio) JobStarted: {'identifier': 'fast_lio'}
+[0.099725] (-) TimerEvent: {}
+[0.111056] (fast_lio) JobProgress: {'identifier': 'fast_lio', 'progress': 'cmake'}
+[0.116847] (fast_lio) Command: {'cmd': ['/usr/bin/cmake', '/home/rajesh/proc_dem_creation/ws/src/FAST_LIO', '-DAMENT_CMAKE_SYMLINK_INSTALL=1', '-DCMAKE_INSTALL_PREFIX=/home/rajesh/proc_dem_creation/ws/install/fast_lio'], 'cwd': '/home/rajesh/proc_dem_creation/ws/build/fast_lio', 'env': OrderedDict([('LESSOPEN', '| /usr/bin/lesspipe %s'), ('AI_AGENT', 'opencode'), ('OPENCODE_SESSION_ID', 'ses_ec1da1cc2ffeV5pu2pIuZ1AINB'), ('USER', 'rajesh'), ('AGENT', '1'), ('SHLVL', '2'), ('LD_LIBRARY_PATH', '/home/rajesh/proc_dem_creation/ws/install/livox_ros_driver2/lib:/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/x86_64-linux-gnu:/opt/ros/humble/lib'), ('WT_PROFILE_ID', '{9a267d21-b6f7-58d2-949f-70839323e092}'), ('HOME', '/home/rajesh'), ('OLDPWD', '/home/rajesh/proc_dem_creation'), ('ROS_PYTHON_VERSION', '3'), ('DBUS_SESSION_BUS_ADDRESS', 'unix:path=/run/user/1000/bus'), ('WSL_DISTRO_NAME', 'Ubuntu-22.04'), ('WAYLAND_DISPLAY', 'wayland-0'), ('ROS_DISTRO', 'humble'), ('LOGNAME', 'rajesh'), ('NAME', 'DESKTOP-2096VHA'), ('WSL_INTEROP', '/run/WSL/30739_interop'), ('PULSE_SERVER', 'unix:/mnt/wslg/PulseServer'), ('_', '/usr/bin/colcon'), ('ROS_VERSION', '2'), ('OPENCODE_TERMINAL', '1'), ('TERM', 'xterm-256color'), ('ROS_LOCALHOST_ONLY', '0'), ('OPENCODE', '1'), ('PATH', '/opt/ros/humble/bin:/home/rajesh/.local/bin:/home/rajesh/.opencode/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/lib/wsl/lib:/usr/lib/linux-tools/6.18.54.1-microsoft-standard-WSL2/bin:/mnt/c/WINDOWS/system32:/mnt/c/WINDOWS:/mnt/c/WINDOWS/System32/Wbem:/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/:/mnt/c/WINDOWS/System32/OpenSSH/:/mnt/c/Program Files/NVIDIA Corporation/SDK Manager:/mnt/c/Program Files/usbipd-win/:/mnt/c/Program Files/WSL/:/mnt/c/Users/admin/AppData/Local/Microsoft/WindowsApps:/mnt/c/Users/admin/AppData/Local/Programs/Microsoft VS Code/bin:/snap/bin'), ('WT_SESSION', '5d422889-5bc6-4f00-a42a-2e2823cbbc3a'), ('XDG_RUNTIME_DIR', '/run/user/1000'), ('DISPLAY', ':0'), ('LANG', 'C.UTF-8'), ('PERF_EXEC_PATH', '/usr/lib/linux-tools/6.18.54.1-microsoft-standard-WSL2/libexec/perf-core'), ('LS_COLORS', 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'), ('AMENT_PREFIX_PATH', '/home/rajesh/proc_dem_creation/ws/install/livox_ros_driver2:/opt/ros/humble'), ('SHELL', '/bin/bash'), ('LESSCLOSE', '/usr/bin/lesspipe %s %s'), ('PWD', '/home/rajesh/proc_dem_creation/ws/build/fast_lio'), ('XDG_DATA_DIRS', '/usr/local/share:/usr/share:/var/lib/snapd/desktop'), ('PYTHONPATH', '/home/rajesh/proc_dem_creation/ws/install/livox_ros_driver2/local/lib/python3.10/dist-packages:/opt/ros/humble/lib/python3.10/site-packages:/opt/ros/humble/local/lib/python3.10/dist-packages'), ('COLCON', '1'), ('WSL2_GUI_APPS_ENABLED', '1'), ('HOSTTYPE', 'x86_64'), ('WSLENV', 'WT_SESSION:WT_PROFILE_ID:'), ('CMAKE_PREFIX_PATH', '/home/rajesh/proc_dem_creation/ws/install/livox_ros_driver2:/opt/ros/humble')]), 'shell': False}
+[0.199968] (-) TimerEvent: {}
+[0.293155] (fast_lio) StderrLine: {'line': b'Current CPU archtecture: x86_64\n'}
+[0.303725] (-) TimerEvent: {}
+[0.307126] (fast_lio) StderrLine: {'line': b'Processer number:  8\n'}
+[0.307311] (fast_lio) StderrLine: {'line': b'core for MP: 3\n'}
+[0.327680] (fast_lio) StdoutLine: {'line': b'-- Found PythonLibs: /usr/lib/x86_64-linux-gnu/libpython3.10.so (found version "3.10.12") \n'}
+[0.379424] (fast_lio) StdoutLine: {'line': b'-- Found ament_cmake: 1.3.14 (/opt/ros/humble/share/ament_cmake/cmake)\n'}
+[0.403742] (-) TimerEvent: {}
+[0.504208] (-) TimerEvent: {}
+[0.604478] (-) TimerEvent: {}
+[0.663125] (fast_lio) StdoutLine: {'line': b'-- Override CMake install command with custom implementation using symlinks instead of copying resources\n'}
+[0.704619] (-) TimerEvent: {}
+[0.740453] (fast_lio) StdoutLine: {'line': b'-- Found rclcpp: 16.0.21 (/opt/ros/humble/share/rclcpp/cmake)\n'}
+[0.804831] (-) TimerEvent: {}
+[0.905822] (-) TimerEvent: {}
+[1.006551] (-) TimerEvent: {}
+[1.017881] (fast_lio) StdoutLine: {'line': b'-- Found rosidl_generator_c: 3.1.9 (/opt/ros/humble/share/rosidl_generator_c/cmake)\n'}
+[1.027010] (fast_lio) StdoutLine: {'line': b'-- Found rosidl_adapter: 3.1.9 (/opt/ros/humble/share/rosidl_adapter/cmake)\n'}
+[1.055319] (fast_lio) StdoutLine: {'line': b'-- Found rosidl_generator_cpp: 3.1.9 (/opt/ros/humble/share/rosidl_generator_cpp/cmake)\n'}
+[1.095720] (fast_lio) StdoutLine: {'line': b'-- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c\n'}
+[1.106703] (-) TimerEvent: {}
+[1.136895] (fast_lio) StdoutLine: {'line': b'-- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp\n'}
+[1.207252] (-) TimerEvent: {}
+[1.259941] (fast_lio) StdoutLine: {'line': b'-- Found rmw_implementation_cmake: 6.1.4 (/opt/ros/humble/share/rmw_implementation_cmake/cmake)\n'}
+[1.269618] (fast_lio) StdoutLine: {'line': b'-- Found rmw_fastrtps_cpp: 6.2.10 (/opt/ros/humble/share/rmw_fastrtps_cpp/cmake)\n'}
+[1.307531] (-) TimerEvent: {}
+[1.408334] (-) TimerEvent: {}
+[1.509357] (-) TimerEvent: {}
+[1.610880] (-) TimerEvent: {}
+[1.711162] (-) TimerEvent: {}
+[1.811522] (-) TimerEvent: {}
+[1.911910] (-) TimerEvent: {}
+[2.012188] (-) TimerEvent: {}
+[2.112483] (-) TimerEvent: {}
+[2.212894] (-) TimerEvent: {}
+[2.316953] (-) TimerEvent: {}
+[2.417531] (-) TimerEvent: {}
+[2.518007] (-) TimerEvent: {}
+[2.618431] (-) TimerEvent: {}
+[2.718922] (-) TimerEvent: {}
+[2.819344] (-) TimerEvent: {}
+[2.920081] (-) TimerEvent: {}
+[3.020422] (-) TimerEvent: {}
+[3.120780] (-) TimerEvent: {}
+[3.221761] (-) TimerEvent: {}
+[3.322047] (-) TimerEvent: {}
+[3.422360] (-) TimerEvent: {}
+[3.522689] (-) TimerEvent: {}
+[3.626221] (-) TimerEvent: {}
+[3.726913] (-) TimerEvent: {}
+[3.827137] (-) TimerEvent: {}
+[3.927597] (-) TimerEvent: {}
+[4.028007] (-) TimerEvent: {}
+[4.128348] (-) TimerEvent: {}
+[4.228697] (-) TimerEvent: {}
+[4.331666] (-) TimerEvent: {}
+[4.431982] (-) TimerEvent: {}
+[4.532365] (-) TimerEvent: {}
+[4.632782] (-) TimerEvent: {}
+[4.733221] (-) TimerEvent: {}
+[4.833562] (-) TimerEvent: {}
+[4.933893] (-) TimerEvent: {}
+[5.034239] (-) TimerEvent: {}
+[5.138083] (-) TimerEvent: {}
+[5.238322] (-) TimerEvent: {}
+[5.338840] (-) TimerEvent: {}
+[5.439360] (-) TimerEvent: {}
+[5.539615] (-) TimerEvent: {}
+[5.639964] (-) TimerEvent: {}
+[5.740839] (-) TimerEvent: {}
+[5.841562] (-) TimerEvent: {}
+[5.941810] (-) TimerEvent: {}
+[6.042036] (-) TimerEvent: {}
+[6.142304] (-) TimerEvent: {}
+[6.245582] (-) TimerEvent: {}
+[6.345830] (-) TimerEvent: {}
+[6.446085] (-) TimerEvent: {}
+[6.548416] (-) TimerEvent: {}
+[6.648777] (-) TimerEvent: {}
+[6.749284] (-) TimerEvent: {}
+[6.849644] (-) TimerEvent: {}
+[6.953959] (-) TimerEvent: {}
+[7.054258] (-) TimerEvent: {}
+[7.148468] (fast_lio) StdoutLine: {'line': b"-- Using RMW implementation 'rmw_fastrtps_cpp' as default\n"}
+[7.154772] (-) TimerEvent: {}
+[7.255344] (-) TimerEvent: {}
+[7.355717] (-) TimerEvent: {}
+[7.371192] (fast_lio) StdoutLine: {'line': b'-- Found rclcpp_components: 16.0.21 (/opt/ros/humble/share/rclcpp_components/cmake)\n'}
+[7.443384] (fast_lio) StdoutLine: {'line': b'-- Found geometry_msgs: 4.9.2 (/opt/ros/humble/share/geometry_msgs/cmake)\n'}
+[7.456070] (-) TimerEvent: {}
+[7.495023] (fast_lio) StdoutLine: {'line': b'-- Found nav_msgs: 4.9.2 (/opt/ros/humble/share/nav_msgs/cmake)\n'}
+[7.542461] (fast_lio) StdoutLine: {'line': b'-- Found sensor_msgs: 4.9.2 (/opt/ros/humble/share/sensor_msgs/cmake)\n'}
+[7.556490] (-) TimerEvent: {}
+[7.591757] (fast_lio) StdoutLine: {'line': b'-- Found std_srvs: 4.9.2 (/opt/ros/humble/share/std_srvs/cmake)\n'}
+[7.628227] (fast_lio) StdoutLine: {'line': b'-- Found visualization_msgs: 4.9.2 (/opt/ros/humble/share/visualization_msgs/cmake)\n'}
+[7.656586] (-) TimerEvent: {}
+[7.688791] (fast_lio) StdoutLine: {'line': b'-- Found pcl_ros: 2.4.5 (/opt/ros/humble/share/pcl_ros/cmake)\n'}
+[7.757114] (-) TimerEvent: {}
+[7.802600] (fast_lio) StdoutLine: {'line': b'-- Eigen found (include: /usr/include/eigen3, version: 3.4.0)\n'}
+[7.857181] (-) TimerEvent: {}
+[7.958265] (-) TimerEvent: {}
+[8.060335] (-) TimerEvent: {}
+[8.160626] (-) TimerEvent: {}
+[8.264467] (-) TimerEvent: {}
+[8.364786] (-) TimerEvent: {}
+[8.465114] (-) TimerEvent: {}
+[8.565434] (-) TimerEvent: {}
+[8.669004] (-) TimerEvent: {}
+[8.769271] (-) TimerEvent: {}
+[8.872363] (-) TimerEvent: {}
+[8.973042] (-) TimerEvent: {}
+[9.073523] (-) TimerEvent: {}
+[9.174148] (-) TimerEvent: {}
+[9.274384] (-) TimerEvent: {}
+[9.374717] (-) TimerEvent: {}
+[9.475183] (-) TimerEvent: {}
+[9.552263] (fast_lio) StdoutLine: {'line': b'-- FLANN found (include: /usr/include, lib: /usr/lib/x86_64-linux-gnu/libflann_cpp.so)\n'}
+[9.575383] (-) TimerEvent: {}
+[9.675631] (-) TimerEvent: {}
+[9.776223] (-) TimerEvent: {}
+[9.876673] (-) TimerEvent: {}
+[9.976920] (-) TimerEvent: {}
+[10.077176] (-) TimerEvent: {}
+[10.177462] (-) TimerEvent: {}
+[10.277840] (-) TimerEvent: {}
+[10.378537] (-) TimerEvent: {}
+[10.478767] (-) TimerEvent: {}
+[10.579086] (-) TimerEvent: {}
+[10.679346] (-) TimerEvent: {}
+[10.779588] (-) TimerEvent: {}
+[10.879871] (-) TimerEvent: {}
+[10.980295] (-) TimerEvent: {}
+[11.080857] (-) TimerEvent: {}
+[11.181239] (-) TimerEvent: {}
+[11.281574] (-) TimerEvent: {}
+[11.381920] (-) TimerEvent: {}
+[11.482335] (-) TimerEvent: {}
+[11.582861] (-) TimerEvent: {}
+[11.683397] (-) TimerEvent: {}
+[11.785178] (-) TimerEvent: {}
+[11.885541] (-) TimerEvent: {}
+[11.986815] (-) TimerEvent: {}
+[12.087134] (-) TimerEvent: {}
+[12.187404] (-) TimerEvent: {}
+[12.288232] (-) TimerEvent: {}
+[12.389044] (-) TimerEvent: {}
+[12.490030] (-) TimerEvent: {}
+[12.590837] (-) TimerEvent: {}
+[12.693572] (-) TimerEvent: {}
+[12.793798] (-) TimerEvent: {}
+[12.894421] (-) TimerEvent: {}
+[12.994669] (-) TimerEvent: {}
+[13.094922] (-) TimerEvent: {}
+[13.195189] (-) TimerEvent: {}
+[13.296363] (-) TimerEvent: {}
+[13.396649] (-) TimerEvent: {}
+[13.496993] (-) TimerEvent: {}
+[13.597350] (-) TimerEvent: {}
+[13.698637] (-) TimerEvent: {}
+[13.798947] (-) TimerEvent: {}
+[13.899411] (-) TimerEvent: {}
+[13.999930] (-) TimerEvent: {}
+[14.100276] (-) TimerEvent: {}
+[14.202900] (-) TimerEvent: {}
+[14.281131] (fast_lio) StdoutLine: {'line': b'-- OpenNI found (version: 1.5.4.0, include: /usr/include/ni, lib: /usr/lib/libOpenNI.so;libusb::libusb)\n'}
+[14.292510] (fast_lio) StdoutLine: {'line': b'-- OpenNI2 found (version: 2.2.0.33, include: /usr/include/openni2, lib: /usr/lib/x86_64-linux-gnu/libOpenNI2.so;libusb::libusb)\n'}
+[14.303098] (-) TimerEvent: {}
+[14.403371] (-) TimerEvent: {}
+[14.504458] (-) TimerEvent: {}
+[14.605351] (-) TimerEvent: {}
+[14.706179] (-) TimerEvent: {}
+[14.806869] (-) TimerEvent: {}
+[14.908546] (-) TimerEvent: {}
+[15.011032] (-) TimerEvent: {}
+[15.111268] (-) TimerEvent: {}
+[15.211534] (-) TimerEvent: {}
+[15.313999] (-) TimerEvent: {}
+[15.414377] (-) TimerEvent: {}
+[15.514842] (-) TimerEvent: {}
+[15.615268] (-) TimerEvent: {}
+[15.715671] (-) TimerEvent: {}
+[15.818428] (-) TimerEvent: {}
+[15.918806] (-) TimerEvent: {}
+[16.019206] (-) TimerEvent: {}
+[16.119640] (-) TimerEvent: {}
+[16.220052] (-) TimerEvent: {}
+[16.320546] (-) TimerEvent: {}
+[16.420827] (-) TimerEvent: {}
+[16.521076] (-) TimerEvent: {}
+[16.621397] (-) TimerEvent: {}
+[16.722224] (-) TimerEvent: {}
+[16.824180] (-) TimerEvent: {}
+[16.857060] (fast_lio) StdoutLine: {'line': b'-- Eigen found (include: /usr/include/eigen3, version: 3.4.0)\n'}
+[16.872977] (fast_lio) StdoutLine: {'line': b'-- OpenNI found (version: 1.5.4.0, include: /usr/include/ni, lib: /usr/lib/libOpenNI.so;libusb::libusb)\n'}
+[16.885561] (fast_lio) StdoutLine: {'line': b'-- OpenNI2 found (version: 2.2.0.33, include: /usr/include/openni2, lib: /usr/lib/x86_64-linux-gnu/libOpenNI2.so;libusb::libusb)\n'}
+[16.924528] (-) TimerEvent: {}
+[17.024985] (-) TimerEvent: {}
+[17.125345] (-) TimerEvent: {}
+[17.226032] (-) TimerEvent: {}
+[17.326327] (-) TimerEvent: {}
+[17.426552] (-) TimerEvent: {}
+[17.526822] (-) TimerEvent: {}
+[17.627113] (-) TimerEvent: {}
+[17.727618] (-) TimerEvent: {}
+[17.828030] (-) TimerEvent: {}
+[17.928307] (-) TimerEvent: {}
+[18.028616] (-) TimerEvent: {}
+[18.130913] (-) TimerEvent: {}
+[18.231235] (-) TimerEvent: {}
+[18.331501] (-) TimerEvent: {}
+[18.432356] (-) TimerEvent: {}
+[18.532718] (-) TimerEvent: {}
+[18.633116] (-) TimerEvent: {}
+[18.733423] (-) TimerEvent: {}
+[18.833916] (-) TimerEvent: {}
+[18.934454] (-) TimerEvent: {}
+[19.034901] (-) TimerEvent: {}
+[19.114215] (fast_lio) StdoutLine: {'line': b'-- Found Qhull version 8.0.2\n'}
+[19.135038] (-) TimerEvent: {}
+[19.235270] (-) TimerEvent: {}
+[19.335718] (-) TimerEvent: {}
+[19.436329] (-) TimerEvent: {}
+[19.536881] (-) TimerEvent: {}
+[19.637150] (-) TimerEvent: {}
+[19.737818] (-) TimerEvent: {}
+[19.838750] (-) TimerEvent: {}
+[19.941566] (-) TimerEvent: {}
+[20.041801] (-) TimerEvent: {}
+[20.143423] (-) TimerEvent: {}
+[20.243749] (-) TimerEvent: {}
+[20.344076] (-) TimerEvent: {}
+[20.444609] (-) TimerEvent: {}
+[20.544858] (-) TimerEvent: {}
+[20.645181] (-) TimerEvent: {}
+[20.745505] (-) TimerEvent: {}
+[20.845820] (-) TimerEvent: {}
+[20.946180] (-) TimerEvent: {}
+[21.046608] (-) TimerEvent: {}
+[21.146932] (-) TimerEvent: {}
+[21.247189] (-) TimerEvent: {}
+[21.337082] (fast_lio) StdoutLine: {'line': b'-- OpenNI found (version: 1.5.4.0, include: /usr/include/ni, lib: /usr/lib/libOpenNI.so;libusb::libusb)\n'}
+[21.348834] (-) TimerEvent: {}
+[21.449268] (-) TimerEvent: {}
+[21.549592] (-) TimerEvent: {}
+[21.650693] (-) TimerEvent: {}
+[21.750979] (-) TimerEvent: {}
+[21.851250] (-) TimerEvent: {}
+[21.951609] (-) TimerEvent: {}
+[22.052331] (-) TimerEvent: {}
+[22.153142] (-) TimerEvent: {}
+[22.253642] (-) TimerEvent: {}
+[22.354062] (-) TimerEvent: {}
+[22.454933] (-) TimerEvent: {}
+[22.556334] (-) TimerEvent: {}
+[22.657072] (-) TimerEvent: {}
+[22.757338] (-) TimerEvent: {}
+[22.857648] (-) TimerEvent: {}
+[22.958000] (-) TimerEvent: {}
+[23.058396] (-) TimerEvent: {}
+[23.158774] (-) TimerEvent: {}
+[23.259043] (-) TimerEvent: {}
+[23.359302] (-) TimerEvent: {}
+[23.459620] (-) TimerEvent: {}
+[23.561135] (-) TimerEvent: {}
+[23.657702] (fast_lio) StdoutLine: {'line': b'-- Found eigen3_cmake_module: 0.1.1 (/opt/ros/humble/share/eigen3_cmake_module/cmake)\n'}
+[23.661280] (-) TimerEvent: {}
+[23.661724] (fast_lio) StdoutLine: {'line': b'-- Ensuring Eigen3 include directory is part of orocos-kdl CMake target\n'}
+[23.762237] (-) TimerEvent: {}
+[23.860146] (fast_lio) StdoutLine: {'line': b'-- Found livox_ros_driver2: 1.0.0 (/home/rajesh/proc_dem_creation/ws/install/livox_ros_driver2/share/livox_ros_driver2/cmake)\n'}
+[23.862343] (-) TimerEvent: {}
+[23.914582] (fast_lio) StdoutLine: {'line': b'-- Found rosidl_default_generators: 1.2.1 (/opt/ros/humble/share/rosidl_default_generators/cmake)\n'}
+[23.948760] (fast_lio) StderrLine: {'line': b'CMake Warning (dev) at CMakeLists.txt:81 (find_package):\n'}
+[23.949177] (fast_lio) StderrLine: {'line': b'  Policy CMP0074 is not set: find_package uses <PackageName>_ROOT variables.\n'}
+[23.949313] (fast_lio) StderrLine: {'line': b'  Run "cmake --help-policy CMP0074" for policy details.  Use the cmake_policy\n'}
+[23.949422] (fast_lio) StderrLine: {'line': b'  command to set the policy and suppress this warning.\n'}
+[23.949679] (fast_lio) StderrLine: {'line': b'\n'}
+[23.949840] (fast_lio) StderrLine: {'line': b'  CMake variable PCL_ROOT is set to:\n'}
+[23.949951] (fast_lio) StderrLine: {'line': b'\n'}
+[23.950063] (fast_lio) StderrLine: {'line': b'    /usr\n'}
+[23.950166] (fast_lio) StderrLine: {'line': b'\n'}
+[23.950266] (fast_lio) StderrLine: {'line': b'  For compatibility, CMake is ignoring the variable.\n'}
+[23.950367] (fast_lio) StderrLine: {'line': b'This warning is for project developers.  Use -Wno-dev to suppress it.\n'}
+[23.950474] (fast_lio) StderrLine: {'line': b'\n'}
+[23.962761] (-) TimerEvent: {}
+[23.965129] (fast_lio) StderrLine: {'line': b'Eigen:/usr/include/eigen3\n'}
+[23.965321] (fast_lio) StdoutLine: {'line': b'-- PCL: /usr/include/pcl-1.12\n'}
+[24.062981] (-) TimerEvent: {}
+[24.163370] (-) TimerEvent: {}
+[24.263684] (-) TimerEvent: {}
+[24.370757] (-) TimerEvent: {}
+[24.471461] (-) TimerEvent: {}
+[24.515877] (fast_lio) StdoutLine: {'line': b'-- Found ament_cmake_ros: 0.10.1 (/opt/ros/humble/share/ament_cmake_ros/cmake)\n'}
+[24.571950] (-) TimerEvent: {}
+[24.673577] (-) TimerEvent: {}
+[24.773944] (-) TimerEvent: {}
+[24.874371] (-) TimerEvent: {}
+[24.977746] (-) TimerEvent: {}
+[25.077995] (-) TimerEvent: {}
+[25.159580] (fast_lio) StdoutLine: {'line': b'-- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c\n'}
+[25.179155] (-) TimerEvent: {}
+[25.279696] (-) TimerEvent: {}
+[25.381018] (-) TimerEvent: {}
+[25.401901] (fast_lio) StdoutLine: {'line': b'-- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp\n'}
+[25.449687] (fast_lio) StdoutLine: {'line': b'-- Found python_cmake_module: 0.10.0 (/opt/ros/humble/share/python_cmake_module/cmake)\n'}
+[25.481544] (-) TimerEvent: {}
+[25.497572] (fast_lio) StdoutLine: {'line': b'-- Found PythonLibs: /usr/lib/x86_64-linux-gnu/libpython3.10.so (found suitable version "3.10.12", minimum required is "3.5") \n'}
+[25.497910] (fast_lio) StdoutLine: {'line': b'-- Using PYTHON_EXECUTABLE: /usr/bin/python3\n'}
+[25.497992] (fast_lio) StdoutLine: {'line': b'-- Using PYTHON_INCLUDE_DIRS: /usr/include/python3.10\n'}
+[25.498091] (fast_lio) StdoutLine: {'line': b'-- Using PYTHON_LIBRARIES: /usr/lib/x86_64-linux-gnu/libpython3.10.so\n'}
+[25.581593] (-) TimerEvent: {}
+[25.682010] (-) TimerEvent: {}
+[25.734869] (fast_lio) StdoutLine: {'line': b'-- Configuring done\n'}
+[25.782107] (-) TimerEvent: {}
+[25.882417] (-) TimerEvent: {}
+[25.983836] (-) TimerEvent: {}
+[26.084313] (-) TimerEvent: {}
+[26.184920] (-) TimerEvent: {}
+[26.185824] (fast_lio) StdoutLine: {'line': b'-- Generating done\n'}
+[26.232009] (fast_lio) StdoutLine: {'line': b'-- Build files have been written to: /home/rajesh/proc_dem_creation/ws/build/fast_lio\n'}
+[26.275547] (fast_lio) CommandEnded: {'returncode': 0}
+[26.276782] (fast_lio) JobProgress: {'identifier': 'fast_lio', 'progress': 'build'}
+[26.278517] (fast_lio) Command: {'cmd': ['/usr/bin/cmake', '--build', '/home/rajesh/proc_dem_creation/ws/build/fast_lio', '--', '-j8', '-l8'], 'cwd': '/home/rajesh/proc_dem_creation/ws/build/fast_lio', 'env': OrderedDict([('LESSOPEN', '| /usr/bin/lesspipe %s'), ('AI_AGENT', 'opencode'), ('OPENCODE_SESSION_ID', 'ses_ec1da1cc2ffeV5pu2pIuZ1AINB'), ('USER', 'rajesh'), ('AGENT', '1'), ('SHLVL', '2'), ('LD_LIBRARY_PATH', '/home/rajesh/proc_dem_creation/ws/install/livox_ros_driver2/lib:/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/x86_64-linux-gnu:/opt/ros/humble/lib'), ('WT_PROFILE_ID', '{9a267d21-b6f7-58d2-949f-70839323e092}'), ('HOME', '/home/rajesh'), ('OLDPWD', '/home/rajesh/proc_dem_creation'), ('ROS_PYTHON_VERSION', '3'), ('DBUS_SESSION_BUS_ADDRESS', 'unix:path=/run/user/1000/bus'), ('WSL_DISTRO_NAME', 'Ubuntu-22.04'), ('WAYLAND_DISPLAY', 'wayland-0'), ('ROS_DISTRO', 'humble'), ('LOGNAME', 'rajesh'), ('NAME', 'DESKTOP-2096VHA'), ('WSL_INTEROP', '/run/WSL/30739_interop'), ('PULSE_SERVER', 'unix:/mnt/wslg/PulseServer'), ('_', '/usr/bin/colcon'), ('ROS_VERSION', '2'), ('OPENCODE_TERMINAL', '1'), ('TERM', 'xterm-256color'), ('ROS_LOCALHOST_ONLY', '0'), ('OPENCODE', '1'), ('PATH', '/opt/ros/humble/bin:/home/rajesh/.local/bin:/home/rajesh/.opencode/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/lib/wsl/lib:/usr/lib/linux-tools/6.18.54.1-microsoft-standard-WSL2/bin:/mnt/c/WINDOWS/system32:/mnt/c/WINDOWS:/mnt/c/WINDOWS/System32/Wbem:/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/:/mnt/c/WINDOWS/System32/OpenSSH/:/mnt/c/Program Files/NVIDIA Corporation/SDK Manager:/mnt/c/Program Files/usbipd-win/:/mnt/c/Program Files/WSL/:/mnt/c/Users/admin/AppData/Local/Microsoft/WindowsApps:/mnt/c/Users/admin/AppData/Local/Programs/Microsoft VS Code/bin:/snap/bin'), ('WT_SESSION', '5d422889-5bc6-4f00-a42a-2e2823cbbc3a'), ('XDG_RUNTIME_DIR', '/run/user/1000'), ('DISPLAY', ':0'), ('LANG', 'C.UTF-8'), ('PERF_EXEC_PATH', '/usr/lib/linux-tools/6.18.54.1-microsoft-standard-WSL2/libexec/perf-core'), ('LS_COLORS', 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'), ('AMENT_PREFIX_PATH', '/home/rajesh/proc_dem_creation/ws/install/livox_ros_driver2:/opt/ros/humble'), ('SHELL', '/bin/bash'), ('LESSCLOSE', '/usr/bin/lesspipe %s %s'), ('PWD', '/home/rajesh/proc_dem_creation/ws/build/fast_lio'), ('XDG_DATA_DIRS', '/usr/local/share:/usr/share:/var/lib/snapd/desktop'), ('PYTHONPATH', '/home/rajesh/proc_dem_creation/ws/install/livox_ros_driver2/local/lib/python3.10/dist-packages:/opt/ros/humble/lib/python3.10/site-packages:/opt/ros/humble/local/lib/python3.10/dist-packages'), ('COLCON', '1'), ('WSL2_GUI_APPS_ENABLED', '1'), ('HOSTTYPE', 'x86_64'), ('WSLENV', 'WT_SESSION:WT_PROFILE_ID:'), ('CMAKE_PREFIX_PATH', '/home/rajesh/proc_dem_creation/ws/install/livox_ros_driver2:/opt/ros/humble')]), 'shell': False}
+[26.285296] (-) TimerEvent: {}
+[26.371932] (fast_lio) StdoutLine: {'line': b'Consolidate compiler generated dependencies of target fast_lio__rosidl_generator_c\n'}
+[26.379519] (fast_lio) StderrLine: {'line': b"failed to create symbolic link '/home/rajesh/proc_dem_creation/ws/build/fast_lio/ament_cmake_python/fast_lio/fast_lio' because existing path cannot be removed: Is a directory\n"}
+[26.380000] (fast_lio) StderrLine: {'line': b'gmake[2]: *** [CMakeFiles/ament_cmake_python_symlink_fast_lio.dir/build.make:70: CMakeFiles/ament_cmake_python_symlink_fast_lio] Error 1\n'}
+[26.380847] (fast_lio) StderrLine: {'line': b'gmake[1]: *** [CMakeFiles/Makefile2:442: CMakeFiles/ament_cmake_python_symlink_fast_lio.dir/all] Error 2\n'}
+[26.381006] (fast_lio) StderrLine: {'line': b'gmake[1]: *** Waiting for unfinished jobs....\n'}
+[26.385415] (-) TimerEvent: {}
+[26.390374] (fast_lio) StdoutLine: {'line': b'[  2%] Built target fast_lio__rs\n'}
+[26.390659] (fast_lio) StdoutLine: {'line': b'[  5%] Built target fast_lio__cpp\n'}
+[26.398547] (fast_lio) StdoutLine: {'line': b'[ 13%] Built target fast_lio__rosidl_generator_c\n'}
+[26.399333] (fast_lio) StderrLine: {'line': b'gmake: *** [Makefile:146: all] Error 2\n'}
+[26.405447] (fast_lio) CommandEnded: {'returncode': 2}
+[26.443945] (fast_lio) JobEnded: {'identifier': 'fast_lio', 'rc': 2}
+[26.457569] (dem_bringup) JobSkipped: {'identifier': 'dem_bringup'}
+[26.457665] (-) EventReactorShutdown: {}

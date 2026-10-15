@@ -1,0 +1,68 @@
+{
+  "alignment": {
+    "order": "x=lat",
+    "utm_zone": 34,
+    "utm_northern": true,
+    "gnss_bbox_lat_lon": [
+      60.44500584807247,
+      60.447047458961606,
+      22.31484586885199,
+      22.31907125469297
+    ],
+    "matched_samples": 6525,
+    "rms_m": 336.0069942019765,
+    "rms_horizontal_m": 327.18173417218145,
+    "rms_vertical_m": 76.50367949798935,
+    "max_error_m": 467.5904821505974,
+    "yaw_deg": -107.66206431913645,
+    "scale_diagnostic": 0.03526733334559229,
+    "rms_full_fit_m": 103.67881729670675,
+    "chord_local_m": 761.5364576251668,
+    "chord_gnss_m": 4.032445593576271
+  },
+  "candidates": [
+    {
+      "order": "x=lat",
+      "utm_zone": 34,
+      "utm_northern": true,
+      "gnss_bbox_lat_lon": [
+        60.44500584807247,
+        60.447047458961606,
+        22.31484586885199,
+        22.31907125469297
+      ],
+      "matched_samples": 6525,
+      "rms_m": 336.0069942019765,
+      "rms_horizontal_m": 327.18173417218145,
+      "rms_vertical_m": 76.50367949798935,
+      "max_error_m": 467.5904821505974,
+      "yaw_deg": -107.66206431913645,
+      "scale_diagnostic": 0.03526733334559229,
+      "rms_full_fit_m": 103.67881729670675,
+      "chord_local_m": 761.5364576251668,
+      "chord_gnss_m": 4.032445593576271
+    },
+    {
+      "order": "x=lon",
+      "utm_zone": 41,
+      "utm_northern": true,
+      "gnss_bbox_lat_lon": [
+        22.31484586885199,
+        22.31907125469297,
+        60.44500584807247,
+        60.447047458961606
+      ],
+      "matched_samples": 6525,
+      "rms_m": 349.8065344281994,
+      "rms_horizontal_m": 341.3382465413684,
+      "rms_vertical_m": 76.50367949798935,
+      "max_error_m": 506.5153429041108,
+      "yaw_deg": -93.23143141428113,
+      "scale_diagnostic": 0.054147489249430046,
+      "rms_full_fit_m": 158.04492466052304,
+      "chord_local_m": 761.5364576251668,
+      "chord_gnss_m": 7.245618650474325
+    }
+  ],
+  "verdict": "NOT consistent"
+}

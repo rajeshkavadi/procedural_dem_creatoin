@@ -1,0 +1,25 @@
+running develop
+running egg_info
+creating dem_replay.egg-info
+writing dem_replay.egg-info/PKG-INFO
+writing dependency_links to dem_replay.egg-info/dependency_links.txt
+writing entry points to dem_replay.egg-info/entry_points.txt
+writing requirements to dem_replay.egg-info/requires.txt
+writing top-level names to dem_replay.egg-info/top_level.txt
+writing manifest file 'dem_replay.egg-info/SOURCES.txt'
+reading manifest file 'dem_replay.egg-info/SOURCES.txt'
+writing manifest file 'dem_replay.egg-info/SOURCES.txt'
+running build_ext
+Creating /home/rajesh/proc_dem_creation/ws/install/dem_replay/lib/python3.10/site-packages/dem-replay.egg-link (link to .)
+Installing imu_relay script to /home/rajesh/proc_dem_creation/ws/install/dem_replay/lib/dem_replay
+Installing inspect_bag script to /home/rajesh/proc_dem_creation/ws/install/dem_replay/lib/dem_replay
+Installing replay script to /home/rajesh/proc_dem_creation/ws/install/dem_replay/lib/dem_replay
+Installing stream_monitor script to /home/rajesh/proc_dem_creation/ws/install/dem_replay/lib/dem_replay
+
+Installed /home/rajesh/proc_dem_creation/ws/build/dem_replay
+running symlink_data
+creating /home/rajesh/proc_dem_creation/ws/install/dem_replay/share/ament_index
+creating /home/rajesh/proc_dem_creation/ws/install/dem_replay/share/ament_index/resource_index
+creating /home/rajesh/proc_dem_creation/ws/install/dem_replay/share/ament_index/resource_index/packages
+symbolically linking /home/rajesh/proc_dem_creation/ws/build/dem_replay/resource/dem_replay -> /home/rajesh/proc_dem_creation/ws/install/dem_replay/share/ament_index/resource_index/packages
+symbolically linking /home/rajesh/proc_dem_creation/ws/build/dem_replay/package.xml -> /home/rajesh/proc_dem_creation/ws/install/dem_replay/share/dem_replay
