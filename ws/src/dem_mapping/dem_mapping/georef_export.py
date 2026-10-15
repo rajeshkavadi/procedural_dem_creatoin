@@ -388,9 +388,10 @@ def main(argv=None):
         formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('--dem', required=True, type=Path,
                     help='DEM grid written by dem_node (*.npz)')
-    ap.add_argument('--odom', required=True, type=Path,
+    ap.add_argument('--odom', type=Path, default=None,
                     help='CSV written by dem_replay record_odom '
-                         '(FAST-LIO trajectory)')
+                         '(FAST-LIO trajectory; not needed with '
+                         '--already-utm)')
     ap.add_argument('--bag', required=True, type=Path,
                     help='bag holding the GNSS topic (ROS 1 .bag or rosbag2)')
     ap.add_argument('--gnss-topic', default='/gnss_pose')
@@ -415,19 +416,31 @@ def main(argv=None):
     ap.add_argument('--origin-alt', type=float, default=0.0,
                     help='anchor altitude in metres (default 0)')
     ap.add_argument('--rms-threshold', type=float, default=1.0,
-                    help='reject georeferencing above this RMS (m)')
+                    help='alignment RMS above which the tool refuses to '
+                         'write georeferenced products')
     ap.add_argument('--allow-poor', action='store_true',
                     help='write outputs even when the RMS is too large')
+    ap.add_argument('--already-utm', action='store_true',
+                    help='the DEM grid is already in projected metres (it '
+                         'was built by dem_node in pose mode from a '
+                         'GNSS-warped trajectory, see gnss_warp): no fit '
+                         'and no reprojection, the CRS is only stamped')
+    ap.add_argument('--warp-report', type=Path, default=None,
+                    help='JSON report of dem_mapping gnss_warp (its '
+                         'residuals become the quality gate and provenance '
+                         'of an --already-utm export)')
     ap.add_argument('--json', type=Path, default=None,
                     help='report path (default: <out-dir>/<prefix>_georef.json)')
     args = ap.parse_args(argv)
 
     if not args.dem.exists():
         raise SystemExit(f'ERROR: DEM {args.dem} not found')
-    if not args.odom.exists():
-        raise SystemExit(f'ERROR: odometry {args.odom} not found - record it '
-                         f'with: ros2 run dem_replay record_odom -- '
-                         f'--out {args.odom}')
+    if not args.already_utm:
+        if args.odom is None or not args.odom.exists():
+            raise SystemExit(f'ERROR: odometry {args.odom} not found - '
+                             'record it with: ros2 run dem_replay record_odom'
+                             ' -- --out out/odom.csv  (or pass --already-utm '
+                             'if the grid is already georeferenced)')
     if not args.bag.exists():
         raise SystemExit(f'ERROR: bag {args.bag} not found')
 
@@ -441,105 +454,156 @@ def main(argv=None):
     origin = tuple(float(v) for v in npz['origin'])
     agg = str(npz['aggregation'])
 
-    t_loc, P_loc = load_odom(args.odom)
-    t_g, gx, gy, gz = _load_gnss(args.bag, args.gnss_topic)
-    print(f'odom : {len(t_loc)} samples, '
-          f'chord {np.linalg.norm(P_loc[-1] - P_loc[0]):.1f} m')
-    print(f'gnss : {len(t_g)} samples, x[{gx.min():.6f},{gx.max():.6f}] '
-          f'y[{gy.min():.6f},{gy.max():.6f}] z[{gz.min():.2f},{gz.max():.2f}]')
+    if args.already_utm:
+        # The grid is already in projected metres (built by dem_node in
+        # 'pose' mode from a GNSS-warped trajectory - see gnss_warp).
+        # Nothing is fitted or reprojected; the CRS is only stamped and the
+        # quality gate uses the warp residuals.
+        R, t = np.eye(3), np.zeros(3)
+        t_loc = None
+        warp = (json.loads(args.warp_report.read_text())
+                if args.warp_report and args.warp_report.exists() else {})
+        st = warp.get('stats', {})
+        rms = float(st.get('residual_warp_rms_m', 0.0))
+        rms_h = st.get('residual_warp_h_rms_m')
+        rms_v = st.get('residual_warp_v_rms_m')
+        order = warp.get('order', 'already-utm')
+        epsg = args.epsg or (int(warp['epsg']) if warp.get('epsg') else None)
+        if epsg is None:
+            raise SystemExit('ERROR: --already-utm needs the UTM zone - '
+                             'pass --warp-report (preferred) or --epsg')
+        verdict = ('consistent' if rms <= args.rms_threshold else
+                   'NOT consistent')
+        print(f'\nGNSS-aided build: grid already in EPSG:{epsg}, warp '
+              f'residual RMS={rms:.3f} m  (threshold {args.rms_threshold} m)'
+              f'  -> {verdict}')
+        if warp:
+            print(f'  rigid alternative would have been '
+                  f'{warp.get("rigid_fit_rms_m", float("nan")):.3f} m RMS; '
+                  f'windows {st.get("windows_used")}/'
+                  f'{st.get("windows_total")}')
+        best = {}
+        candidates = []
+        if rms > args.rms_threshold and not args.allow_poor:
+            print('\nERROR: the GNSS warp residual is too large - the '
+                  'trajectory could not be tied to the GNSS track.  Check '
+                  'the warp report, re-run gnss_warp, or pass --allow-poor.')
+            out_json = args.json or args.out_dir / f'{prefix}_georef.json'
+            out_json.write_text(json.dumps({'warp': warp,
+                                            'verdict': verdict},
+                                           indent=2, default=str))
+            print(f'report: {out_json}')
+            return 2
+    else:
+        t_loc, P_loc = load_odom(args.odom)
+        t_g, gx, gy, gz = _load_gnss(args.bag, args.gnss_topic)
+        print(f'odom : {len(t_loc)} samples, '
+              f'chord {np.linalg.norm(P_loc[-1] - P_loc[0]):.1f} m')
+        print(f'gnss : {len(t_g)} samples, '
+              f'x[{gx.min():.6f},{gx.max():.6f}] '
+              f'y[{gy.min():.6f},{gy.max():.6f}] '
+              f'z[{gz.min():.2f},{gz.max():.2f}]')
 
-    order = np.argsort(t_loc)
-    t_loc, P_loc = t_loc[order], P_loc[order]
-    og = np.argsort(t_g)
-    t_g, gx, gy, gz = t_g[og], gx[og], gy[og], gz[og]
+        order = np.argsort(t_loc)
+        t_loc, P_loc = t_loc[order], P_loc[order]
+        og = np.argsort(t_g)
+        t_g, gx, gy, gz = t_g[og], gx[og], gy[og], gz[og]
 
-    # A GNSS topic may hold a local metric frame instead of WGS84 degrees.
-    # Then an anchor point is mandatory - without it there is no absolute
-    # position on earth, only a local one.
-    looks_geographic = (abs(gx).max() <= 180 and abs(gy).max() <= 90
-                        and (abs(gx).max() > 1.0 or abs(gy).max() > 1.0))
-    if not looks_geographic:
-        if args.origin_lat is None or args.origin_lon is None:
-            raise SystemExit(
-                'ERROR: the GNSS topic holds a LOCAL METRIC frame '
-                f'(x[{gx.min():.1f},{gx.max():.1f}] '
-                f'y[{gy.min():.1f},{gy.max():.1f}]), not WGS84 degrees.\n'
-                '       Absolute georeferencing then needs the reference '
-                'point of that local frame:\n'
-                '         --origin-lat <deg> --origin-lon <deg> '
-                '[--origin-alt <m>]\n'
-                '       Without it only a local (non-geographic) DEM can be '
-                'written - see README.')
-        e0, n0, _zone, _north = latlon_to_utm(args.origin_lat,
-                                              args.origin_lon)
-        gx = gx + float(e0)
-        gy = gy + float(n0)
-        gz = gz + float(args.origin_alt)
-        print(f'local GNSS frame anchored at {args.origin_lat}, '
-              f'{args.origin_lon} -> UTM ({float(e0):.1f}, {float(n0):.1f})')
+        # A GNSS topic may hold a local metric frame instead of WGS84
+        # degrees.  Then an anchor point is mandatory - without it there is
+        # no absolute position on earth, only a local one.
+        looks_geographic = (abs(gx).max() <= 180 and abs(gy).max() <= 90
+                            and (abs(gx).max() > 1.0 or abs(gy).max() > 1.0))
+        if not looks_geographic:
+            if args.origin_lat is None or args.origin_lon is None:
+                raise SystemExit(
+                    'ERROR: the GNSS topic holds a LOCAL METRIC frame '
+                    f'(x[{gx.min():.1f},{gx.max():.1f}] '
+                    f'y[{gy.min():.1f},{gy.max():.1f}]), not WGS84 '
+                    'degrees.\n'
+                    '       Absolute georeferencing then needs the '
+                    'reference point of that local frame:\n'
+                    '         --origin-lat <deg> --origin-lon <deg> '
+                    '[--origin-alt <m>]\n'
+                    '       Without it only a local (non-geographic) DEM '
+                    'can be written - see README.')
+            e0, n0, _zone, _north = latlon_to_utm(args.origin_lat,
+                                                  args.origin_lon)
+            gx = gx + float(e0)
+            gy = gy + float(n0)
+            gz = gz + float(args.origin_alt)
+            print(f'local GNSS frame anchored at {args.origin_lat}, '
+                  f'{args.origin_lon} -> UTM ({float(e0):.1f}, '
+                  f'{float(n0):.1f})')
 
-    # --------------------------------------------------------------- fit
-    candidates = fit_hypotheses(P_loc, t_loc, gx, gy, gz, t_g, args.tol)
-    if not candidates or 'rms_m' not in candidates[0]:
-        raise SystemExit('ERROR: no fit could be computed '
-                         f'({json.dumps(candidates, default=str)[:400]})')
-    best = candidates[0]
+        # ----------------------------------------------------------- fit
+        candidates = fit_hypotheses(P_loc, t_loc, gx, gy, gz, t_g, args.tol)
+        if not candidates or 'rms_m' not in candidates[0]:
+            raise SystemExit('ERROR: no fit could be computed '
+                             f'({json.dumps(candidates, default=str)[:400]})')
+        best = candidates[0]
 
-    if args.fit == 'full':
-        # recompute with the free 3-D Umeyama transform
-        pick, good = nearest_match(t_loc, t_g, args.tol)
-        Q, zone, northern, bbox = utm_from_track(gx, gy, gz, best['order'])
-        R, t, rms = umeyama(P_loc[good], Q[pick[good]])
-        best.update(rms_m=float(rms), yaw_deg=math.degrees(
-            math.atan2(R[1, 0], R[0, 0])), rms_horizontal_m=None,
-            rms_vertical_m=None, _R=R, _t=t)
+        if args.fit == 'full':
+            # recompute with the free 3-D Umeyama transform
+            pick, good = nearest_match(t_loc, t_g, args.tol)
+            Q, zone, northern, bbox = utm_from_track(gx, gy, gz,
+                                                     best['order'])
+            R, t, rms = umeyama(P_loc[good], Q[pick[good]])
+            best.update(rms_m=float(rms), yaw_deg=math.degrees(
+                math.atan2(R[1, 0], R[0, 0])), rms_horizontal_m=None,
+                rms_vertical_m=None, _R=R, _t=t)
 
-    R, t = best['_R'], best['_t']
-    span_deg = max(float(np.ptp(gx)), float(np.ptp(gy)))
-    if best['order'] != 'x=meters' and span_deg < 1e-4:
-        print('WARNING: the GNSS track barely moves horizontally - the '
-              'rotation is not observable.  Treat the yaw as unreliable.')
+        R, t = best['_R'], best['_t']
+        span_deg = max(float(np.ptp(gx)), float(np.ptp(gy)))
+        if best['order'] != 'x=meters' and span_deg < 1e-4:
+            print('WARNING: the GNSS track barely moves horizontally - the '
+                  'rotation is not observable.  Treat the yaw as unreliable.')
 
-    epsg = args.epsg
-    if epsg is None:
-        if best.get('utm_zone'):
-            zone = int(best['utm_zone'])
-            epsg = (32600 if best['utm_northern'] else 32700) + zone
-        else:
-            raise SystemExit('ERROR: no UTM zone (local metric GNSS); '
-                             'pass --epsg explicitly')
+        epsg = args.epsg
+        if epsg is None:
+            if best.get('utm_zone'):
+                zone = int(best['utm_zone'])
+                epsg = (32600 if best['utm_northern'] else 32700) + zone
+            else:
+                raise SystemExit('ERROR: no UTM zone (local metric GNSS); '
+                                 'pass --epsg explicitly')
+
+        rms = float(best['rms_m'])
+        rms_h = best.get('rms_horizontal_m')
+        rms_v = best.get('rms_vertical_m')
+        verdict = ('consistent' if rms <= args.rms_threshold else
+                   'NOT consistent')
+        print(f'\nfit[{best["order"]}] yaw={best["yaw_deg"]:.2f} deg  '
+              f'RMS={rms:.3f} m  (threshold {args.rms_threshold} m)  '
+              f'-> {verdict}')
+        for c in candidates:
+            if 'rms_m' in c:
+                print(f'  hypothesis {c["order"]:>7}: '
+                      f'RMS {c["rms_m"]:8.3f} m  '
+                      f'scale {c["scale_diagnostic"]:.4f}  '
+                      f'chord local {c["chord_local_m"]:.1f} m / '
+                      f'gnss {c["chord_gnss_m"]:.1f} m')
+        if rms > args.rms_threshold and not args.allow_poor:
+            print('\nERROR: refusing to georeference with that residual - '
+                  'the LiDAR trajectory and the GNSS track do not describe '
+                  'the same motion.  Re-run FAST-LIO, check the IMU units '
+                  '/ time sync, or pass --allow-poor to write the files '
+                  'anyway.')
+            report = {'alignment': {k: v for k, v in best.items()
+                                    if not k.startswith('_')},
+                      'candidates': [{k: v for k, v in c.items()
+                                      if not k.startswith('_')}
+                                     for c in candidates],
+                      'verdict': verdict}
+            out_json = args.json or args.out_dir / f'{prefix}_georef.json'
+            out_json.write_text(json.dumps(report, indent=2, default=str))
+            print(f'report: {out_json}')
+            return 2
+
     from osgeo import osr
     srs = osr.SpatialReference()
     srs.ImportFromEPSG(int(epsg))
     crs_name = srs.GetName()
-
-    rms = float(best['rms_m'])
-    verdict = ('consistent' if rms <= args.rms_threshold else
-               'NOT consistent')
-    print(f'\nfit[{best["order"]}] yaw={best["yaw_deg"]:.2f} deg  '
-          f'RMS={rms:.3f} m  (threshold {args.rms_threshold} m)  '
-          f'-> {verdict}')
-    for c in candidates:
-        if 'rms_m' in c:
-            print(f'  hypothesis {c["order"]:>7}: RMS {c["rms_m"]:8.3f} m  '
-                  f'scale {c["scale_diagnostic"]:.4f}  '
-                  f'chord local {c["chord_local_m"]:.1f} m / '
-                  f'gnss {c["chord_gnss_m"]:.1f} m')
-    if rms > args.rms_threshold and not args.allow_poor:
-        print('\nERROR: refusing to georeference with that residual - the '
-              'LiDAR trajectory and the GNSS track do not describe the same '
-              'motion.  Re-run FAST-LIO, check the IMU units / time sync, '
-              'or pass --allow-poor to write the files anyway.')
-        report = {'alignment': {k: v for k, v in best.items()
-                                if not k.startswith('_')},
-                  'candidates': [{k: v for k, v in c.items()
-                                  if not k.startswith('_')}
-                                 for c in candidates],
-                  'verdict': verdict}
-        out_json = args.json or args.out_dir / f'{prefix}_georef.json'
-        out_json.write_text(json.dumps(report, indent=2, default=str))
-        print(f'report: {out_json}')
-        return 2
 
     # -------------------------------------------------- reproject the grid
     out_res = args.resolution or res
@@ -578,9 +642,17 @@ def main(argv=None):
     if args.map:
         if not Path(args.map).exists():
             raise SystemExit(f'ERROR: map {args.map} not found')
+        map_R, map_t = R, t
+        if args.already_utm and warp.get('base_transform'):
+            # the map is in the ORIGINAL local frame (not warped per
+            # timestamp) - use the best single rigid tie from the report
+            map_R = np.asarray(warp['base_transform']['R'], dtype=np.float64)
+            map_t = np.asarray(warp['base_transform']['t'], dtype=np.float64)
+            print('map  : applying the base rigid tie from the warp report '
+                  '(single transform; the map itself is NOT drift-corrected)')
         map_out = args.out_dir / f'{prefix}_map_georef.pcd'
         info = pcd_io.transform_pcd(
-            args.map, map_out, R, t,
+            args.map, map_out, map_R, map_t,
             comments=[f'UTM EPSG:{epsg} metres (FAST-LIO map, georeferenced)'])
         print(f'map  : {info["count"]} points -> {map_out}')
 
@@ -602,13 +674,31 @@ def main(argv=None):
             'dem_origin_local': list(origin),
         },
         'crs': {'epsg': epsg, 'name': crs_name, 'type': 'WGS84 / UTM'},
-        'gnss': {
-            'samples': int(len(t_g)),
-            'time_span_s': [float(t_g[0]), float(t_g[-1])],
-            'order_used': best['order'],
-            'utm_zone': best.get('utm_zone'),
-        },
-        'alignment': {
+        'gnss': ({'order_used': order,
+                  'utm_zone': int(epsg) % 100,
+                  'note': 'grid built directly in UTM from the GNSS-warped '
+                          'trajectory (see gnss_warp report)'}
+                 if args.already_utm else
+                 {'samples': int(len(t_g)),
+                  'time_span_s': [float(t_g[0]), float(t_g[-1])],
+                  'order_used': best['order'],
+                  'utm_zone': best.get('utm_zone')}),
+        'alignment': ({
+            'method': 'gnss_aided_time_warp' if args.already_utm else
+                      f'rigid_{args.fit}',
+            'rotation_matrix': np.round(R, 9).tolist(),
+            'translation_m': [round(float(v), 4) for v in t],
+            'rms_m': round(rms, 4),
+            'rms_horizontal_m': None if rms_h is None
+                                else round(float(rms_h), 4),
+            'rms_vertical_m': None if rms_v is None
+                              else round(float(rms_v), 4),
+            'threshold_m': args.rms_threshold,
+            'verdict': verdict,
+            'warp_report': str(args.warp_report) if args.warp_report
+                           else None,
+            'warp': warp if args.already_utm else None,
+        } if args.already_utm else {
             'fit': args.fit,
             'rotation_matrix': np.round(R, 9).tolist(),
             'translation_m': [round(float(v), 4) for v in t],
@@ -625,7 +715,7 @@ def main(argv=None):
             'threshold_m': args.rms_threshold,
             'verdict': verdict,
             'hypotheses': [clean(c) for c in candidates],
-        },
+        }),
         'grid': {**grid_stats, 'z_min_m': round(zmin, 3),
                  'z_max_m': round(zmax, 3), 'nodata': 'nan'},
         'outputs': {

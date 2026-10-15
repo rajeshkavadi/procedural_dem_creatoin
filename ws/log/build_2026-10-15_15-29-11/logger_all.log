@@ -1,0 +1,207 @@
+[0.328s] DEBUG:colcon:Command line arguments: ['/usr/bin/colcon', 'build', '--packages-select', 'fast_lio']
+[0.329s] DEBUG:colcon:Parsed command line arguments: Namespace(log_base=None, log_level=None, verb_name='build', build_base='build', install_base='install', merge_install=False, symlink_install=False, test_result_base=None, continue_on_error=False, executor='parallel', parallel_workers=8, event_handlers=None, ignore_user_meta=False, metas=['./colcon.meta'], base_paths=['.'], packages_ignore=None, packages_ignore_regex=None, paths=None, packages_up_to=None, packages_up_to_regex=None, packages_above=None, packages_above_and_dependencies=None, packages_above_depth=None, packages_select_by_dep=None, packages_skip_by_dep=None, packages_skip_up_to=None, packages_select_build_failed=False, packages_skip_build_finished=False, packages_select_test_failures=False, packages_skip_test_passed=False, packages_select=['fast_lio'], packages_skip=None, packages_select_regex=None, packages_skip_regex=None, packages_start=None, packages_end=None, allow_overriding=[], cmake_args=None, cmake_target=None, cmake_target_skip_unavailable=False, cmake_clean_cache=False, cmake_clean_first=False, cmake_force_configure=False, ament_cmake_args=None, catkin_cmake_args=None, catkin_skip_building_tests=False, verb_parser=<colcon_defaults.argument_parser.defaults.DefaultArgumentsDecorator object at 0x784f276593f0>, verb_extension=<colcon_core.verb.build.BuildVerb object at 0x784f27658ee0>, main=<bound method BuildVerb.main of <colcon_core.verb.build.BuildVerb object at 0x784f27658ee0>>)
+[0.910s] Level 1:colcon.colcon_core.package_discovery:discover_packages(colcon_meta) check parameters
+[0.910s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) check parameters
+[0.910s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) check parameters
+[0.910s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) check parameters
+[0.910s] Level 1:colcon.colcon_core.package_discovery:discover_packages(colcon_meta) discover
+[0.910s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) discover
+[0.910s] INFO:colcon.colcon_core.package_discovery:Crawling recursively for packages in '/home/rajesh/proc_dem_creation/ws'
+[0.910s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['ignore', 'ignore_ament_install']
+[0.910s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'ignore'
+[0.910s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'ignore_ament_install'
+[0.910s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['colcon_pkg']
+[0.910s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'colcon_pkg'
+[0.910s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['colcon_meta']
+[0.910s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'colcon_meta'
+[0.910s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['ros']
+[0.910s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'ros'
+[0.936s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['cmake', 'python']
+[0.936s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'cmake'
+[0.936s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'python'
+[0.936s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['python_setup_py']
+[0.936s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'python_setup_py'
+[0.936s] Level 1:colcon.colcon_core.package_identification:_identify(build) by extensions ['ignore', 'ignore_ament_install']
+[0.936s] Level 1:colcon.colcon_core.package_identification:_identify(build) by extension 'ignore'
+[0.936s] Level 1:colcon.colcon_core.package_identification:_identify(build) ignored
+[0.936s] Level 1:colcon.colcon_core.package_identification:_identify(install) by extensions ['ignore', 'ignore_ament_install']
+[0.937s] Level 1:colcon.colcon_core.package_identification:_identify(install) by extension 'ignore'
+[0.937s] Level 1:colcon.colcon_core.package_identification:_identify(install) ignored
+[0.937s] Level 1:colcon.colcon_core.package_identification:_identify(log) by extensions ['ignore', 'ignore_ament_install']
+[0.937s] Level 1:colcon.colcon_core.package_identification:_identify(log) by extension 'ignore'
+[0.937s] Level 1:colcon.colcon_core.package_identification:_identify(log) ignored
+[0.937s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['ignore', 'ignore_ament_install']
+[0.937s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'ignore'
+[0.937s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'ignore_ament_install'
+[0.937s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['colcon_pkg']
+[0.937s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'colcon_pkg'
+[0.937s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['colcon_meta']
+[0.937s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'colcon_meta'
+[0.937s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['ros']
+[0.937s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'ros'
+[0.937s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['cmake', 'python']
+[0.937s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'cmake'
+[0.937s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'python'
+[0.937s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extensions ['python_setup_py']
+[0.937s] Level 1:colcon.colcon_core.package_identification:_identify(src) by extension 'python_setup_py'
+[0.938s] Level 1:colcon.colcon_core.package_identification:_identify(src/FAST_LIO) by extensions ['ignore', 'ignore_ament_install']
+[0.938s] Level 1:colcon.colcon_core.package_identification:_identify(src/FAST_LIO) by extension 'ignore'
+[0.938s] Level 1:colcon.colcon_core.package_identification:_identify(src/FAST_LIO) by extension 'ignore_ament_install'
+[0.938s] Level 1:colcon.colcon_core.package_identification:_identify(src/FAST_LIO) by extensions ['colcon_pkg']
+[0.938s] Level 1:colcon.colcon_core.package_identification:_identify(src/FAST_LIO) by extension 'colcon_pkg'
+[0.938s] Level 1:colcon.colcon_core.package_identification:_identify(src/FAST_LIO) by extensions ['colcon_meta']
+[0.938s] Level 1:colcon.colcon_core.package_identification:_identify(src/FAST_LIO) by extension 'colcon_meta'
+[0.938s] Level 1:colcon.colcon_core.package_identification:_identify(src/FAST_LIO) by extensions ['ros']
+[0.938s] Level 1:colcon.colcon_core.package_identification:_identify(src/FAST_LIO) by extension 'ros'
+[0.945s] DEBUG:colcon.colcon_core.package_identification:Package 'src/FAST_LIO' with type 'ros.ament_cmake' and name 'fast_lio'
+[0.945s] Level 1:colcon.colcon_core.package_identification:_identify(src/dem_bringup) by extensions ['ignore', 'ignore_ament_install']
+[0.945s] Level 1:colcon.colcon_core.package_identification:_identify(src/dem_bringup) by extension 'ignore'
+[0.945s] Level 1:colcon.colcon_core.package_identification:_identify(src/dem_bringup) by extension 'ignore_ament_install'
+[0.946s] Level 1:colcon.colcon_core.package_identification:_identify(src/dem_bringup) by extensions ['colcon_pkg']
+[0.946s] Level 1:colcon.colcon_core.package_identification:_identify(src/dem_bringup) by extension 'colcon_pkg'
+[0.946s] Level 1:colcon.colcon_core.package_identification:_identify(src/dem_bringup) by extensions ['colcon_meta']
+[0.946s] Level 1:colcon.colcon_core.package_identification:_identify(src/dem_bringup) by extension 'colcon_meta'
+[0.946s] Level 1:colcon.colcon_core.package_identification:_identify(src/dem_bringup) by extensions ['ros']
+[0.946s] Level 1:colcon.colcon_core.package_identification:_identify(src/dem_bringup) by extension 'ros'
+[0.947s] DEBUG:colcon.colcon_core.package_identification:Package 'src/dem_bringup' with type 'ros.ament_cmake' and name 'dem_bringup'
+[0.947s] Level 1:colcon.colcon_core.package_identification:_identify(src/dem_mapping) by extensions ['ignore', 'ignore_ament_install']
+[0.948s] Level 1:colcon.colcon_core.package_identification:_identify(src/dem_mapping) by extension 'ignore'
+[0.948s] Level 1:colcon.colcon_core.package_identification:_identify(src/dem_mapping) by extension 'ignore_ament_install'
+[0.948s] Level 1:colcon.colcon_core.package_identification:_identify(src/dem_mapping) by extensions ['colcon_pkg']
+[0.948s] Level 1:colcon.colcon_core.package_identification:_identify(src/dem_mapping) by extension 'colcon_pkg'
+[0.948s] Level 1:colcon.colcon_core.package_identification:_identify(src/dem_mapping) by extensions ['colcon_meta']
+[0.948s] Level 1:colcon.colcon_core.package_identification:_identify(src/dem_mapping) by extension 'colcon_meta'
+[0.948s] Level 1:colcon.colcon_core.package_identification:_identify(src/dem_mapping) by extensions ['ros']
+[0.948s] Level 1:colcon.colcon_core.package_identification:_identify(src/dem_mapping) by extension 'ros'
+[0.949s] DEBUG:colcon.colcon_core.package_identification:Package 'src/dem_mapping' with type 'ros.ament_python' and name 'dem_mapping'
+[0.950s] Level 1:colcon.colcon_core.package_identification:_identify(src/dem_replay) by extensions ['ignore', 'ignore_ament_install']
+[0.950s] Level 1:colcon.colcon_core.package_identification:_identify(src/dem_replay) by extension 'ignore'
+[0.950s] Level 1:colcon.colcon_core.package_identification:_identify(src/dem_replay) by extension 'ignore_ament_install'
+[0.950s] Level 1:colcon.colcon_core.package_identification:_identify(src/dem_replay) by extensions ['colcon_pkg']
+[0.950s] Level 1:colcon.colcon_core.package_identification:_identify(src/dem_replay) by extension 'colcon_pkg'
+[0.950s] Level 1:colcon.colcon_core.package_identification:_identify(src/dem_replay) by extensions ['colcon_meta']
+[0.950s] Level 1:colcon.colcon_core.package_identification:_identify(src/dem_replay) by extension 'colcon_meta'
+[0.951s] Level 1:colcon.colcon_core.package_identification:_identify(src/dem_replay) by extensions ['ros']
+[0.951s] Level 1:colcon.colcon_core.package_identification:_identify(src/dem_replay) by extension 'ros'
+[0.952s] DEBUG:colcon.colcon_core.package_identification:Package 'src/dem_replay' with type 'ros.ament_python' and name 'dem_replay'
+[0.953s] Level 1:colcon.colcon_core.package_identification:_identify(src/dem_viz) by extensions ['ignore', 'ignore_ament_install']
+[0.953s] Level 1:colcon.colcon_core.package_identification:_identify(src/dem_viz) by extension 'ignore'
+[0.954s] Level 1:colcon.colcon_core.package_identification:_identify(src/dem_viz) by extension 'ignore_ament_install'
+[0.954s] Level 1:colcon.colcon_core.package_identification:_identify(src/dem_viz) by extensions ['colcon_pkg']
+[0.954s] Level 1:colcon.colcon_core.package_identification:_identify(src/dem_viz) by extension 'colcon_pkg'
+[0.954s] Level 1:colcon.colcon_core.package_identification:_identify(src/dem_viz) by extensions ['colcon_meta']
+[0.954s] Level 1:colcon.colcon_core.package_identification:_identify(src/dem_viz) by extension 'colcon_meta'
+[0.954s] Level 1:colcon.colcon_core.package_identification:_identify(src/dem_viz) by extensions ['ros']
+[0.954s] Level 1:colcon.colcon_core.package_identification:_identify(src/dem_viz) by extension 'ros'
+[0.955s] DEBUG:colcon.colcon_core.package_identification:Package 'src/dem_viz' with type 'ros.ament_python' and name 'dem_viz'
+[0.956s] Level 1:colcon.colcon_core.package_identification:_identify(src/livox_ros_driver2) by extensions ['ignore', 'ignore_ament_install']
+[0.956s] Level 1:colcon.colcon_core.package_identification:_identify(src/livox_ros_driver2) by extension 'ignore'
+[0.956s] Level 1:colcon.colcon_core.package_identification:_identify(src/livox_ros_driver2) by extension 'ignore_ament_install'
+[0.956s] Level 1:colcon.colcon_core.package_identification:_identify(src/livox_ros_driver2) by extensions ['colcon_pkg']
+[0.956s] Level 1:colcon.colcon_core.package_identification:_identify(src/livox_ros_driver2) by extension 'colcon_pkg'
+[0.956s] Level 1:colcon.colcon_core.package_identification:_identify(src/livox_ros_driver2) by extensions ['colcon_meta']
+[0.956s] Level 1:colcon.colcon_core.package_identification:_identify(src/livox_ros_driver2) by extension 'colcon_meta'
+[0.957s] Level 1:colcon.colcon_core.package_identification:_identify(src/livox_ros_driver2) by extensions ['ros']
+[0.957s] Level 1:colcon.colcon_core.package_identification:_identify(src/livox_ros_driver2) by extension 'ros'
+[0.958s] DEBUG:colcon.colcon_core.package_identification:Package 'src/livox_ros_driver2' with type 'ros.ament_cmake' and name 'livox_ros_driver2'
+[0.958s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) using defaults
+[0.959s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) discover
+[0.959s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) using defaults
+[0.959s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) discover
+[0.959s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) using defaults
+[1.012s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'dem_mapping' in 'src/dem_mapping'
+[1.012s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'dem_replay' in 'src/dem_replay'
+[1.012s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'dem_viz' in 'src/dem_viz'
+[1.012s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'livox_ros_driver2' in 'src/livox_ros_driver2'
+[1.012s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'dem_bringup' in 'src/dem_bringup'
+[1.014s] Level 1:colcon.colcon_core.package_discovery:discover_packages(prefix_path) check parameters
+[1.014s] Level 1:colcon.colcon_core.package_discovery:discover_packages(prefix_path) discover
+[1.023s] DEBUG:colcon.colcon_installed_package_information.package_discovery:Found 274 installed packages in /opt/ros/humble
+[1.024s] Level 1:colcon.colcon_core.package_discovery:discover_packages(prefix_path) using defaults
+[1.064s] Level 5:colcon.colcon_core.verb:set package 'fast_lio' build argument 'cmake_args' from command line to 'None'
+[1.064s] Level 5:colcon.colcon_core.verb:set package 'fast_lio' build argument 'cmake_target' from command line to 'None'
+[1.064s] Level 5:colcon.colcon_core.verb:set package 'fast_lio' build argument 'cmake_target_skip_unavailable' from command line to 'False'
+[1.064s] Level 5:colcon.colcon_core.verb:set package 'fast_lio' build argument 'cmake_clean_cache' from command line to 'False'
+[1.064s] Level 5:colcon.colcon_core.verb:set package 'fast_lio' build argument 'cmake_clean_first' from command line to 'False'
+[1.064s] Level 5:colcon.colcon_core.verb:set package 'fast_lio' build argument 'cmake_force_configure' from command line to 'False'
+[1.064s] Level 5:colcon.colcon_core.verb:set package 'fast_lio' build argument 'ament_cmake_args' from command line to 'None'
+[1.064s] Level 5:colcon.colcon_core.verb:set package 'fast_lio' build argument 'catkin_cmake_args' from command line to 'None'
+[1.064s] Level 5:colcon.colcon_core.verb:set package 'fast_lio' build argument 'catkin_skip_building_tests' from command line to 'False'
+[1.064s] DEBUG:colcon.colcon_core.verb:Building package 'fast_lio' with the following arguments: {'ament_cmake_args': None, 'build_base': '/home/rajesh/proc_dem_creation/ws/build/fast_lio', 'catkin_cmake_args': None, 'catkin_skip_building_tests': False, 'cmake_args': None, 'cmake_clean_cache': False, 'cmake_clean_first': False, 'cmake_force_configure': False, 'cmake_target': None, 'cmake_target_skip_unavailable': False, 'install_base': '/home/rajesh/proc_dem_creation/ws/install/fast_lio', 'merge_install': False, 'path': '/home/rajesh/proc_dem_creation/ws/src/FAST_LIO', 'symlink_install': False, 'test_result_base': None}
+[1.064s] INFO:colcon.colcon_core.executor:Executing jobs using 'parallel' executor
+[1.065s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:run_until_complete
+[1.066s] INFO:colcon.colcon_ros.task.ament_cmake.build:Building ROS package in '/home/rajesh/proc_dem_creation/ws/src/FAST_LIO' with build type 'ament_cmake'
+[1.066s] INFO:colcon.colcon_cmake.task.cmake.build:Building CMake package in '/home/rajesh/proc_dem_creation/ws/src/FAST_LIO'
+[1.078s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_core.shell.bat': Not used on non-Windows systems
+[1.079s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[1.079s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[1.130s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/rajesh/proc_dem_creation/ws/build/fast_lio': AMENT_PREFIX_PATH=/home/rajesh/proc_dem_creation/ws/install/livox_ros_driver2:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/rajesh/proc_dem_creation/ws/install/livox_ros_driver2:/opt/ros/humble LD_LIBRARY_PATH=/home/rajesh/proc_dem_creation/ws/install/livox_ros_driver2/lib:${LD_LIBRARY_PATH} PYTHONPATH=/home/rajesh/proc_dem_creation/ws/install/livox_ros_driver2/local/lib/python3.10/dist-packages:${PYTHONPATH} /usr/bin/cmake /home/rajesh/proc_dem_creation/ws/src/FAST_LIO -DCMAKE_INSTALL_PREFIX=/home/rajesh/proc_dem_creation/ws/install/fast_lio
+[13.208s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/rajesh/proc_dem_creation/ws/build/fast_lio' returned '0': AMENT_PREFIX_PATH=/home/rajesh/proc_dem_creation/ws/install/livox_ros_driver2:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/rajesh/proc_dem_creation/ws/install/livox_ros_driver2:/opt/ros/humble LD_LIBRARY_PATH=/home/rajesh/proc_dem_creation/ws/install/livox_ros_driver2/lib:${LD_LIBRARY_PATH} PYTHONPATH=/home/rajesh/proc_dem_creation/ws/install/livox_ros_driver2/local/lib/python3.10/dist-packages:${PYTHONPATH} /usr/bin/cmake /home/rajesh/proc_dem_creation/ws/src/FAST_LIO -DCMAKE_INSTALL_PREFIX=/home/rajesh/proc_dem_creation/ws/install/fast_lio
+[13.212s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/rajesh/proc_dem_creation/ws/build/fast_lio': AMENT_PREFIX_PATH=/home/rajesh/proc_dem_creation/ws/install/livox_ros_driver2:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/rajesh/proc_dem_creation/ws/install/livox_ros_driver2:/opt/ros/humble LD_LIBRARY_PATH=/home/rajesh/proc_dem_creation/ws/install/livox_ros_driver2/lib:${LD_LIBRARY_PATH} PYTHONPATH=/home/rajesh/proc_dem_creation/ws/install/livox_ros_driver2/local/lib/python3.10/dist-packages:${PYTHONPATH} /usr/bin/cmake --build /home/rajesh/proc_dem_creation/ws/build/fast_lio -- -j8 -l8
+[119.114s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/rajesh/proc_dem_creation/ws/build/fast_lio' returned '0': AMENT_PREFIX_PATH=/home/rajesh/proc_dem_creation/ws/install/livox_ros_driver2:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/rajesh/proc_dem_creation/ws/install/livox_ros_driver2:/opt/ros/humble LD_LIBRARY_PATH=/home/rajesh/proc_dem_creation/ws/install/livox_ros_driver2/lib:${LD_LIBRARY_PATH} PYTHONPATH=/home/rajesh/proc_dem_creation/ws/install/livox_ros_driver2/local/lib/python3.10/dist-packages:${PYTHONPATH} /usr/bin/cmake --build /home/rajesh/proc_dem_creation/ws/build/fast_lio -- -j8 -l8
+[119.128s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/rajesh/proc_dem_creation/ws/build/fast_lio': AMENT_PREFIX_PATH=/home/rajesh/proc_dem_creation/ws/install/livox_ros_driver2:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/rajesh/proc_dem_creation/ws/install/livox_ros_driver2:/opt/ros/humble LD_LIBRARY_PATH=/home/rajesh/proc_dem_creation/ws/install/livox_ros_driver2/lib:${LD_LIBRARY_PATH} PYTHONPATH=/home/rajesh/proc_dem_creation/ws/install/livox_ros_driver2/local/lib/python3.10/dist-packages:${PYTHONPATH} /usr/bin/cmake --install /home/rajesh/proc_dem_creation/ws/build/fast_lio
+[119.260s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(fast_lio)
+[119.261s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/rajesh/proc_dem_creation/ws/build/fast_lio' returned '0': AMENT_PREFIX_PATH=/home/rajesh/proc_dem_creation/ws/install/livox_ros_driver2:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/rajesh/proc_dem_creation/ws/install/livox_ros_driver2:/opt/ros/humble LD_LIBRARY_PATH=/home/rajesh/proc_dem_creation/ws/install/livox_ros_driver2/lib:${LD_LIBRARY_PATH} PYTHONPATH=/home/rajesh/proc_dem_creation/ws/install/livox_ros_driver2/local/lib/python3.10/dist-packages:${PYTHONPATH} /usr/bin/cmake --install /home/rajesh/proc_dem_creation/ws/build/fast_lio
+[119.271s] Level 1:colcon.colcon_core.environment:checking '/home/rajesh/proc_dem_creation/ws/install/fast_lio' for CMake module files
+[119.272s] Level 1:colcon.colcon_core.environment:checking '/home/rajesh/proc_dem_creation/ws/install/fast_lio' for CMake config files
+[119.273s] Level 1:colcon.colcon_core.shell:create_environment_hook('fast_lio', 'cmake_prefix_path')
+[119.274s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/rajesh/proc_dem_creation/ws/install/fast_lio/share/fast_lio/hook/cmake_prefix_path.ps1'
+[119.275s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/rajesh/proc_dem_creation/ws/install/fast_lio/share/fast_lio/hook/cmake_prefix_path.dsv'
+[119.276s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/rajesh/proc_dem_creation/ws/install/fast_lio/share/fast_lio/hook/cmake_prefix_path.sh'
+[119.277s] Level 1:colcon.colcon_core.environment:checking '/home/rajesh/proc_dem_creation/ws/install/fast_lio/lib'
+[119.277s] Level 1:colcon.colcon_core.shell:create_environment_hook('fast_lio', 'ld_library_path_lib')
+[119.277s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/rajesh/proc_dem_creation/ws/install/fast_lio/share/fast_lio/hook/ld_library_path_lib.ps1'
+[119.277s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/rajesh/proc_dem_creation/ws/install/fast_lio/share/fast_lio/hook/ld_library_path_lib.dsv'
+[119.278s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/rajesh/proc_dem_creation/ws/install/fast_lio/share/fast_lio/hook/ld_library_path_lib.sh'
+[119.278s] Level 1:colcon.colcon_core.environment:checking '/home/rajesh/proc_dem_creation/ws/install/fast_lio/bin'
+[119.278s] Level 1:colcon.colcon_core.environment:checking '/home/rajesh/proc_dem_creation/ws/install/fast_lio/lib/pkgconfig/fast_lio.pc'
+[119.279s] Level 1:colcon.colcon_core.environment:checking '/home/rajesh/proc_dem_creation/ws/install/fast_lio/lib/python3.10/site-packages'
+[119.279s] Level 1:colcon.colcon_core.environment:checking '/home/rajesh/proc_dem_creation/ws/install/fast_lio/bin'
+[119.279s] INFO:colcon.colcon_core.shell:Creating package script '/home/rajesh/proc_dem_creation/ws/install/fast_lio/share/fast_lio/package.ps1'
+[119.281s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/rajesh/proc_dem_creation/ws/install/fast_lio/share/fast_lio/package.dsv'
+[119.283s] INFO:colcon.colcon_core.shell:Creating package script '/home/rajesh/proc_dem_creation/ws/install/fast_lio/share/fast_lio/package.sh'
+[119.284s] INFO:colcon.colcon_core.shell:Creating package script '/home/rajesh/proc_dem_creation/ws/install/fast_lio/share/fast_lio/package.bash'
+[119.286s] INFO:colcon.colcon_core.shell:Creating package script '/home/rajesh/proc_dem_creation/ws/install/fast_lio/share/fast_lio/package.zsh'
+[119.288s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/rajesh/proc_dem_creation/ws/install/fast_lio/share/colcon-core/packages/fast_lio)
+[119.289s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(fast_lio)
+[119.289s] Level 1:colcon.colcon_core.environment:checking '/home/rajesh/proc_dem_creation/ws/install/fast_lio' for CMake module files
+[119.290s] Level 1:colcon.colcon_core.environment:checking '/home/rajesh/proc_dem_creation/ws/install/fast_lio' for CMake config files
+[119.290s] Level 1:colcon.colcon_core.shell:create_environment_hook('fast_lio', 'cmake_prefix_path')
+[119.290s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/rajesh/proc_dem_creation/ws/install/fast_lio/share/fast_lio/hook/cmake_prefix_path.ps1'
+[119.291s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/rajesh/proc_dem_creation/ws/install/fast_lio/share/fast_lio/hook/cmake_prefix_path.dsv'
+[119.291s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/rajesh/proc_dem_creation/ws/install/fast_lio/share/fast_lio/hook/cmake_prefix_path.sh'
+[119.292s] Level 1:colcon.colcon_core.environment:checking '/home/rajesh/proc_dem_creation/ws/install/fast_lio/lib'
+[119.292s] Level 1:colcon.colcon_core.shell:create_environment_hook('fast_lio', 'ld_library_path_lib')
+[119.292s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/rajesh/proc_dem_creation/ws/install/fast_lio/share/fast_lio/hook/ld_library_path_lib.ps1'
+[119.292s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/rajesh/proc_dem_creation/ws/install/fast_lio/share/fast_lio/hook/ld_library_path_lib.dsv'
+[119.293s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/rajesh/proc_dem_creation/ws/install/fast_lio/share/fast_lio/hook/ld_library_path_lib.sh'
+[119.293s] Level 1:colcon.colcon_core.environment:checking '/home/rajesh/proc_dem_creation/ws/install/fast_lio/bin'
+[119.293s] Level 1:colcon.colcon_core.environment:checking '/home/rajesh/proc_dem_creation/ws/install/fast_lio/lib/pkgconfig/fast_lio.pc'
+[119.293s] Level 1:colcon.colcon_core.environment:checking '/home/rajesh/proc_dem_creation/ws/install/fast_lio/lib/python3.10/site-packages'
+[119.293s] Level 1:colcon.colcon_core.environment:checking '/home/rajesh/proc_dem_creation/ws/install/fast_lio/bin'
+[119.294s] INFO:colcon.colcon_core.shell:Creating package script '/home/rajesh/proc_dem_creation/ws/install/fast_lio/share/fast_lio/package.ps1'
+[119.294s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/rajesh/proc_dem_creation/ws/install/fast_lio/share/fast_lio/package.dsv'
+[119.295s] INFO:colcon.colcon_core.shell:Creating package script '/home/rajesh/proc_dem_creation/ws/install/fast_lio/share/fast_lio/package.sh'
+[119.295s] INFO:colcon.colcon_core.shell:Creating package script '/home/rajesh/proc_dem_creation/ws/install/fast_lio/share/fast_lio/package.bash'
+[119.296s] INFO:colcon.colcon_core.shell:Creating package script '/home/rajesh/proc_dem_creation/ws/install/fast_lio/share/fast_lio/package.zsh'
+[119.296s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/rajesh/proc_dem_creation/ws/install/fast_lio/share/colcon-core/packages/fast_lio)
+[119.296s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:closing loop
+[119.298s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:loop closed
+[119.298s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:run_until_complete finished with '0'
+[119.298s] DEBUG:colcon.colcon_core.event_reactor:joining thread
+[119.327s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_notification.desktop_notification.notify_send': Could not find 'notify-send'
+[119.327s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_notification.desktop_notification.terminal_notifier': Not used on non-Darwin systems
+[119.327s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_notification.desktop_notification.win32': Not used on non-Windows systems
+[119.327s] INFO:colcon.colcon_notification.desktop_notification:Sending desktop notification using 'notify2'
+[119.328s] DEBUG:colcon.colcon_notification.desktop_notification.notify2:Failed to initialize notify2: org.freedesktop.DBus.Error.FileNotFound: Failed to connect to socket /run/user/1000/bus: No such file or directory
+[119.328s] DEBUG:colcon.colcon_core.event_reactor:joined thread
+[119.329s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/rajesh/proc_dem_creation/ws/install/local_setup.ps1'
+[119.330s] INFO:colcon.colcon_core.shell:Creating prefix util module '/home/rajesh/proc_dem_creation/ws/install/_local_setup_util_ps1.py'
+[119.332s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/rajesh/proc_dem_creation/ws/install/setup.ps1'
+[119.334s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/rajesh/proc_dem_creation/ws/install/local_setup.sh'
+[119.335s] INFO:colcon.colcon_core.shell:Creating prefix util module '/home/rajesh/proc_dem_creation/ws/install/_local_setup_util_sh.py'
+[119.336s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/rajesh/proc_dem_creation/ws/install/setup.sh'
+[119.337s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/rajesh/proc_dem_creation/ws/install/local_setup.bash'
+[119.338s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/rajesh/proc_dem_creation/ws/install/setup.bash'
+[119.339s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/rajesh/proc_dem_creation/ws/install/local_setup.zsh'
+[119.340s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/rajesh/proc_dem_creation/ws/install/setup.zsh'

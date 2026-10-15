@@ -26,6 +26,7 @@ setup(
             'inspect_bag = dem_replay.inspect_bag:main',
             'bag_convert = dem_replay.bag_convert:main',
             'record_odom = dem_replay.record_odom:main',
+            'pose_play = dem_replay.pose_play:main',
         ],
     },
 )

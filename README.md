@@ -1,5 +1,8 @@
 # Procedural DEM creation from a ROS bag (ROS 1 → ROS 2, FAST-LIO2, georeferenced output)
 
+---
+
+
 Converts a recorded road dataset (ROS 1 `.bag`) into ROS 2, replays it through
 FAST-LIO2 LiDAR-inertial odometry, builds an elevation grid online, and exports
 the result **georeferenced** (WGS84 / UTM) as GeoTIFF + PCD point clouds —
@@ -296,6 +299,8 @@ Everything lands in `out/`:
 |---|---|---|
 | `preprocess.lidar_type` | `4` | Mid-360 = `sensor_msgs/PointCloud2` in Livox format (1 = CustomMsg, 2 = Velodyne, 3 = Ouster) |
 | `common.imu_topic` | `/mid360/livox/imu_si` | SI units from `imu_relay` |
+| `mapping.extrinsic_est_en` | `false` | never estimate the factory Mid-360 IMU extrinsic online — it diverges (see error #14) |
+| `mapping.acc_cov` / `gyr_cov` | `0.5` | this rig vibrates hard (`|acc|` p99 5.2 g); upstream 0.1 makes the EKF over-trust the IMU and drift (error #16) |
 | `pcd_save.pcd_save_en` | `true` | gates the `/map_save` service (upstream shutdown-save is dead) |
 | `publish.map_en` | `true` | accumulate the map cloud (needed by `/map_save`) |
 | `publish.dense_publish_en` | `true` | full undistorted scans for the DEM |
@@ -305,6 +310,20 @@ Everything lands in `out/`:
 `publish_map()` patch ([§9](#9-errors-and-how-they-were-fixed)) makes the
 per-second map serialization a no-op while nothing subscribes to
 `/Laser_map`, which removes the large periodic copies.
+
+**FAST-LIO diagnostics:** `ws/src/FAST_LIO/Log/mat_pre.txt` is rewritten on
+**every run** (no flag needed) with the full filter state, one row per scan:
+
+```
+t  euler(3)  pos(3)  ext_euler(3)  offset_T_L_I(3)  vel(3)  bg(3)  ba(3)  grav(3)
+```
+
+Suspicious signatures: `ext_euler`/`offset_T` drifting away from the fixed
+extrinsic (should stay ≈0° / ≈0.05 m — divergence here meant
+`extrinsic_est_en` must be false), `|ba|` growing past ~1 m/s², `vel`
+exceeding anything the vehicle can do, or `grav` tilting away from
+`(0, 0, −9.81)`. `Log/fast_lio_time_log.csv` (only with
+`runtime_pos_log_enable: true`) adds per-iteration timing/ikdtree stats.
 
 ### Playback
 
@@ -356,7 +375,7 @@ ros2 topic pub --once /replay/rate std_msgs/msg/Float64 "{data: 2.0}"
 |---|---|---|---|
 | 1 | `colcon build` fails: `install/dem_replay ... File exists` / stale overlay entries after adding a new executable | leftover `build/` + `install/` dirs from before `--symlink-install`, mixing copy- and symlink-installed layouts | delete the affected package's `build/<pkg>` **and** `install/<pkg>`, rebuild: `rm -rf ws/build/fast_lio ws/install/fast_lio && colcon build --packages-select fast_lio` |
 | 2 | `/map_save` returns failure / no `map_fastlio.pcd` | upstream FAST-LIO only saves on shutdown and only when `pcd_save_en` is true | set `pcd_save.pcd_save_en: true` **and** `publish.map_en: true` in `fastlio_mid360.yaml`; call the service explicitly |
-| 3 | FAST-LIO diverges / "Initialize error" at replay start | IMU motion during initialisation (`MAX_INI_COUNT` = 10 samples) | keep the first seconds of the recording stationary (verified for this bag) or raise `MAX_INI_COUNT` in `include/utility.h` |
+| 3 | FAST-LIO diverges / "Initialize error" at replay start, or a systematically tilted trajectory (gravity init error) | IMU initialisation (`MAX_INI_COUNT`) averages only the first samples; the upstream default of **10 samples ≈ 0.05 s** is far too short for a vibrating platform (here it produced a ~1.5° tilted gravity estimate that the whole trajectory inherits) | keep the first seconds of the recording stationary (verified: static for ~4 s here) **and** raise `MAX_INI_COUNT` — this repo uses **400** (2 s @ 200 Hz) in `src/FAST_LIO/src/IMU_Processing.hpp` |
 | 4 | FAST-LIO drifts immediately, gravity never converges | Livox driver records acceleration in **g**; the estimator expects m/s² | `imu_relay` node republishes the topic with `accel_scale 9.80665` and FAST-LIO subscribes to `/mid360/livox/imu_si` |
 | 5 | No data reaches `dem_node` although topics publish | QoS mismatch: sensor data is `BEST_EFFORT`, subscribers requested `RELIABLE` (or vice versa) | use sensor-data `BEST_EFFORT` QoS for cloud/IMU subscriptions (`dem_node`, `stream_monitor`, `replay` publishers aligned) |
 | 6 | FAST-LIO errors on the point cloud / empty preprocess | wrong `lidar_type`: default is Livox `CustomMsg`, the Mid-360 records `PointCloud2` | `preprocess.lidar_type: 4`, `timestamp_unit: 3` (ns), `scan_rate: 10` |
@@ -367,10 +386,14 @@ ros2 topic pub --once /replay/rate std_msgs/msg/Float64 "{data: 2.0}"
 | 11 | DEM ends up shifted against the GNSS track / RMS ≈ several m | (a) lat/lon order swapped, (b) trajectory and GNSS clock mismatch, (c) grid too small so part of the trajectory fell outside | (a) both orders are now auto-fitted and the winner reported; (b) `--tol` + RMS gate refuses bad fits; (c) 400×400 m grid covers the full ~230 m extent |
 | 12 | `ros2` / `ros2 bag info` → `command not found` | environment not sourced | `source /opt/ros/humble/setup.bash && source ws/install/setup.bash` (rosbags are **not** on the default `PATH`) |
 | 13 | Big RAM spikes / near-OOM on long recordings | FAST-LIO serialized the whole growing map into a `PointCloud2` every second even with no subscriber | patched `publish_map()` in `laserMapping.cpp`: `reserve()` up front and return early when `/Laser_map` has 0 subscribers (only the internal accumulation continues) |
+| 14 | **FAST-LIO track diverges mid-run** (here: healthy for ~280 s, then velocity spikes to 14 m/s while GNSS says 1.2 m/s, z collapses by 200 m; the georef fit then correctly refuses with RMS ≫ 1 m) | `extrinsic_est_en: true` lets the EKF estimate the IMU↔LiDAR extrinsic online. On this (vibrating, slowly rotating) platform that quantity is unobservable: the estimate random-walks away from the factory value and drags accel bias + attitude with it until the whole state blows up | set `extrinsic_est_en: false` in `fastlio_mid360.yaml` (the Mid-360 built-in IMU extrinsic is factory-known and already listed as `extrinsic_T/R`). **Diagnosis:** `ws/src/FAST_LIO/Log/mat_pre.txt` is written *every run, unconditionally*, one row per scan: `t, euler(3), pos(3), ext_euler(3), offset_T(3), vel(3), bg(3), ba(3), grav(3)` — plot `ext_euler`/`vel` and the culprit state component is immediately visible (`ext_euler` grew 0° → 599° over the run while the truth is 0°) |
+| 15 | `./run_pipeline.sh` hangs forever after the save services (observed: stuck 1.5 h between stage 5 and georeferencing) | (a) in non-interactive shells backgrounded commands **inherit SIGINT as ignored** (POSIX), so `ros2 run … &` swallowed `kill -INT $REC_PID`; (b) the idle recorder node was blocked in `rcl_wait()`, rmw retries on EINTR and the Python signal handler never ran — SIGINT is a no-op while a node has no traffic | `run_pipeline.sh` now has `stop_pid()` (bounded poll, escalates INT→TERM→KILL, never a bare `wait`) and `stop_pipeline_nodes()` (reaps any children `ros2 launch` left behind); `record_odom` spins with `timeout_sec=0.5` so it processes pending signals within half a second even when idle |
+| 16 | Slow degradation over a long run: LIO-vs-GNSS RMS grows from 0.15 m (first minute) to metres after ~8 min; `mat_pre.txt` shows accel bias growing and the gravity estimate tilting while `ext_euler` stays 0 | IMU noise parameters model a much quieter sensor than this rig produces (raw `|acc|` p99 = 5.2 g of vibration): the EKF over-trusts the accelerometer and slowly trades bias + gravity tilt for position (z) drift | raise `mapping.acc_cov` / `gyr_cov` from the upstream `0.1` to `0.5` so the filter leans on the LiDAR; measure the residual drift with prefix fits (see §7) and document it |
 
 Checklist when a run misbehaves: `out/logs/pipeline_*.log` (all node output),
 `out/logs/record_odom.log`, `out/logs/services.log` (service responses),
-`out/logs/mem_*.csv` (RAM trace), and
+`out/logs/mem_*.csv` (RAM trace), `ws/src/FAST_LIO/Log/mat_pre.txt` (full
+FAST-LIO state history — see [§7](#7-configuration--tuning)), and
 `ros2 run dem_replay inspect_bag -- <bag>` (topic rates, stamp monotonicity).
 
 ## 10. Switching the pipeline ROS 1 → ROS 2 (and back)

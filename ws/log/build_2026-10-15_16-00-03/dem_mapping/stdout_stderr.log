@@ -1,0 +1,18 @@
+running develop
+running egg_info
+writing dem_mapping.egg-info/PKG-INFO
+writing dependency_links to dem_mapping.egg-info/dependency_links.txt
+writing entry points to dem_mapping.egg-info/entry_points.txt
+writing requirements to dem_mapping.egg-info/requires.txt
+writing top-level names to dem_mapping.egg-info/top_level.txt
+reading manifest file 'dem_mapping.egg-info/SOURCES.txt'
+writing manifest file 'dem_mapping.egg-info/SOURCES.txt'
+running build_ext
+Creating /home/rajesh/proc_dem_creation/ws/install/dem_mapping/lib/python3.10/site-packages/dem-mapping.egg-link (link to .)
+Installing dem_node script to /home/rajesh/proc_dem_creation/ws/install/dem_mapping/lib/dem_mapping
+Installing georef_export script to /home/rajesh/proc_dem_creation/ws/install/dem_mapping/lib/dem_mapping
+Installing gnss_align script to /home/rajesh/proc_dem_creation/ws/install/dem_mapping/lib/dem_mapping
+Installing gnss_warp script to /home/rajesh/proc_dem_creation/ws/install/dem_mapping/lib/dem_mapping
+
+Installed /home/rajesh/proc_dem_creation/ws/build/dem_mapping
+running symlink_data

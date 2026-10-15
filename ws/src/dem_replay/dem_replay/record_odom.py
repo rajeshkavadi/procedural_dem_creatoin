@@ -76,6 +76,9 @@ class OdomRecorder(Node):
             rclpy.shutdown()
 
     def close(self):
+        if getattr(self, '_closed', False):
+            return
+        self._closed = True
         try:
             self._fh.close()
         except Exception:
@@ -108,7 +111,12 @@ def main(argv=None):
     signal.signal(signal.SIGINT, _sigint)
 
     try:
-        rclpy.spin(node)
+        # Bounded spin timeout: while the topic is idle rclpy would block in
+        # rcl_wait() forever, rmw retries on EINTR and the Python SIGINT
+        # handler above never gets to run - the node then ignores Ctrl-C
+        # (and `kill -INT` from scripts) until the next message arrives.
+        while rclpy.ok():
+            rclpy.spin_once(node, timeout_sec=0.5)
     except KeyboardInterrupt:
         pass
     except ExternalShutdownException:       # rclpy already shut down

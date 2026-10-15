@@ -26,13 +26,25 @@
             scan_rate: 10
 
         mapping:
-            acc_cov: 0.1
-            gyr_cov: 0.1
+            # This rig vibrates hard (raw IMU: |acc| p99 = 5.2 g,
+            # |gyr| mean 0.59 rad/s).  The upstream defaults (0.1) model a
+            # much quieter IMU; with them the EKF over-trusts the
+            # accelerometer and slowly trades accel bias + gravity tilt for
+            # position drift (z drifts ~10 m over 10 min).  0.5 makes the
+            # filter lean on the LiDAR instead.
+            acc_cov: 0.5
+            gyr_cov: 0.5
             b_acc_cov: 0.0001
             b_gyr_cov: 0.0001
             fov_degree:    360.0
             det_range:     100.0
-            extrinsic_est_en:  true
+            # Mid-360 built-in IMU <-> lidar extrinsic is factory-known and
+            # listed below: estimating it online (extrinsic_est_en) is
+            # UNOBSERVABLE on this slowly-rotating vibrating platform and
+            # diverges - FAST-LIO/Log/mat_pre.txt shows offset_R_L_I drifting
+            # to hundreds of degrees, dragging accel bias and attitude with
+            # it until the whole state blows up (~300 s into the run).
+            extrinsic_est_en:  false
             # built-in IMU of the Mid-360 relative to the LiDAR frame
             extrinsic_T: [ -0.011, -0.02329, 0.04412 ]
             extrinsic_R: [ 1., 0., 0.,

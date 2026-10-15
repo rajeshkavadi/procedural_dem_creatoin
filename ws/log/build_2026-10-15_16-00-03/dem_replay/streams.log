@@ -1,0 +1,23 @@
+[1.630s] Invoking command in '/home/rajesh/proc_dem_creation/ws/build/dem_replay': PYTHONPATH=/home/rajesh/proc_dem_creation/ws/build/dem_replay/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/rajesh/proc_dem_creation/ws/install/dem_replay/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/rajesh/proc_dem_creation/ws/build/dem_replay/build --no-deps symlink_data
+[1.943s] running develop
+[2.130s] running egg_info
+[2.130s] writing dem_replay.egg-info/PKG-INFO
+[2.131s] writing dependency_links to dem_replay.egg-info/dependency_links.txt
+[2.131s] writing entry points to dem_replay.egg-info/entry_points.txt
+[2.131s] writing requirements to dem_replay.egg-info/requires.txt
+[2.131s] writing top-level names to dem_replay.egg-info/top_level.txt
+[2.133s] reading manifest file 'dem_replay.egg-info/SOURCES.txt'
+[2.133s] writing manifest file 'dem_replay.egg-info/SOURCES.txt'
+[2.136s] running build_ext
+[2.136s] Creating /home/rajesh/proc_dem_creation/ws/install/dem_replay/lib/python3.10/site-packages/dem-replay.egg-link (link to .)
+[2.137s] Installing bag_convert script to /home/rajesh/proc_dem_creation/ws/install/dem_replay/lib/dem_replay
+[2.137s] Installing imu_relay script to /home/rajesh/proc_dem_creation/ws/install/dem_replay/lib/dem_replay
+[2.137s] Installing inspect_bag script to /home/rajesh/proc_dem_creation/ws/install/dem_replay/lib/dem_replay
+[2.138s] Installing pose_play script to /home/rajesh/proc_dem_creation/ws/install/dem_replay/lib/dem_replay
+[2.138s] Installing record_odom script to /home/rajesh/proc_dem_creation/ws/install/dem_replay/lib/dem_replay
+[2.138s] Installing replay script to /home/rajesh/proc_dem_creation/ws/install/dem_replay/lib/dem_replay
+[2.138s] Installing stream_monitor script to /home/rajesh/proc_dem_creation/ws/install/dem_replay/lib/dem_replay
+[2.139s] 
+[2.139s] Installed /home/rajesh/proc_dem_creation/ws/build/dem_replay
+[2.139s] running symlink_data
+[2.211s] Invoked command in '/home/rajesh/proc_dem_creation/ws/build/dem_replay' returned '0': PYTHONPATH=/home/rajesh/proc_dem_creation/ws/build/dem_replay/prefix_override:/usr/lib/python3/dist-packages/colcon_core/task/python/colcon_distutils_commands:/home/rajesh/proc_dem_creation/ws/install/dem_replay/lib/python3.10/site-packages:${PYTHONPATH} /usr/bin/python3 -W ignore:setup.py install is deprecated -W ignore:easy_install command is deprecated setup.py develop --editable --build-directory /home/rajesh/proc_dem_creation/ws/build/dem_replay/build --no-deps symlink_data

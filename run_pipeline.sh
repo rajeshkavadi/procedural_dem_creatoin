@@ -69,16 +69,59 @@ source /opt/ros/humble/setup.bash
 source "$WS/install/setup.bash"
 set -u
 
+# Wait up to $2 seconds for $1 to exit; escalate TERM -> KILL.  Plain
+# `wait` is dangerous here: async commands inherit SIG_IGN for SIGINT in
+# non-interactive shells (so `ros2 run` swallows it) and an idle rclpy
+# node blocked in rcl_wait() does not process signals either - a run once
+# hung for 1.5 h at such a wait.
+stop_pid() {
+  local pid="$1" grace="${2:-15}" i
+  [ -n "$pid" ] || return 0
+  for ((i = 0; i < grace; i++)); do
+    kill -0 "$pid" 2>/dev/null || return 0
+    sleep 1
+  done
+  kill -TERM "$pid" 2>/dev/null
+  for ((i = 0; i < 5; i++)); do
+    kill -0 "$pid" 2>/dev/null || return 0
+    sleep 1
+  done
+  kill -KILL "$pid" 2>/dev/null
+  return 0
+}
+
+# Stop every process this script started (never unrelated ones)
+stop_pipeline_nodes() {
+  pkill -INT  -f 'lib/dem_replay/record_odom --topic' 2>/dev/null
+  pkill -TERM -f 'fast_lio/lib/fast_lio/fastlio_mapping' 2>/dev/null
+  pkill -TERM -f 'dem_mapping/lib/dem_mapping/dem_node' 2>/dev/null
+  pkill -TERM -f 'dem_replay/lib/dem_replay/replay --ros-args' 2>/dev/null
+  pkill -TERM -f 'dem_replay/lib/dem_replay/imu_relay' 2>/dev/null
+  pkill -TERM -f 'dem_replay/lib/dem_replay/stream_monitor' 2>/dev/null
+  sleep 2
+  pkill -KILL -f 'fast_lio/lib/fast_lio/fastlio_mapping' 2>/dev/null
+  pkill -KILL -f 'dem_mapping/lib/dem_mapping/dem_node' 2>/dev/null
+  pkill -KILL -f 'dem_replay/lib/dem_replay/(replay|imu_relay|stream_monitor)' 2>/dev/null
+  pkill -KILL -f 'lib/dem_replay/record_odom --topic' 2>/dev/null
+  return 0
+}
+
 cleanup() {
   # stop everything this script started, never touch unrelated processes
-  [ -n "${REC_PID:-}" ]  && kill -INT "$REC_PID" 2>/dev/null
   [ -n "${MEM_PID:-}" ]  && kill "$MEM_PID" 2>/dev/null
+  if [ -n "${REC_PID:-}" ]; then
+    kill -INT "$REC_PID" 2>/dev/null
+    pkill -INT -f 'lib/dem_replay/record_odom --topic' 2>/dev/null
+    stop_pid "$REC_PID" 10
+    REC_PID=""
+  fi
   if [ -n "${LAUNCH_PID:-}" ]; then
     kill -INT "$LAUNCH_PID" 2>/dev/null
-    sleep 3
-    kill -TERM  "$LAUNCH_PID" 2>/dev/null
-    wait "$LAUNCH_PID" 2>/dev/null
+    stop_pid "$LAUNCH_PID" 10
+    LAUNCH_PID=""
   fi
+  stop_pipeline_nodes          # ros2 launch may have died without children
+  MEM_PID=""
 }
 trap cleanup EXIT
 
@@ -161,10 +204,12 @@ echo "== 5/6 saving the DEM grid -> $OUT/dem_<stamp>.npz"
 ros2 service call /dem_node/save std_srvs/srv/Trigger {} 2>&1 | tee -a "$LOGDIR/services.log"
 
 sleep 2
-kill -INT "$REC_PID" 2>/dev/null; wait "$REC_PID" 2>/dev/null; REC_PID=""
+kill -INT "$REC_PID" 2>/dev/null
+pkill -INT -f 'lib/dem_replay/record_odom --topic' 2>/dev/null
+stop_pid "$REC_PID" 10; REC_PID=""        # bounded - never hang on wait
 echo "   odom rows: $(wc -l < "$OUT/odom.csv" 2>/dev/null || echo 0)"
 
-cleanup; LAUNCH_PID=""; trap - EXIT       # pipeline finished, stop the nodes
+cleanup; trap - EXIT                       # pipeline finished, stop the nodes
 sleep 2
 
 DEM=$(ls -t "$OUT"/dem_*.npz 2>/dev/null | head -1 || true)

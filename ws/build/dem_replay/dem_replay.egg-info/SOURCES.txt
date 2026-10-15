@@ -5,6 +5,7 @@ dem_replay/__init__.py
 dem_replay/bag_convert.py
 dem_replay/imu_relay_node.py
 dem_replay/inspect_bag.py
+dem_replay/pose_play.py
 dem_replay/record_odom.py
 dem_replay/replay_node.py
 dem_replay/stream_monitor_node.py

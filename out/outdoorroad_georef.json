@@ -9,16 +9,16 @@
       22.31484586885199,
       22.31907125469297
     ],
-    "matched_samples": 6525,
-    "rms_m": 336.0069942019765,
-    "rms_horizontal_m": 327.18173417218145,
-    "rms_vertical_m": 76.50367949798935,
-    "max_error_m": 467.5904821505974,
-    "yaw_deg": -107.66206431913645,
-    "scale_diagnostic": 0.03526733334559229,
-    "rms_full_fit_m": 103.67881729670675,
-    "chord_local_m": 761.5364576251668,
-    "chord_gnss_m": 4.032445593576271
+    "matched_samples": 6550,
+    "rms_m": 6.4116962996217355,
+    "rms_horizontal_m": 5.800389372813732,
+    "rms_vertical_m": 2.7322760772536476,
+    "max_error_m": 12.384442824209467,
+    "yaw_deg": -43.73796732885505,
+    "scale_diagnostic": 1.0004083962323544,
+    "rms_full_fit_m": 6.090673337601284,
+    "chord_local_m": 23.4361818252149,
+    "chord_gnss_m": 4.040219221403125
   },
   "candidates": [
     {
@@ -31,16 +31,16 @@
         22.31484586885199,
         22.31907125469297
       ],
-      "matched_samples": 6525,
-      "rms_m": 336.0069942019765,
-      "rms_horizontal_m": 327.18173417218145,
-      "rms_vertical_m": 76.50367949798935,
-      "max_error_m": 467.5904821505974,
-      "yaw_deg": -107.66206431913645,
-      "scale_diagnostic": 0.03526733334559229,
-      "rms_full_fit_m": 103.67881729670675,
-      "chord_local_m": 761.5364576251668,
-      "chord_gnss_m": 4.032445593576271
+      "matched_samples": 6550,
+      "rms_m": 6.4116962996217355,
+      "rms_horizontal_m": 5.800389372813732,
+      "rms_vertical_m": 2.7322760772536476,
+      "max_error_m": 12.384442824209467,
+      "yaw_deg": -43.73796732885505,
+      "scale_diagnostic": 1.0004083962323544,
+      "rms_full_fit_m": 6.090673337601284,
+      "chord_local_m": 23.4361818252149,
+      "chord_gnss_m": 4.040219221403125
     },
     {
       "order": "x=lon",
@@ -52,16 +52,16 @@
         60.44500584807247,
         60.447047458961606
       ],
-      "matched_samples": 6525,
-      "rms_m": 349.8065344281994,
-      "rms_horizontal_m": 341.3382465413684,
-      "rms_vertical_m": 76.50367949798935,
-      "max_error_m": 506.5153429041108,
-      "yaw_deg": -93.23143141428113,
-      "scale_diagnostic": 0.054147489249430046,
-      "rms_full_fit_m": 158.04492466052304,
-      "chord_local_m": 761.5364576251668,
-      "chord_gnss_m": 7.245618650474325
+      "matched_samples": 6550,
+      "rms_m": 66.97418512914395,
+      "rms_horizontal_m": 66.91842900988124,
+      "rms_vertical_m": 2.7322760772536476,
+      "max_error_m": 129.65280231941202,
+      "yaw_deg": -28.991931531970295,
+      "scale_diagnostic": 1.5159586980867263,
+      "rms_full_fit_m": 19.59352097698555,
+      "chord_local_m": 23.4361818252149,
+      "chord_gnss_m": 7.259961986482601
     }
   ],
   "verdict": "NOT consistent"
