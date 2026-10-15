@@ -1,0 +1,53 @@
+dem_node:
+  ros__parameters:
+    # ---- GNSS-aided build: raw scans + warped poses -> grid in UTM -----
+    # Used by run_gnss_aided.sh: dem_node 'pose' mode transforms every raw
+    # Mid-360 scan with the pose stream published by pose_play (which
+    # replays the output of `dem_mapping gnss_warp` paced by /clock).
+    # The grid therefore lives directly in UTM metres - no rigid fit is
+    # needed afterwards, georef_export only stamps the CRS (--already-utm).
+    cloud_topic: /mid360/livox/lidar
+    mode: pose
+    pose_topic: /Odometry_warp
+    pose_type: nav_msgs/msg/Odometry
+    output_frame: map              # cosmetic; coordinates are UTM metres
+    motion_comp: true
+    pose_timeout: 0.5
+    # body <- lidar extrinsic of the Mid-360 (from fastlio_mid360.yaml:
+    # offset_T_L_I, rotation identity).  Small (~5 cm) but cheap to include.
+    T_body_lidar: [1.0, 0.0, 0.0, -0.011,
+                   0.0, 1.0, 0.0, -0.02329,
+                   0.0, 0.0, 1.0, 0.04412,
+                   0.0, 0.0, 0.0, 1.0]
+
+    # ---- elevation grid (UTM zone 34N / EPSG:32634, this recording) -----
+    # Covers the warped track bbox (572348..572577 E, 6701694..6701925 N)
+    # with margin.  Re-derive after gnss_warp from warp_report.json
+    # ("track_bbox_utm") when the recording changes.
+    resolution: 0.2
+    size_x: 300.0
+    size_y: 300.0
+    origin_x: 572320.0
+    origin_y: 6701670.0
+    aggregation: min
+
+    # ---- filtering -----------------------------------------------------
+    ground_filter: height_band
+    band_below: 6.0
+    band_above: 4.0
+    z_min: -100.0
+    z_max: 100.0
+    min_range: 1.0
+    max_range: 60.0
+    max_points_per_scan: 12000
+
+    # ---- publishing -----------------------------------------------------
+    image_rate: 1.0
+    cloud_rate: 1.0
+    cloud_max_cells: 150000
+    occupancy_rate: 1.0
+    occ_z_min: -6.0
+    occ_z_max: 4.0
+    trajectory_rate: 2.0
+    stats_rate: 2.0
+    save_dir: "/home/rajesh/proc_dem_creation/out"

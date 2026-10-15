@@ -9,3 +9,8 @@ AttributeError: 'str' object has no attribute '__name__'. Did you mean: '__ne__'
 [ros2run]: Process exited with failure 1
 [INFO] [1792049316.964153310] [record_odom]: recording /Odometry (Odometry) -> /home/rajesh/proc_dem_creation/out/odom.csv
 [ros2run]: Killed
+[INFO] [1792057370.716702852] [record_odom]: recording /Odometry (Odometry) -> /home/rajesh/proc_dem_creation/out/odom.csv
+[INFO] [1792058044.366575976] [record_odom]: wrote 6566 rows to /home/rajesh/proc_dem_creation/out/odom.csv
+[INFO] [1792058482.216343060] [record_odom]: recording /Odometry (Odometry) -> /home/rajesh/proc_dem_creation/out/odom.csv
+[INFO] [1792059152.604430046] [record_odom]: wrote 6550 rows to /home/rajesh/proc_dem_creation/out/odom.csv
+[INFO] [1792062040.963164805] [record_odom]: recording /Odometry (Odometry) -> /home/rajesh/proc_dem_creation/out/odom.csv

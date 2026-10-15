@@ -39,8 +39,29 @@ def _setup(context, *args, **kwargs):
     dem_mode = LaunchConfiguration('dem_mode').perform(context)
     fastlio_cfg = LaunchConfiguration('fastlio_config').perform(context)
     dem_cfg = LaunchConfiguration('dem_config').perform(context)
+    pose_topic_arg = LaunchConfiguration('pose_topic').perform(context)
+    pose_type_arg = LaunchConfiguration('pose_type').perform(context)
     use_sim_time = LaunchConfiguration('use_sim_time').perform(context) \
         == 'true'
+
+    lidar_topic = '/mid360/livox/lidar'
+    imu_topic = '/mid360/livox/imu'
+    gnss_topic = '/gnss_pose'
+
+    # pose stream for dem_node 'pose' mode: explicit launch arg (e.g. the
+    # GNSS-aided /Odometry_warp from pose_play) > FAST-LIO > raw GNSS > none
+    if pose_topic_arg:
+        pose_topic = pose_topic_arg
+        pose_type = pose_type_arg or 'nav_msgs/msg/Odometry'
+    elif use_fastlio == 'true':
+        pose_topic = '/Odometry'
+        pose_type = 'nav_msgs/msg/Odometry'
+    elif use_gnss == 'true':
+        pose_topic = gnss_topic
+        pose_type = 'geometry_msgs/msg/PoseStamped'
+    else:
+        pose_topic = ''
+        pose_type = ''
 
     lidar_topic = '/mid360/livox/lidar'
     imu_topic = '/mid360/livox/imu'
@@ -109,10 +130,8 @@ def _setup(context, *args, **kwargs):
             'cloud_topic': lidar_topic if dem_mode == 'pose' else
                            ('/cloud_registered' if run_fastlio
                             else lidar_topic),
-            'pose_topic': '/Odometry' if run_fastlio else
-                          ('/gnss_pose' if use_gnss == 'true' else ''),
-            'pose_type': 'nav_msgs/msg/Odometry' if run_fastlio else
-                         'geometry_msgs/msg/PoseStamped',
+            'pose_topic': pose_topic,
+            'pose_type': pose_type,
             'use_sim_time': use_sim_time,
         }]))
 
@@ -168,6 +187,12 @@ def generate_launch_description():
                         "(ros2 bag play)"),
         DeclareLaunchArgument('use_fastlio', default_value='true'),
         DeclareLaunchArgument('use_gnss', default_value='true'),
+        DeclareLaunchArgument('pose_topic', default_value='',
+                              description='pose stream for dem_node pose '
+                                          'mode (empty = auto)'),
+        DeclareLaunchArgument('pose_type', default_value='',
+                              description='type of --pose_topic '
+                                          '(default nav_msgs/msg/Odometry)'),
         DeclareLaunchArgument('use_viz', default_value='true'),
         DeclareLaunchArgument('use_rviz', default_value='false'),
         DeclareLaunchArgument('use_monitor', default_value='true'),

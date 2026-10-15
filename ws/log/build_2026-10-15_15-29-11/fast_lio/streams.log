@@ -1,0 +1,232 @@
+[0.064s] Invoking command in '/home/rajesh/proc_dem_creation/ws/build/fast_lio': AMENT_PREFIX_PATH=/home/rajesh/proc_dem_creation/ws/install/livox_ros_driver2:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/rajesh/proc_dem_creation/ws/install/livox_ros_driver2:/opt/ros/humble LD_LIBRARY_PATH=/home/rajesh/proc_dem_creation/ws/install/livox_ros_driver2/lib:${LD_LIBRARY_PATH} PYTHONPATH=/home/rajesh/proc_dem_creation/ws/install/livox_ros_driver2/local/lib/python3.10/dist-packages:${PYTHONPATH} /usr/bin/cmake /home/rajesh/proc_dem_creation/ws/src/FAST_LIO -DCMAKE_INSTALL_PREFIX=/home/rajesh/proc_dem_creation/ws/install/fast_lio
+[0.122s] Current CPU archtecture: x86_64
+[0.128s] Processer number:  8
+[0.128s] core for MP: 3
+[0.138s] -- Found PythonLibs: /usr/lib/x86_64-linux-gnu/libpython3.10.so (found version "3.10.12") 
+[0.160s] -- Found ament_cmake: 1.3.14 (/opt/ros/humble/share/ament_cmake/cmake)
+[0.331s] -- Override CMake install command with custom implementation using symlinks instead of copying resources
+[0.371s] -- Found rclcpp: 16.0.21 (/opt/ros/humble/share/rclcpp/cmake)
+[0.512s] -- Found rosidl_generator_c: 3.1.9 (/opt/ros/humble/share/rosidl_generator_c/cmake)
+[0.520s] -- Found rosidl_adapter: 3.1.9 (/opt/ros/humble/share/rosidl_adapter/cmake)
+[0.537s] -- Found rosidl_generator_cpp: 3.1.9 (/opt/ros/humble/share/rosidl_generator_cpp/cmake)
+[0.600s] -- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+[0.633s] -- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+[0.717s] -- Found rmw_implementation_cmake: 6.1.4 (/opt/ros/humble/share/rmw_implementation_cmake/cmake)
+[0.722s] -- Found rmw_fastrtps_cpp: 6.2.10 (/opt/ros/humble/share/rmw_fastrtps_cpp/cmake)
+[3.222s] -- Using RMW implementation 'rmw_fastrtps_cpp' as default
+[3.325s] -- Found rclcpp_components: 16.0.21 (/opt/ros/humble/share/rclcpp_components/cmake)
+[3.373s] -- Found geometry_msgs: 4.9.2 (/opt/ros/humble/share/geometry_msgs/cmake)
+[3.400s] -- Found nav_msgs: 4.9.2 (/opt/ros/humble/share/nav_msgs/cmake)
+[3.433s] -- Found sensor_msgs: 4.9.2 (/opt/ros/humble/share/sensor_msgs/cmake)
+[3.471s] -- Found std_srvs: 4.9.2 (/opt/ros/humble/share/std_srvs/cmake)
+[3.506s] -- Found visualization_msgs: 4.9.2 (/opt/ros/humble/share/visualization_msgs/cmake)
+[3.547s] -- Found pcl_ros: 2.4.5 (/opt/ros/humble/share/pcl_ros/cmake)
+[3.620s] -- Eigen found (include: /usr/include/eigen3, version: 3.4.0)
+[4.418s] -- FLANN found (include: /usr/include, lib: /usr/lib/x86_64-linux-gnu/libflann_cpp.so)
+[6.706s] -- OpenNI found (version: 1.5.4.0, include: /usr/include/ni, lib: /usr/lib/libOpenNI.so;libusb::libusb)
+[6.714s] -- OpenNI2 found (version: 2.2.0.33, include: /usr/include/openni2, lib: /usr/lib/x86_64-linux-gnu/libOpenNI2.so;libusb::libusb)
+[7.717s] -- Eigen found (include: /usr/include/eigen3, version: 3.4.0)
+[7.723s] -- OpenNI found (version: 1.5.4.0, include: /usr/include/ni, lib: /usr/lib/libOpenNI.so;libusb::libusb)
+[7.728s] -- OpenNI2 found (version: 2.2.0.33, include: /usr/include/openni2, lib: /usr/lib/x86_64-linux-gnu/libOpenNI2.so;libusb::libusb)
+[8.715s] -- Found Qhull version 8.0.2
+[9.705s] -- OpenNI found (version: 1.5.4.0, include: /usr/include/ni, lib: /usr/lib/libOpenNI.so;libusb::libusb)
+[10.761s] -- Found eigen3_cmake_module: 0.1.1 (/opt/ros/humble/share/eigen3_cmake_module/cmake)
+[10.763s] -- Ensuring Eigen3 include directory is part of orocos-kdl CMake target
+[10.891s] -- Found livox_ros_driver2: 1.0.0 (/home/rajesh/proc_dem_creation/ws/install/livox_ros_driver2/share/livox_ros_driver2/cmake)
+[10.927s] -- Found rosidl_default_generators: 1.2.1 (/opt/ros/humble/share/rosidl_default_generators/cmake)
+[10.947s] CMake Warning (dev) at CMakeLists.txt:81 (find_package):
+[10.947s]   Policy CMP0074 is not set: find_package uses <PackageName>_ROOT variables.
+[10.947s]   Run "cmake --help-policy CMP0074" for policy details.  Use the cmake_policy
+[10.948s]   command to set the policy and suppress this warning.
+[10.948s] 
+[10.948s]   CMake variable PCL_ROOT is set to:
+[10.948s] 
+[10.948s]     /usr
+[10.948s] 
+[10.948s]   For compatibility, CMake is ignoring the variable.
+[10.948s] This warning is for project developers.  Use -Wno-dev to suppress it.
+[10.948s] 
+[10.953s] Eigen:/usr/include/eigen3
+[10.953s] -- PCL: /usr/include/pcl-1.12
+[11.223s] -- Found ament_cmake_ros: 0.10.1 (/opt/ros/humble/share/ament_cmake_ros/cmake)
+[11.606s] -- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+[11.722s] -- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+[11.747s] -- Found python_cmake_module: 0.10.0 (/opt/ros/humble/share/python_cmake_module/cmake)
+[11.770s] -- Found PythonLibs: /usr/lib/x86_64-linux-gnu/libpython3.10.so (found suitable version "3.10.12", minimum required is "3.5") 
+[11.770s] -- Using PYTHON_EXECUTABLE: /usr/bin/python3
+[11.770s] -- Using PYTHON_INCLUDE_DIRS: /usr/include/python3.10
+[11.770s] -- Using PYTHON_LIBRARIES: /usr/lib/x86_64-linux-gnu/libpython3.10.so
+[11.896s] -- Configuring done
+[12.099s] -- Generating done
+[12.122s] -- Build files have been written to: /home/rajesh/proc_dem_creation/ws/build/fast_lio
+[12.142s] Invoked command in '/home/rajesh/proc_dem_creation/ws/build/fast_lio' returned '0': AMENT_PREFIX_PATH=/home/rajesh/proc_dem_creation/ws/install/livox_ros_driver2:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/rajesh/proc_dem_creation/ws/install/livox_ros_driver2:/opt/ros/humble LD_LIBRARY_PATH=/home/rajesh/proc_dem_creation/ws/install/livox_ros_driver2/lib:${LD_LIBRARY_PATH} PYTHONPATH=/home/rajesh/proc_dem_creation/ws/install/livox_ros_driver2/local/lib/python3.10/dist-packages:${PYTHONPATH} /usr/bin/cmake /home/rajesh/proc_dem_creation/ws/src/FAST_LIO -DCMAKE_INSTALL_PREFIX=/home/rajesh/proc_dem_creation/ws/install/fast_lio
+[12.146s] Invoking command in '/home/rajesh/proc_dem_creation/ws/build/fast_lio': AMENT_PREFIX_PATH=/home/rajesh/proc_dem_creation/ws/install/livox_ros_driver2:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/rajesh/proc_dem_creation/ws/install/livox_ros_driver2:/opt/ros/humble LD_LIBRARY_PATH=/home/rajesh/proc_dem_creation/ws/install/livox_ros_driver2/lib:${LD_LIBRARY_PATH} PYTHONPATH=/home/rajesh/proc_dem_creation/ws/install/livox_ros_driver2/local/lib/python3.10/dist-packages:${PYTHONPATH} /usr/bin/cmake --build /home/rajesh/proc_dem_creation/ws/build/fast_lio -- -j8 -l8
+[12.191s] Consolidate compiler generated dependencies of target fast_lio__rosidl_generator_c
+[12.201s] [  2%] Built target fast_lio__cpp
+[12.207s] [ 11%] Built target fast_lio__rosidl_generator_c
+[12.209s] [ 13%] Built target fast_lio__rs
+[12.213s] [ 13%] Built target ament_cmake_python_symlink_fast_lio
+[12.216s] Consolidate compiler generated dependencies of target fast_lio__rosidl_typesupport_fastrtps_cpp
+[12.216s] Consolidate compiler generated dependencies of target fast_lio__rosidl_typesupport_introspection_cpp
+[12.216s] Consolidate compiler generated dependencies of target fast_lio__rosidl_typesupport_cpp
+[12.221s] Consolidate compiler generated dependencies of target fast_lio__rosidl_typesupport_introspection_c
+[12.222s] Consolidate compiler generated dependencies of target fast_lio__rosidl_typesupport_fastrtps_c
+[12.224s] Consolidate compiler generated dependencies of target fast_lio__rosidl_typesupport_c
+[12.239s] [ 22%] Built target fast_lio__rosidl_typesupport_introspection_c
+[12.241s] [ 30%] Built target fast_lio__rosidl_typesupport_introspection_cpp
+[12.242s] [ 41%] Built target fast_lio__rosidl_typesupport_fastrtps_cpp
+[12.242s] [ 47%] Built target fast_lio__rosidl_typesupport_c
+[12.243s] [ 55%] Built target fast_lio__rosidl_typesupport_cpp
+[12.244s] [ 63%] Built target fast_lio__rosidl_typesupport_fastrtps_c
+[12.263s] [ 63%] Built target fast_lio
+[12.268s] Consolidate compiler generated dependencies of target fastlio_mapping
+[12.285s] [ 66%] Built target fast_lio__py
+[12.298s] Consolidate compiler generated dependencies of target fast_lio__rosidl_generator_py
+[12.315s] [ 72%] Built target fast_lio__rosidl_generator_py
+[12.328s] Consolidate compiler generated dependencies of target fast_lio__rosidl_typesupport_fastrtps_c__pyext
+[12.328s] Consolidate compiler generated dependencies of target fast_lio__rosidl_typesupport_introspection_c__pyext
+[12.328s] Consolidate compiler generated dependencies of target fast_lio__rosidl_typesupport_c__pyext
+[12.342s] [ 83%] Built target fast_lio__rosidl_typesupport_introspection_c__pyext
+[12.342s] [ 83%] Built target fast_lio__rosidl_typesupport_fastrtps_c__pyext
+[12.343s] [ 88%] Built target fast_lio__rosidl_typesupport_c__pyext
+[12.417s] [ 91%] Building CXX object CMakeFiles/fastlio_mapping.dir/src/laserMapping.cpp.o
+[12.500s] running egg_info
+[12.501s] writing fast_lio.egg-info/PKG-INFO
+[12.501s] writing dependency_links to fast_lio.egg-info/dependency_links.txt
+[12.501s] writing top-level names to fast_lio.egg-info/top_level.txt
+[12.507s] reading manifest file 'fast_lio.egg-info/SOURCES.txt'
+[12.508s] writing manifest file 'fast_lio.egg-info/SOURCES.txt'
+[12.537s] [ 91%] Built target ament_cmake_python_build_fast_lio_egg
+[21.211s] In file included from /usr/include/boost/smart_ptr/detail/sp_thread_sleep.hpp:22,
+[21.211s]                  from /usr/include/boost/smart_ptr/detail/yield_k.hpp:23,
+[21.211s]                  from /usr/include/boost/smart_ptr/detail/spinlock_gcc_atomic.hpp:14,
+[21.211s]                  from /usr/include/boost/smart_ptr/detail/spinlock.hpp:42,
+[21.211s]                  from /usr/include/boost/smart_ptr/detail/spinlock_pool.hpp:25,
+[21.211s]                  from /usr/include/boost/smart_ptr/shared_ptr.hpp:29,
+[21.211s]                  from /usr/include/boost/shared_ptr.hpp:17,
+[21.211s]                  from /usr/include/boost/date_time/microsec_time_clock.hpp:18,
+[21.211s]                  from /usr/include/boost/interprocess/detail/posix_time_types_wrk.hpp:31,
+[21.211s]                  from /usr/include/boost/interprocess/detail/os_thread_functions.hpp:36,
+[21.211s]                  from /usr/include/boost/interprocess/sync/file_lock.hpp:26,
+[21.211s]                  from /usr/include/pcl-1.12/pcl/io/pcd_io.h:46,
+[21.211s]                  from /opt/ros/humble/include/pcl_conversions/pcl_conversions/pcl_conversions.h:73,
+[21.212s]                  from /home/rajesh/proc_dem_creation/ws/src/FAST_LIO/src/IMU_Processing.hpp:18,
+[21.212s]                  from /home/rajesh/proc_dem_creation/ws/src/FAST_LIO/src/laserMapping.cpp:47:
+[21.212s] /usr/include/boost/bind.hpp:36:1: note: ‘#pragma message: The practice of declaring the Bind placeholders (_1, _2, ...) in the global namespace is deprecated. Please use <boost/bind/bind.hpp> + using namespace boost::placeholders, or define BOOST_BIND_GLOBAL_PLACEHOLDERS to retain the current behavior.’
+[21.212s]    36 | BOOST_PRAGMA_MESSAGE(
+[21.212s]       | ^~~~~~~~~~~~~~~~~~~~
+[115.711s] [ 94%] Linking CXX executable fastlio_mapping
+[118.033s] [100%] Built target fastlio_mapping
+[118.048s] Invoked command in '/home/rajesh/proc_dem_creation/ws/build/fast_lio' returned '0': AMENT_PREFIX_PATH=/home/rajesh/proc_dem_creation/ws/install/livox_ros_driver2:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/rajesh/proc_dem_creation/ws/install/livox_ros_driver2:/opt/ros/humble LD_LIBRARY_PATH=/home/rajesh/proc_dem_creation/ws/install/livox_ros_driver2/lib:${LD_LIBRARY_PATH} PYTHONPATH=/home/rajesh/proc_dem_creation/ws/install/livox_ros_driver2/local/lib/python3.10/dist-packages:${PYTHONPATH} /usr/bin/cmake --build /home/rajesh/proc_dem_creation/ws/build/fast_lio -- -j8 -l8
+[118.061s] Invoking command in '/home/rajesh/proc_dem_creation/ws/build/fast_lio': AMENT_PREFIX_PATH=/home/rajesh/proc_dem_creation/ws/install/livox_ros_driver2:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/rajesh/proc_dem_creation/ws/install/livox_ros_driver2:/opt/ros/humble LD_LIBRARY_PATH=/home/rajesh/proc_dem_creation/ws/install/livox_ros_driver2/lib:${LD_LIBRARY_PATH} PYTHONPATH=/home/rajesh/proc_dem_creation/ws/install/livox_ros_driver2/local/lib/python3.10/dist-packages:${PYTHONPATH} /usr/bin/cmake --install /home/rajesh/proc_dem_creation/ws/build/fast_lio
+[118.070s] -- Install configuration: "Release"
+[118.071s] -- Execute custom install script
+[118.072s] -- Up-to-date symlink: /home/rajesh/proc_dem_creation/ws/install/fast_lio/share/ament_index/resource_index/rosidl_interfaces/fast_lio
+[118.074s] -- Up-to-date symlink: /home/rajesh/proc_dem_creation/ws/install/fast_lio/include/fast_lio/fast_lio/msg/detail/pose6_d__functions.h
+[118.074s] -- Up-to-date symlink: /home/rajesh/proc_dem_creation/ws/install/fast_lio/include/fast_lio/fast_lio/msg/detail/pose6_d__struct.h
+[118.074s] -- Up-to-date symlink: /home/rajesh/proc_dem_creation/ws/install/fast_lio/include/fast_lio/fast_lio/msg/detail/pose6_d__type_support.h
+[118.074s] -- Up-to-date symlink: /home/rajesh/proc_dem_creation/ws/install/fast_lio/include/fast_lio/fast_lio/msg/pose6_d.h
+[118.075s] -- Up-to-date symlink: /home/rajesh/proc_dem_creation/ws/install/fast_lio/include/fast_lio/fast_lio/msg/rosidl_generator_c__visibility_control.h
+[118.076s] -- Up-to-date symlink: /home/rajesh/proc_dem_creation/ws/install/fast_lio/share/fast_lio/environment/library_path.sh
+[118.076s] -- Up-to-date symlink: /home/rajesh/proc_dem_creation/ws/install/fast_lio/share/fast_lio/environment/library_path.dsv
+[118.077s] -- Up-to-date symlink: /home/rajesh/proc_dem_creation/ws/install/fast_lio/include/fast_lio/fast_lio/msg/detail/pose6_d__rosidl_typesupport_fastrtps_c.h
+[118.078s] -- Up-to-date symlink: /home/rajesh/proc_dem_creation/ws/install/fast_lio/include/fast_lio/fast_lio/msg/rosidl_typesupport_fastrtps_c__visibility_control.h
+[118.078s] -- Up-to-date symlink: /home/rajesh/proc_dem_creation/ws/install/fast_lio/include/fast_lio/fast_lio/msg/detail/pose6_d__builder.hpp
+[118.079s] -- Up-to-date symlink: /home/rajesh/proc_dem_creation/ws/install/fast_lio/include/fast_lio/fast_lio/msg/detail/pose6_d__struct.hpp
+[118.079s] -- Up-to-date symlink: /home/rajesh/proc_dem_creation/ws/install/fast_lio/include/fast_lio/fast_lio/msg/detail/pose6_d__traits.hpp
+[118.079s] -- Up-to-date symlink: /home/rajesh/proc_dem_creation/ws/install/fast_lio/include/fast_lio/fast_lio/msg/detail/pose6_d__type_support.hpp
+[118.080s] -- Up-to-date symlink: /home/rajesh/proc_dem_creation/ws/install/fast_lio/include/fast_lio/fast_lio/msg/pose6_d.hpp
+[118.080s] -- Up-to-date symlink: /home/rajesh/proc_dem_creation/ws/install/fast_lio/include/fast_lio/fast_lio/msg/rosidl_generator_cpp__visibility_control.hpp
+[118.082s] -- Up-to-date symlink: /home/rajesh/proc_dem_creation/ws/install/fast_lio/include/fast_lio/fast_lio/msg/detail/pose6_d__rosidl_typesupport_fastrtps_cpp.hpp
+[118.083s] -- Up-to-date symlink: /home/rajesh/proc_dem_creation/ws/install/fast_lio/include/fast_lio/fast_lio/msg/rosidl_typesupport_fastrtps_cpp__visibility_control.h
+[118.084s] -- Up-to-date symlink: /home/rajesh/proc_dem_creation/ws/install/fast_lio/include/fast_lio/fast_lio/msg/detail/pose6_d__rosidl_typesupport_introspection_c.h
+[118.084s] -- Up-to-date symlink: /home/rajesh/proc_dem_creation/ws/install/fast_lio/include/fast_lio/fast_lio/msg/rosidl_typesupport_introspection_c__visibility_control.h
+[118.086s] -- Up-to-date symlink: /home/rajesh/proc_dem_creation/ws/install/fast_lio/include/fast_lio/fast_lio/msg/detail/pose6_d__rosidl_typesupport_introspection_cpp.hpp
+[118.086s] -- Up-to-date symlink: /home/rajesh/proc_dem_creation/ws/install/fast_lio/share/fast_lio/environment/pythonpath.sh
+[118.086s] -- Up-to-date symlink: /home/rajesh/proc_dem_creation/ws/install/fast_lio/share/fast_lio/environment/pythonpath.dsv
+[118.087s] -- Up-to-date symlink: /home/rajesh/proc_dem_creation/ws/install/fast_lio/local/lib/python3.10/dist-packages/fast_lio-0.0.0-py3.10.egg-info/PKG-INFO
+[118.087s] -- Up-to-date symlink: /home/rajesh/proc_dem_creation/ws/install/fast_lio/local/lib/python3.10/dist-packages/fast_lio-0.0.0-py3.10.egg-info/SOURCES.txt
+[118.088s] -- Up-to-date symlink: /home/rajesh/proc_dem_creation/ws/install/fast_lio/local/lib/python3.10/dist-packages/fast_lio-0.0.0-py3.10.egg-info/dependency_links.txt
+[118.088s] -- Up-to-date symlink: /home/rajesh/proc_dem_creation/ws/install/fast_lio/local/lib/python3.10/dist-packages/fast_lio-0.0.0-py3.10.egg-info/top_level.txt
+[118.090s] -- Up-to-date symlink: /home/rajesh/proc_dem_creation/ws/install/fast_lio/local/lib/python3.10/dist-packages/fast_lio/__init__.py
+[118.090s] -- Up-to-date symlink: /home/rajesh/proc_dem_creation/ws/install/fast_lio/local/lib/python3.10/dist-packages/fast_lio/_fast_lio_s.ep.rosidl_typesupport_c.c
+[118.090s] -- Up-to-date symlink: /home/rajesh/proc_dem_creation/ws/install/fast_lio/local/lib/python3.10/dist-packages/fast_lio/_fast_lio_s.ep.rosidl_typesupport_fastrtps_c.c
+[118.091s] -- Up-to-date symlink: /home/rajesh/proc_dem_creation/ws/install/fast_lio/local/lib/python3.10/dist-packages/fast_lio/_fast_lio_s.ep.rosidl_typesupport_introspection_c.c
+[118.091s] -- Up-to-date symlink: /home/rajesh/proc_dem_creation/ws/install/fast_lio/local/lib/python3.10/dist-packages/fast_lio/fast_lio_s__rosidl_typesupport_c.cpython-310-x86_64-linux-gnu.so
+[118.092s] -- Up-to-date symlink: /home/rajesh/proc_dem_creation/ws/install/fast_lio/local/lib/python3.10/dist-packages/fast_lio/fast_lio_s__rosidl_typesupport_fastrtps_c.cpython-310-x86_64-linux-gnu.so
+[118.092s] -- Up-to-date symlink: /home/rajesh/proc_dem_creation/ws/install/fast_lio/local/lib/python3.10/dist-packages/fast_lio/fast_lio_s__rosidl_typesupport_introspection_c.cpython-310-x86_64-linux-gnu.so
+[118.092s] -- Up-to-date symlink: /home/rajesh/proc_dem_creation/ws/install/fast_lio/local/lib/python3.10/dist-packages/fast_lio/libfast_lio__rosidl_generator_py.so
+[118.093s] -- Up-to-date symlink: /home/rajesh/proc_dem_creation/ws/install/fast_lio/local/lib/python3.10/dist-packages/fast_lio/msg/__init__.py
+[118.094s] -- Up-to-date symlink: /home/rajesh/proc_dem_creation/ws/install/fast_lio/local/lib/python3.10/dist-packages/fast_lio/msg/_pose6_d.py
+[118.094s] -- Up-to-date symlink: /home/rajesh/proc_dem_creation/ws/install/fast_lio/local/lib/python3.10/dist-packages/fast_lio/msg/_pose6_d_s.c
+[118.094s] -- Up-to-date symlink: /home/rajesh/proc_dem_creation/ws/install/fast_lio/local/lib/python3.10/dist-packages/fast_lio/fast_lio_s__rosidl_typesupport_fastrtps_c.cpython-310-x86_64-linux-gnu.so
+[118.095s] -- Up-to-date symlink: /home/rajesh/proc_dem_creation/ws/install/fast_lio/local/lib/python3.10/dist-packages/fast_lio/fast_lio_s__rosidl_typesupport_introspection_c.cpython-310-x86_64-linux-gnu.so
+[118.095s] -- Up-to-date symlink: /home/rajesh/proc_dem_creation/ws/install/fast_lio/local/lib/python3.10/dist-packages/fast_lio/fast_lio_s__rosidl_typesupport_c.cpython-310-x86_64-linux-gnu.so
+[118.096s] -- Up-to-date symlink: /home/rajesh/proc_dem_creation/ws/install/fast_lio/share/fast_lio/rust/Cargo.toml
+[118.097s] -- Up-to-date symlink: /home/rajesh/proc_dem_creation/ws/install/fast_lio/share/fast_lio/rust/build.rs
+[118.097s] -- Up-to-date symlink: /home/rajesh/proc_dem_creation/ws/install/fast_lio/share/fast_lio/rust/src/lib.rs
+[118.098s] -- Up-to-date symlink: /home/rajesh/proc_dem_creation/ws/install/fast_lio/share/fast_lio/rust/src/msg.rs
+[118.099s] -- Up-to-date symlink: /home/rajesh/proc_dem_creation/ws/install/fast_lio/share/fast_lio/rust/src/msg/rmw.rs
+[118.100s] -- Up-to-date symlink: /home/rajesh/proc_dem_creation/ws/install/fast_lio/share/fast_lio/msg/Pose6D.idl
+[118.100s] -- Up-to-date symlink: /home/rajesh/proc_dem_creation/ws/install/fast_lio/share/fast_lio/msg/Pose6D.msg
+[118.101s] -- Up-to-date symlink: /home/rajesh/proc_dem_creation/ws/install/fast_lio/lib/fast_lio/fastlio_mapping
+[118.102s] -- Up-to-date symlink: /home/rajesh/proc_dem_creation/ws/install/fast_lio/share/fast_lio/config/avia.yaml
+[118.103s] -- Up-to-date symlink: /home/rajesh/proc_dem_creation/ws/install/fast_lio/share/fast_lio/config/horizon.yaml
+[118.103s] -- Up-to-date symlink: /home/rajesh/proc_dem_creation/ws/install/fast_lio/share/fast_lio/config/mid360.yaml
+[118.103s] -- Up-to-date symlink: /home/rajesh/proc_dem_creation/ws/install/fast_lio/share/fast_lio/config/ouster64.yaml
+[118.104s] -- Up-to-date symlink: /home/rajesh/proc_dem_creation/ws/install/fast_lio/share/fast_lio/config/velodyne.yaml
+[118.104s] -- Up-to-date symlink: /home/rajesh/proc_dem_creation/ws/install/fast_lio/share/fast_lio/launch/gdb_debug_example.launch
+[118.104s] -- Up-to-date symlink: /home/rajesh/proc_dem_creation/ws/install/fast_lio/share/fast_lio/launch/mapping.launch.py
+[118.104s] -- Up-to-date symlink: /home/rajesh/proc_dem_creation/ws/install/fast_lio/share/fast_lio/rviz/fastlio.rviz
+[118.105s] -- Up-to-date symlink: /home/rajesh/proc_dem_creation/ws/install/fast_lio/share/ament_index/resource_index/package_run_dependencies/fast_lio
+[118.106s] -- Up-to-date symlink: /home/rajesh/proc_dem_creation/ws/install/fast_lio/share/ament_index/resource_index/parent_prefix_path/fast_lio
+[118.106s] -- Up-to-date symlink: /home/rajesh/proc_dem_creation/ws/install/fast_lio/share/fast_lio/environment/ament_prefix_path.sh
+[118.107s] -- Up-to-date symlink: /home/rajesh/proc_dem_creation/ws/install/fast_lio/share/fast_lio/environment/ament_prefix_path.dsv
+[118.107s] -- Up-to-date symlink: /home/rajesh/proc_dem_creation/ws/install/fast_lio/share/fast_lio/environment/path.sh
+[118.108s] -- Up-to-date symlink: /home/rajesh/proc_dem_creation/ws/install/fast_lio/share/fast_lio/environment/path.dsv
+[118.108s] -- Up-to-date symlink: /home/rajesh/proc_dem_creation/ws/install/fast_lio/share/fast_lio/local_setup.bash
+[118.109s] -- Up-to-date symlink: /home/rajesh/proc_dem_creation/ws/install/fast_lio/share/fast_lio/local_setup.sh
+[118.109s] -- Up-to-date symlink: /home/rajesh/proc_dem_creation/ws/install/fast_lio/share/fast_lio/local_setup.zsh
+[118.110s] -- Up-to-date symlink: /home/rajesh/proc_dem_creation/ws/install/fast_lio/share/fast_lio/local_setup.dsv
+[118.110s] -- Symlinking: /home/rajesh/proc_dem_creation/ws/install/fast_lio/share/fast_lio/package.dsv
+[118.122s] -- Up-to-date symlink: /home/rajesh/proc_dem_creation/ws/install/fast_lio/share/ament_index/resource_index/packages/fast_lio
+[118.122s] -- Up-to-date symlink: /home/rajesh/proc_dem_creation/ws/install/fast_lio/share/fast_lio/cmake/rosidl_cmake-extras.cmake
+[118.123s] -- Up-to-date symlink: /home/rajesh/proc_dem_creation/ws/install/fast_lio/share/fast_lio/cmake/ament_cmake_export_include_directories-extras.cmake
+[118.123s] -- Up-to-date symlink: /home/rajesh/proc_dem_creation/ws/install/fast_lio/share/fast_lio/cmake/ament_cmake_export_libraries-extras.cmake
+[118.124s] -- Up-to-date symlink: /home/rajesh/proc_dem_creation/ws/install/fast_lio/share/fast_lio/cmake/ament_cmake_export_targets-extras.cmake
+[118.124s] -- Up-to-date symlink: /home/rajesh/proc_dem_creation/ws/install/fast_lio/share/fast_lio/cmake/rosidl_cmake_export_typesupport_targets-extras.cmake
+[118.125s] -- Up-to-date symlink: /home/rajesh/proc_dem_creation/ws/install/fast_lio/share/fast_lio/cmake/ament_cmake_export_dependencies-extras.cmake
+[118.126s] -- Up-to-date symlink: /home/rajesh/proc_dem_creation/ws/install/fast_lio/share/fast_lio/cmake/rosidl_cmake_export_typesupport_libraries-extras.cmake
+[118.126s] -- Up-to-date symlink: /home/rajesh/proc_dem_creation/ws/install/fast_lio/share/fast_lio/cmake/rosidl_cmake_aggregate_target-extras.cmake
+[118.127s] -- Up-to-date symlink: /home/rajesh/proc_dem_creation/ws/install/fast_lio/share/fast_lio/cmake/fast_lioConfig.cmake
+[118.128s] -- Up-to-date symlink: /home/rajesh/proc_dem_creation/ws/install/fast_lio/share/fast_lio/cmake/fast_lioConfig-version.cmake
+[118.128s] -- Up-to-date symlink: /home/rajesh/proc_dem_creation/ws/install/fast_lio/share/fast_lio/package.xml
+[118.128s] -- Up-to-date: /home/rajesh/proc_dem_creation/ws/install/fast_lio/lib/libfast_lio__rosidl_generator_c.so
+[118.129s] -- Up-to-date: /home/rajesh/proc_dem_creation/ws/install/fast_lio/lib/libfast_lio__rosidl_typesupport_fastrtps_c.so
+[118.130s] -- Up-to-date: /home/rajesh/proc_dem_creation/ws/install/fast_lio/lib/libfast_lio__rosidl_typesupport_fastrtps_cpp.so
+[118.132s] -- Up-to-date: /home/rajesh/proc_dem_creation/ws/install/fast_lio/lib/libfast_lio__rosidl_typesupport_introspection_c.so
+[118.133s] -- Up-to-date: /home/rajesh/proc_dem_creation/ws/install/fast_lio/lib/libfast_lio__rosidl_typesupport_c.so
+[118.134s] -- Up-to-date: /home/rajesh/proc_dem_creation/ws/install/fast_lio/lib/libfast_lio__rosidl_typesupport_introspection_cpp.so
+[118.134s] -- Up-to-date: /home/rajesh/proc_dem_creation/ws/install/fast_lio/lib/libfast_lio__rosidl_typesupport_cpp.so
+[118.178s] Listing '/home/rajesh/proc_dem_creation/ws/install/fast_lio/local/lib/python3.10/dist-packages/fast_lio'...
+[118.178s] Compiling '/home/rajesh/proc_dem_creation/ws/install/fast_lio/local/lib/python3.10/dist-packages/fast_lio/__init__.py'...
+[118.178s] Listing '/home/rajesh/proc_dem_creation/ws/install/fast_lio/local/lib/python3.10/dist-packages/fast_lio/msg'...
+[118.187s] -- Up-to-date: /home/rajesh/proc_dem_creation/ws/install/fast_lio/lib/libfast_lio__rosidl_generator_py.so
+[118.188s] -- Up-to-date: /home/rajesh/proc_dem_creation/ws/install/fast_lio/share/fast_lio/cmake/export_fast_lio__rosidl_generator_cExport.cmake
+[118.188s] -- Up-to-date: /home/rajesh/proc_dem_creation/ws/install/fast_lio/share/fast_lio/cmake/export_fast_lio__rosidl_generator_cExport-release.cmake
+[118.188s] -- Up-to-date: /home/rajesh/proc_dem_creation/ws/install/fast_lio/share/fast_lio/cmake/export_fast_lio__rosidl_typesupport_fastrtps_cExport.cmake
+[118.189s] -- Up-to-date: /home/rajesh/proc_dem_creation/ws/install/fast_lio/share/fast_lio/cmake/export_fast_lio__rosidl_typesupport_fastrtps_cExport-release.cmake
+[118.189s] -- Up-to-date: /home/rajesh/proc_dem_creation/ws/install/fast_lio/share/fast_lio/cmake/export_fast_lio__rosidl_generator_cppExport.cmake
+[118.189s] -- Up-to-date: /home/rajesh/proc_dem_creation/ws/install/fast_lio/share/fast_lio/cmake/export_fast_lio__rosidl_typesupport_fastrtps_cppExport.cmake
+[118.189s] -- Up-to-date: /home/rajesh/proc_dem_creation/ws/install/fast_lio/share/fast_lio/cmake/export_fast_lio__rosidl_typesupport_fastrtps_cppExport-release.cmake
+[118.190s] -- Up-to-date: /home/rajesh/proc_dem_creation/ws/install/fast_lio/share/fast_lio/cmake/fast_lio__rosidl_typesupport_introspection_cExport.cmake
+[118.190s] -- Up-to-date: /home/rajesh/proc_dem_creation/ws/install/fast_lio/share/fast_lio/cmake/fast_lio__rosidl_typesupport_introspection_cExport-release.cmake
+[118.190s] -- Up-to-date: /home/rajesh/proc_dem_creation/ws/install/fast_lio/share/fast_lio/cmake/fast_lio__rosidl_typesupport_cExport.cmake
+[118.191s] -- Up-to-date: /home/rajesh/proc_dem_creation/ws/install/fast_lio/share/fast_lio/cmake/fast_lio__rosidl_typesupport_cExport-release.cmake
+[118.191s] -- Up-to-date: /home/rajesh/proc_dem_creation/ws/install/fast_lio/share/fast_lio/cmake/fast_lio__rosidl_typesupport_introspection_cppExport.cmake
+[118.191s] -- Up-to-date: /home/rajesh/proc_dem_creation/ws/install/fast_lio/share/fast_lio/cmake/fast_lio__rosidl_typesupport_introspection_cppExport-release.cmake
+[118.192s] -- Up-to-date: /home/rajesh/proc_dem_creation/ws/install/fast_lio/share/fast_lio/cmake/fast_lio__rosidl_typesupport_cppExport.cmake
+[118.192s] -- Up-to-date: /home/rajesh/proc_dem_creation/ws/install/fast_lio/share/fast_lio/cmake/fast_lio__rosidl_typesupport_cppExport-release.cmake
+[118.192s] -- Up-to-date: /home/rajesh/proc_dem_creation/ws/install/fast_lio/share/fast_lio/cmake/export_fast_lio__rosidl_generator_pyExport.cmake
+[118.192s] -- Up-to-date: /home/rajesh/proc_dem_creation/ws/install/fast_lio/share/fast_lio/cmake/export_fast_lio__rosidl_generator_pyExport-release.cmake
+[118.195s] Invoked command in '/home/rajesh/proc_dem_creation/ws/build/fast_lio' returned '0': AMENT_PREFIX_PATH=/home/rajesh/proc_dem_creation/ws/install/livox_ros_driver2:${AMENT_PREFIX_PATH} CMAKE_PREFIX_PATH=/home/rajesh/proc_dem_creation/ws/install/livox_ros_driver2:/opt/ros/humble LD_LIBRARY_PATH=/home/rajesh/proc_dem_creation/ws/install/livox_ros_driver2/lib:${LD_LIBRARY_PATH} PYTHONPATH=/home/rajesh/proc_dem_creation/ws/install/livox_ros_driver2/local/lib/python3.10/dist-packages:${PYTHONPATH} /usr/bin/cmake --install /home/rajesh/proc_dem_creation/ws/build/fast_lio

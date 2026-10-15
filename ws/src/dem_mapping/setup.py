@@ -23,6 +23,7 @@ setup(
             'dem_node = dem_mapping.dem_node:main',
             'gnss_align = dem_mapping.gnss_align:main',
             'georef_export = dem_mapping.georef_export:main',
+            'gnss_warp = dem_mapping.gnss_warp:main',
         ],
     },
 )

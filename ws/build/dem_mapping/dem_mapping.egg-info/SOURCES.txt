@@ -7,6 +7,7 @@ dem_mapping/elevation_grid.py
 dem_mapping/georef.py
 dem_mapping/georef_export.py
 dem_mapping/gnss_align.py
+dem_mapping/gnss_warp.py
 dem_mapping/ground_filters.py
 dem_mapping/pcd_io.py
 dem_mapping/pointcloud_utils.py
