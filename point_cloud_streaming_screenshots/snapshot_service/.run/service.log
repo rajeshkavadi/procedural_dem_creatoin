@@ -1,0 +1,37 @@
+2026-10-27 16:16:37,827 INFO pc_snapshot.dem: DEM: 800x800 cells @ 0.25m, agg=min, filter=height_band, clip=60.0 m
+2026-10-27 16:16:38,107 INFO root: starting HTTP server on 0.0.0.0:8085 (topic=/ouster/points, renderer=auto)
+INFO:     Started server process [146035]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8085 (Press CTRL+C to quit)
+2026-10-27 16:16:38,238 INFO pc_snapshot.ros_subscriber: subscribed to /ouster/points (depth=5)
+INFO:     127.0.0.1:48230 - "GET /favicon.ico HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:48224 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:48224 - "POST /api/snapshot HTTP/1.1" 409 Conflict
+INFO:     127.0.0.1:57540 - "POST /api/snapshot HTTP/1.1" 409 Conflict
+INFO:     127.0.0.1:35748 - "POST /api/snapshot HTTP/1.1" 409 Conflict
+INFO:     127.0.0.1:35748 - "POST /api/snapshot HTTP/1.1" 409 Conflict
+2026-10-27 16:17:27,252 INFO pc_snapshot.stream: stream started (view=front)
+INFO:     127.0.0.1:35748 - "GET /api/stream?view=front&token=lidar-snap-2026 HTTP/1.1" 200 OK
+INFO:     127.0.0.1:35762 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:35762 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:35762 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:35762 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:35762 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:35762 - "POST /api/dem HTTP/1.1" 409 Conflict
+INFO:     127.0.0.1:35762 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:35762 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:35762 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:35762 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:35762 - "GET /api/health HTTP/1.1" 200 OK
+2026-10-27 16:18:07,432 INFO pc_snapshot.stream: stream idle -> stopping render loop
+2026-10-27 16:18:07,433 INFO pc_snapshot.stream: stream render loop exited
+INFO:     127.0.0.1:58960 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58960 - "GET /favicon.ico HTTP/1.1" 404 Not Found
+INFO:     127.0.0.1:58974 - "POST /api/snapshot HTTP/1.1" 409 Conflict
+INFO:     127.0.0.1:41250 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:41250 - "POST /api/snapshot HTTP/1.1" 409 Conflict
+INFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [146035]
