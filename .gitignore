@@ -2,3 +2,6 @@
 *.bag
 *.db3
 *.pcd
+*.lvx2
+
+/point_cloud_streaming_screenshots 
