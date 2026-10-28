@@ -1,3 +1,54 @@
-2026-10-27T10:46:35Z INF Thank you for trying Cloudflare Tunnel. Doing so, without a Cloudflare account, is a quick way to experiment and try it out. However, be aware that these account-less Tunnels have no uptime guarantee, are subject to the Cloudflare Online Services Terms of Use (https://www.cloudflare.com/website-terms/), and Cloudflare reserves the right to investigate your use of Tunnels for violations of such terms. If you intend to use Tunnels in production you should use a pre-created named tunnel by following: https://developers.cloudflare.com/cloudflare-one/connections/connect-apps
-2026-10-27T10:46:35Z INF Requesting new quick Tunnel on trycloudflare.com...
-failed to request quick Tunnel: Post "https://api.trycloudflare.com/tunnel": context deadline exceeded (Client.Timeout exceeded while awaiting headers)
+2026-10-28T10:19:59Z INF Thank you for trying Cloudflare Tunnel. Doing so, without a Cloudflare account, is a quick way to experiment and try it out. However, be aware that these account-less Tunnels have no uptime guarantee, are subject to the Cloudflare Online Services Terms of Use (https://www.cloudflare.com/website-terms/), and Cloudflare reserves the right to investigate your use of Tunnels for violations of such terms. If you intend to use Tunnels in production you should use a pre-created named tunnel by following: https://developers.cloudflare.com/cloudflare-one/connections/connect-apps
+2026-10-28T10:19:59Z INF Requesting new quick Tunnel on trycloudflare.com...
+2026-10-28T10:20:04Z INF +--------------------------------------------------------------------------------------------+
+2026-10-28T10:20:04Z INF |  Your quick Tunnel has been created! Visit it at (it may take some time to be reachable):  |
+2026-10-28T10:20:04Z INF |  https://stake-eugene-occurs-sage.trycloudflare.com                                        |
+2026-10-28T10:20:04Z INF +--------------------------------------------------------------------------------------------+
+2026-10-28T10:20:04Z INF Cannot determine default configuration path. No file [config.yml config.yaml] in [~/.cloudflared ~/.cloudflare-warp ~/cloudflare-warp /etc/cloudflared /usr/local/etc/cloudflared]
+2026-10-28T10:20:04Z INF Version 2026.10.3 (Checksum 053b80b0a23031a038fdbf3c073f59f82b8f1f152aa67971d7383ffafc0dbab0)
+2026-10-28T10:20:04Z INF GOOS: linux, GOVersion: go1.27.3, GoArch: amd64
+2026-10-28T10:20:04Z INF Settings: map[ha-connections:1 protocol:quic url:http://localhost:8085]
+2026-10-28T10:20:04Z INF Autoupdate frequency is set autoupdateFreq=86400000
+2026-10-28T10:20:04Z INF Generated Connector ID: 5918caa1-07ac-4c2b-b1cc-da5d59f97da8
+2026-10-28T10:20:04Z INF Initial protocol quic
+2026-10-28T10:20:04Z INF ICMP proxy will use 172.30.35.79 as source for IPv4
+2026-10-28T10:20:04Z INF ICMP proxy will use fe80::215:5dff:fe1b:c72a in zone eth0 as source for IPv6
+2026-10-28T10:20:05Z INF ICMP proxy will use 172.30.35.79 as source for IPv4
+2026-10-28T10:20:05Z INF ICMP proxy will use fe80::215:5dff:fe1b:c72a in zone eth0 as source for IPv6
+2026-10-28T10:20:05Z INF Starting metrics server on 127.0.0.1:20241/metrics
+2026-10-28T10:20:05Z INF Tunnel connection curve preferences: [X25519MLKEM768 CurveID(65074) CurveP256] connIndex=0 event=0 ip=198.41.192.167
+2026-10-28T10:20:06Z INF Registered tunnel connection connIndex=0 connection=547e48e0-8ceb-4d5e-8432-9d13a08603f2 event=0 ip=198.41.192.167 location=hyd02 protocol=quic
+2026-10-28T10:20:11Z INF +-------------------------------------------------------------------------------------+
+2026-10-28T10:20:11Z INF |                               CONNECTIVITY PRE-CHECKS                               |
+2026-10-28T10:20:11Z INF +-------------------------------------------------------------------------------------+
+2026-10-28T10:20:11Z INF |  COMPONENT         TARGET                     STATUS  DETAILS                       |
+2026-10-28T10:20:11Z INF |  DNS Resolution    region1.v2.argotunnel.com  PASS    DNS Resolved successfully     |
+2026-10-28T10:20:11Z INF |  DNS Resolution    region2.v2.argotunnel.com  PASS    DNS Resolved successfully     |
+2026-10-28T10:20:11Z INF |  UDP Connectivity  region1.v2.argotunnel.com  PASS    QUIC connection successful    |
+2026-10-28T10:20:11Z INF |  UDP Connectivity  region2.v2.argotunnel.com  PASS    QUIC connection successful    |
+2026-10-28T10:20:11Z INF |  TCP Connectivity  region1.v2.argotunnel.com  PASS    HTTP/2 connection successful  |
+2026-10-28T10:20:11Z INF |  TCP Connectivity  region2.v2.argotunnel.com  PASS    HTTP/2 connection successful  |
+2026-10-28T10:20:11Z INF |  Cloudflare API    api.cloudflare.com:443     PASS    API is reachable              |
+2026-10-28T10:20:11Z INF |                                                                                     |
+2026-10-28T10:20:11Z INF |  SUMMARY: Environment is healthy. cloudflared will use 'quic' as primary protocol.  |
+2026-10-28T10:20:11Z INF +-------------------------------------------------------------------------------------+
+2026-10-28T10:20:11Z INF precheck component="DNS Resolution" details="DNS Resolved successfully" run_id=30ebce5e-27f3-40f6-98c8-f114fa62b279 status=pass target=region1.v2.argotunnel.com
+2026-10-28T10:20:11Z INF precheck component="DNS Resolution" details="DNS Resolved successfully" run_id=30ebce5e-27f3-40f6-98c8-f114fa62b279 status=pass target=region2.v2.argotunnel.com
+2026-10-28T10:20:11Z INF precheck component="UDP Connectivity" details="QUIC connection successful" run_id=30ebce5e-27f3-40f6-98c8-f114fa62b279 status=pass target=region1.v2.argotunnel.com
+2026-10-28T10:20:11Z INF precheck component="UDP Connectivity" details="QUIC connection successful" run_id=30ebce5e-27f3-40f6-98c8-f114fa62b279 status=pass target=region2.v2.argotunnel.com
+2026-10-28T10:20:11Z INF precheck component="TCP Connectivity" details="HTTP/2 connection successful" run_id=30ebce5e-27f3-40f6-98c8-f114fa62b279 status=pass target=region1.v2.argotunnel.com
+2026-10-28T10:20:11Z INF precheck component="TCP Connectivity" details="HTTP/2 connection successful" run_id=30ebce5e-27f3-40f6-98c8-f114fa62b279 status=pass target=region2.v2.argotunnel.com
+2026-10-28T10:20:11Z INF precheck component="Cloudflare API" details="API is reachable" run_id=30ebce5e-27f3-40f6-98c8-f114fa62b279 status=pass target=api.cloudflare.com:443
+2026-10-28T10:20:11Z INF precheck complete hard_fail=false run_id=30ebce5e-27f3-40f6-98c8-f114fa62b279 suggested_protocol=quic
+2026-10-28T10:21:25Z ERR  error="stream 53 canceled by remote with error code 0" connIndex=0 event=1 ingressRule=0 originService=http://localhost:8085
+2026-10-28T10:21:25Z ERR Request failed error="stream 53 canceled by remote with error code 0" connIndex=0 dest=https://stake-eugene-occurs-sage.trycloudflare.com/api/stream?view=front&token=lidar-snap-2026 event=0 ip=198.41.192.167 type=http
+2026-10-28T10:22:55Z ERR  error="stream 69 canceled by remote with error code 0" connIndex=0 event=1 ingressRule=0 originService=http://localhost:8085
+2026-10-28T10:22:55Z ERR Request failed error="stream 69 canceled by remote with error code 0" connIndex=0 dest=https://stake-eugene-occurs-sage.trycloudflare.com/api/stream?view=top&token=lidar-snap-2026 event=0 ip=198.41.192.167 type=http
+2026-10-28T10:27:23Z ERR  error="stream 269 canceled by remote with error code 0" connIndex=0 event=1 ingressRule=0 originService=http://localhost:8085
+2026-10-28T10:27:23Z ERR Request failed error="stream 269 canceled by remote with error code 0" connIndex=0 dest=https://stake-eugene-occurs-sage.trycloudflare.com/api/stream?view=front&token=lidar-snap-2026 event=0 ip=198.41.192.167 type=http
+2026-10-28T11:02:01Z INF Initiating graceful shutdown due to signal terminated ...
+2026-10-28T11:02:01Z INF Retrying connection in up to 2s connIndex=0 event=0 ip=198.41.192.167
+2026-10-28T11:02:01Z ERR Connection terminated connIndex=0
+2026-10-28T11:02:01Z ERR no more connections active and exiting
+2026-10-28T11:02:01Z INF Tunnel server stopped
+2026-10-28T11:02:01Z INF Metrics server stopped

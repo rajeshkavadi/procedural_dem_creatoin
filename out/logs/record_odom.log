@@ -15,3 +15,7 @@ AttributeError: 'str' object has no attribute '__name__'. Did you mean: '__ne__'
 [INFO] [1792059152.604430046] [record_odom]: wrote 6550 rows to /home/rajesh/proc_dem_creation/out/odom.csv
 [INFO] [1792062040.963164805] [record_odom]: recording /Odometry (Odometry) -> /home/rajesh/proc_dem_creation/out/odom.csv
 [INFO] [1792062715.300036063] [record_odom]: wrote 6544 rows to /home/rajesh/proc_dem_creation/out/odom.csv
+[INFO] [1793183317.843052208] [record_odom]: recording /Odometry (Odometry) -> ./out/odom.csv
+[INFO] [1793183992.419520117] [record_odom]: wrote 338 rows to ./out/odom.csv
+[INFO] [1793185277.147340906] [record_odom]: recording /Odometry (Odometry) -> ./out/odom.csv
+[INFO] [1793186627.370982010] [record_odom]: wrote 273 rows to ./out/odom.csv

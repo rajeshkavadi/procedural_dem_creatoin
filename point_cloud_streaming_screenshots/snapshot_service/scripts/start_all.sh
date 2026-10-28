@@ -17,7 +17,7 @@ mkdir -p "$RUN_DIR"
 "$SCRIPT_DIR/stop_all.sh" >/dev/null 2>&1 || true
 
 BAG="${1:-}"
-TOPIC="${PCSNAP_TOPIC:-/ouster/points}"
+TOPIC="${PCSNAP_TOPIC:-/mid360/livox/lidar}"
 PORT="${PCSNAP_PORT:-8085}"
 CLIP="${PCSNAP_CLIP_RANGE_M:-60}"
 

@@ -1,7 +1,7 @@
 """Service entrypoint.
 
 Usage (inside a sourced ROS 2 environment):
-    python3 -m pc_snapshot --topic /ouster/points --port 8085
+    python3 -m pc_snapshot --topic /mid360/livox/lidar --port 8085
 
 Configuration precedence: CLI > environment (PCSNAP_*) > JSON file > defaults.
 """

@@ -19,7 +19,7 @@ RUN_DIR="$PROJ_DIR/.run"
 mkdir -p "$RUN_DIR"
 
 BAG="${1:?usage: start_remote.sh /path/to/bag.db3 [topic]}"
-TOPIC="${2:-/ouster/points}"
+TOPIC="${2:-/mid360/livox/lidar}"
 PORT="${PCSNAP_PORT:-8085}"
 CLIP="${PCSNAP_CLIP_RANGE_M:-60}"
 TOKEN="${PCSNAP_API_TOKEN:-lidar-snap-2026}"

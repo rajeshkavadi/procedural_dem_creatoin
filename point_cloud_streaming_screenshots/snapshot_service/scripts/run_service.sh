@@ -4,7 +4,7 @@
 # Usage:
 #   ./run_service.sh [topic] [port] [clip_range_m]
 #
-# Defaults come from the config: /ouster/points, port 8085.
+# Defaults come from the config: /mid360/livox/lidar, port 8085.
 # clip_range_m trims sparse far returns so the dense scene fills the frame
 # (0 = disabled). 60 is a good default for a raw spinning LiDAR.
 set -eo pipefail

@@ -10,6 +10,11 @@ user clicks the button. One opt-in exception: the **Live View**
 (`GET /api/stream`) streams rendered JPEG frames continuously while a viewer
 is connected (see §1 and §5).
 
+The service reads exactly **one** `sensor_msgs/PointCloud2` topic — by
+default the **Livox Mid-360** at `/mid360/livox/lidar` — and no other sensor
+(Ouster, Avia, IMU, GNSS are ignored). Change it with `--topic`,
+`PCSNAP_TOPIC`, or `topic` in the config file.
+
 ---
 
 ## 1. Architecture
@@ -18,7 +23,7 @@ is connected (see §1 and §5).
 ROS 2 bag playback  (ros2 bag play, looping)
         |
         v
-Registered/raw PointCloud2 topic   (e.g. /ouster/points)
+Registered/raw PointCloud2 topic   (/mid360/livox/lidar — Livox Mid-360)
         |
         v
 ROS 2 Python subscriber           (pc_snapshot/ros_subscriber.py, background thread)
@@ -65,6 +70,17 @@ decoded cloud ──► DemAccumulator.add() ──► dem_mapping.ElevationGrid
 
 ### Key behaviours
 
+- **Livox Mid-360 only — one topic, no sensor fusion.** The service
+  subscribes to exactly **one** `sensor_msgs/PointCloud2` topic
+  (`topic`, default `/mid360/livox/lidar`) and nothing else: no IMU, no
+  GNSS, no Ouster, no other LiDAR is read or merged, in either the snapshot
+  or the DEM path. Point fields are taken by name (`x`, `y`, `z`,
+  `intensity`), so any extra fields are ignored. Note that the Mid-360
+  driver fills non-hit beams with `(0,0,0)` (typically ~70 % of the message)
+  — those are dropped automatically by the blind-zone range gate
+  (`min_range_m` / `dem_min_range_m`). To watch a different sensor, change
+  `topic` (`--topic`, `PCSNAP_TOPIC`, or config) — that is the only place the
+  sensor is chosen.
 - **One message per snapshot.** The subscriber decodes each message into a
   read-only numpy snapshot. `POST /api/snapshot` captures a reference to
   exactly one such snapshot and renders all five views from that single
@@ -105,8 +121,9 @@ decoded cloud ──► DemAccumulator.add() ──► dem_mapping.ElevationGrid
   0.00 m median nearest-neighbour distance between sweeps 60 frames apart,
   and `/gnss_pose` drifts < 0.1 mm over the whole file. Points are gated by
   a radial clip (`dem_clip_range_m`), a blind-zone minimum range
-  (`dem_min_range_m`, which also drops the Ouster driver's `(0,0,0)`
-  filler points) and a height band around the sensor (`dem_band_below` /
+  (`dem_min_range_m`, which also drops the Mid-360 driver's `(0,0,0)`
+  filler points — roughly 70 % of each Mid-360 message) and a height band
+  around the sensor (`dem_band_below` /
   `dem_band_above`, default ±6 m — verified to give a far more readable
   ground DEM than an unbounded window, which squeezes the ground into one
   colour).
@@ -164,11 +181,19 @@ A single SQLite bag file was provided:
 **Important findings:**
 
 - The bag contains **no registered point cloud** (no `/cloud_registered`).
-  It holds **raw** LiDAR (`/ouster/points`, `/mid360/livox/lidar`,
+  It holds **raw** LiDAR (`/mid360/livox/lidar`, `/ouster/points`,
   `/avia/livox/lidar`) plus IMU and GNSS pose.
-- Therefore the default topic is the raw `/ouster/points`
-  (131,072 points/message, frame `os_sensor`, 10 Hz). Rendering works
-  out of the box on this raw cloud.
+- The service is configured for **one sensor only: the Livox Mid-360**.
+  The default topic is `/mid360/livox/lidar`
+  (19,968 points/message — of which ~14,000 are `(0,0,0)` non-hit fillers,
+  frame `mid360_frame`, 10 Hz), and no other topic is subscribed. The other
+  two lidar topics in this bag (`/ouster/points`, `/avia/livox/lidar`) are
+  ignored unless you explicitly point `topic` at one of them.
+- Point fields are read **by name** (`x`, `y`, `z`, `intensity`), so the
+  Mid-360's extra `tag` / `line` / `timestamp` fields are simply ignored.
+  If your Mid-360 driver publishes a different topic name (very common:
+  `/livox/lidar`, `/mid360/lidar`, `/livox_mid360_points`), set it with
+  `--topic <your_topic>` — that is the only place the sensor is chosen.
 - To get a **motion-compensated, registered** cloud you must run FAST-LIO2
   on the raw LiDAR+IMU (see §9). A prebuilt FAST-LIO2 ROS 2 workspace exists
   at `/home/rajesh/workspace-tools/fastlio_ws/install`. When you point the
@@ -202,7 +227,7 @@ source /opt/ros/humble/setup.bash
 ```
 
 This starts:
-- the HTTP service on `http://127.0.0.1:8085` (topic `/ouster/points`), and
+- the HTTP service on `http://127.0.0.1:8085` (topic `/mid360/livox/lidar`), and
 - `ros2 bag play <db3> --loop` so point clouds keep arriving.
 
 Health check output is printed automatically. Stop everything with:
@@ -222,16 +247,30 @@ source /opt/ros/humble/setup.bash
 Terminal 2 — snapshot service:
 ```bash
 source /opt/ros/humble/setup.bash
-./scripts/run_service.sh /ouster/points 8085
+./scripts/run_service.sh /mid360/livox/lidar 8085
 ```
 
 Then open `http://127.0.0.1:8085/` in Chrome and click **Fetch Point Cloud**.
+(`run_service.sh` with no arguments uses the configured default,
+`/mid360/livox/lidar`.)
+
+Check that you are on the right sensor before blaming the service:
+
+```bash
+ros2 topic list | grep -i lidar      # find your topic name
+ros2 topic hz /mid360/livox/lidar    # expect ~10 Hz
+curl -s localhost:8085/api/health | python3 -m json.tool | grep -E 'topic|status'
+```
+
+If `topic` does not exist the service starts anyway and reports
+`status: "disconnected"` with the topic name in the reason — fix the topic
+name, not the code (see §4.5).
 
 ### 4.3 Test without a bag (synthetic publisher)
 
 ```bash
 source /opt/ros/humble/setup.bash
-python3 scripts/synthetic_publisher.py --topic /ouster/points --rate 5
+python3 scripts/synthetic_publisher.py --topic /mid360/livox/lidar --rate 5
 # then run the service in another terminal
 ```
 
@@ -242,7 +281,7 @@ JSON config file (CLI > env > file > defaults).
 
 ```bash
 python3 -m pc_snapshot \
-  --topic /ouster/points \
+  --topic /mid360/livox/lidar \
   --port 8085 \
   --renderer auto \          # auto | open3d | matplotlib
   --up-axis z \              # z (ROS/robotics) or y (aerospace)
@@ -280,6 +319,24 @@ renderer initializes (works in WSL 2 via Vulkan/llvmpipe), and automatically
 falls back to **Matplotlib (Agg)** if Open3D is unavailable. You can force
 either with `--renderer open3d` or `--renderer matplotlib`.
 
+### 4.5 Using a different dataset — the one thing that must match
+
+The service never mixes sensors: it reads **one** topic, the Livox Mid-360
+(`/mid360/livox/lidar` by default). When another dataset "gives an issue",
+it is almost always the topic name or the message type, not the pipeline:
+
+| Symptom | Cause | Fix |
+|---------|-------|-----|
+| `status: "disconnected"`, "no message has arrived on …" | Topic name differs in that dataset | `ros2 topic list \| grep -i lidar`, then pass it: `./scripts/run_service.sh <topic>` or `PCSNAP_TOPIC=<topic>` |
+| `topic … is not a PointCloud2` / decode failure | It is `livox_ros_driver2/CustomMsg` or another type | Convert it to `sensor_msgs/PointCloud2`, or republish the Mid-360 as PointCloud2 (this service only accepts PointCloud2) |
+| Snapshot renders but looks like a blob at the origin | Topic publishes `(0,0,0)` non-hit fillers (normal for Livox/Ouster) | Expected; the renderer clips at `min_range_m` and the DEM drops them at `dem_min_range_m` |
+| Image is sparse / low coverage | Far fewer real returns than the Ouster (Mid-360 ≈ 5.7k hits per message here) | Accumulate longer, or lower `dem_resolution` to 0.1–0.2 m for more cells |
+| Nothing happens when clicking Fetch / Get DEM | Bag not playing, or service started before the bag | Start the service first, then `ros2 bag play --loop`; `GET /api/health` shows message age |
+
+Only `topic` selects the sensor. There is no code path that subscribes to
+`/ouster/points`, `/avia/livox/lidar`, any IMU, or any pose topic unless you
+explicitly set `topic` to it.
+
 ---
 
 ## 5. HTTP API
@@ -303,11 +360,11 @@ either with `--renderer open3d` or `--renderer matplotlib`.
   "snapshot_id": "bfae64ca...",
   "capture_timestamp": 1792999557.6,
   "ros_message_stamp": 1747409937.88,
-  "frame_id": "os_sensor",
-  "topic": "/ouster/points",
-  "original_point_count": 131072,
-  "valid_point_count": 131072,
-  "rendered_point_count": 131024,
+  "frame_id": "mid360_frame",
+  "topic": "/mid360/livox/lidar",
+  "original_point_count": 19968,
+  "valid_point_count": 19968,
+  "rendered_point_count": 19968,
   "render_seconds": 6.7,
   "views": ["top", "front", "back", "left", "right"],
   "images": { "top": ".../top.png", "front": "...", "back": "...", "left": "...", "right": "..." },
@@ -327,17 +384,17 @@ busy / empty cloud · `500` render failure.
   "dem_id": "9b615dce...",
   "capture_timestamp": 1793084728.78,
   "render_seconds": 0.21,
-  "topic": "/ouster/points",
+  "topic": "/mid360/livox/lidar",
   "frame": "sensor",
-  "scans_accumulated": 483,
-  "points_in": 63342336,
-  "points_used": 9660000,
+  "scans_accumulated": 150,
+  "points_in": 3000000,
+  "points_used": 618735,
   "window": { "start_walltime": 1793084711.94, "end_walltime": 1793084812.19,
               "first_scan_stamp": 1747409917.47, "last_scan_stamp": 1747409962.33 },
   "grid": { "shape": [800, 800], "resolution_m": 0.25, "extent_m": [200.0, 200.0],
             "origin": [-100.0, -100.0], "aggregation": "min",
-            "valid_cells": 77111, "coverage_m2": 4819.44,
-            "z_min": -5.99, "z_max": 5.99, "observations": 9660000 },
+            "valid_cells": 30963, "coverage_m2": 1935.19,
+            "z_min": -5.23, "z_max": 6.0, "observations": 618735 },
   "filters": { "clip_range_m": 60.0, "min_range_m": 1.0,
                "ground_filter": "height_band" },
   "image_size": [1400, 900],

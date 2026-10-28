@@ -7,7 +7,7 @@ optional intensity field. Useful to validate the snapshot service end-to-end
 before a real dataset is configured.
 
 Usage (inside sourced ROS 2):
-    python3 synthetic_publisher.py --topic /ouster/points --rate 5
+    python3 synthetic_publisher.py --topic /mid360/livox/lidar --rate 5
 """
 
 import argparse
@@ -97,7 +97,7 @@ class SyntheticPublisher(Node):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--topic", default="/ouster/points")
+    ap.add_argument("--topic", default="/mid360/livox/lidar")
     ap.add_argument("--rate", type=float, default=5.0)
     ap.add_argument("--no-intensity", action="store_true")
     args = ap.parse_args()

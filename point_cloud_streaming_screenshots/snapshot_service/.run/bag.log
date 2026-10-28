@@ -1,12 +1,12 @@
-Playing bag: /home/rajesh/proc_dem_creation/2026-09-08_15-23-15.bag/2026-09-08_15-23-15.bag_0.db3 at rate 1.0x (looping, Ctrl-C to stop)
-stdin is not a terminal device. Keyboard handling disabled.[INFO] [1793097997.753627884] [rosbag2_storage]: Opened database '/home/rajesh/proc_dem_creation/2026-09-08_15-23-15.bag/2026-09-08_15-23-15.bag_0.db3' for READ_ONLY.
-[INFO] [1793097998.997460537] [rosbag2_player]: Set rate to 1
-[INFO] [1793097999.013596733] [rosbag2_player]: Adding keyboard callbacks.
-[INFO] [1793097999.013656733] [rosbag2_player]: Press SPACE for Pause/Resume
-[INFO] [1793097999.013682533] [rosbag2_player]: Press CURSOR_RIGHT for Play Next Message
-[INFO] [1793097999.013689433] [rosbag2_player]: Press CURSOR_UP for Increase Rate 10%
-[INFO] [1793097999.013708533] [rosbag2_player]: Press CURSOR_DOWN for Decrease Rate 10%
-[INFO] [1793097999.014191333] [rosbag2_storage]: Opened database '/home/rajesh/proc_dem_creation/2026-09-08_15-23-15.bag/2026-09-08_15-23-15.bag_0.db3' for READ_ONLY.
+Playing bag: /home/rajesh/proc_dem_creation/OutdoorRoad_dataset_ros2/OutdoorRoad_dataset_ros2.db3 at rate 1.0x (looping, Ctrl-C to stop)
+stdin is not a terminal device. Keyboard handling disabled.[INFO] [1793182799.709865378] [rosbag2_storage]: Opened database '/home/rajesh/proc_dem_creation/OutdoorRoad_dataset_ros2/OutdoorRoad_dataset_ros2.db3' for READ_ONLY.
+[INFO] [1793182800.179294474] [rosbag2_player]: Set rate to 1
+[INFO] [1793182800.186493697] [rosbag2_player]: Adding keyboard callbacks.
+[INFO] [1793182800.186594396] [rosbag2_player]: Press SPACE for Pause/Resume
+[INFO] [1793182800.186635808] [rosbag2_player]: Press CURSOR_RIGHT for Play Next Message
+[INFO] [1793182800.186674936] [rosbag2_player]: Press CURSOR_UP for Increase Rate 10%
+[INFO] [1793182800.186756370] [rosbag2_player]: Press CURSOR_DOWN for Decrease Rate 10%
+[INFO] [1793182800.187333654] [rosbag2_storage]: Opened database '/home/rajesh/proc_dem_creation/OutdoorRoad_dataset_ros2/OutdoorRoad_dataset_ros2.db3' for READ_ONLY.
 
 closing.
 
@@ -15,10 +15,20 @@ closing.
 closing.
 
 closing.
-[INFO] [1793098266.180325868] [rosbag2_storage]: Opened database '/home/rajesh/proc_dem_creation/2026-09-08_15-23-15.bag/2026-09-08_15-23-15.bag_0.db3' for READ_ONLY.
+[INFO] [1793183457.502653966] [rosbag2_storage]: Opened database '/home/rajesh/proc_dem_creation/OutdoorRoad_dataset_ros2/OutdoorRoad_dataset_ros2.db3' for READ_ONLY.
 
 closing.
 
 closing.
-[INFO] [1793098376.630934082] [rclcpp]: signal_handler(SIGINT/SIGTERM)
-[INFO] [1793098376.664655875] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[INFO] [1793184114.832341795] [rosbag2_storage]: Opened database '/home/rajesh/proc_dem_creation/OutdoorRoad_dataset_ros2/OutdoorRoad_dataset_ros2.db3' for READ_ONLY.
+
+closing.
+
+closing.
+[INFO] [1793184772.155221777] [rosbag2_storage]: Opened database '/home/rajesh/proc_dem_creation/OutdoorRoad_dataset_ros2/OutdoorRoad_dataset_ros2.db3' for READ_ONLY.
+
+closing.
+
+closing.
+[INFO] [1793185321.713616809] [rclcpp]: signal_handler(SIGINT/SIGTERM)
+[INFO] [1793185321.744177237] [rclcpp]: signal_handler(SIGINT/SIGTERM)
