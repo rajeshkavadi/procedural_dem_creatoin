@@ -79,7 +79,7 @@ def test_accumulate_and_capture(acc):
     assert cap.meta["first_scan_stamp"] == 100.5
     assert cap.meta["last_scan_stamp"] == 101.5
     assert cap.meta["points_in"] >= cap.meta["points_used"] > 0
-    assert cap.meta["topic"] == "/ouster/points"
+    assert cap.meta["topic"] == "/mid360/livox/lidar"
     assert cap.meta["frame"] == "sensor"
     assert cap.stats["z_min"] <= cap.stats["z_max"]
     # Grid geometry follows the config (square, centred on the sensor).

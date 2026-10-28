@@ -20,7 +20,7 @@ VIEW_NAMES = ("top", "front", "back", "left", "right")
 @dataclass
 class Config:
     # ROS
-    topic: str = "/ouster/points"        # PointCloud2 topic to snapshot
+    topic: str = "/mid360/livox/lidar"   # PointCloud2 topic to snapshot (Livox Mid-360)
     ros_domain_id: Optional[str] = None  # set before rclpy init if provided
 
     # HTTP

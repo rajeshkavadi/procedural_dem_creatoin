@@ -1,5 +1,5 @@
 {
-  "topic": "/ouster/points",
+  "topic": "/mid360/livox/lidar",
   "host": "0.0.0.0",
   "port": 8085,
   "api_token": "",

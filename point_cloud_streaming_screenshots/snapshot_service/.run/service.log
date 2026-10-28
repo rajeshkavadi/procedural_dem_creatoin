@@ -1,37 +1,234 @@
-2026-10-27 16:16:37,827 INFO pc_snapshot.dem: DEM: 800x800 cells @ 0.25m, agg=min, filter=height_band, clip=60.0 m
-2026-10-27 16:16:38,107 INFO root: starting HTTP server on 0.0.0.0:8085 (topic=/ouster/points, renderer=auto)
-INFO:     Started server process [146035]
+2026-10-28 15:50:00,100 INFO pc_snapshot.dem: DEM: 800x800 cells @ 0.25m, agg=min, filter=height_band, clip=60.0 m
+2026-10-28 15:50:00,393 INFO pc_snapshot.ros_subscriber: subscribed to /mid360/livox/lidar (depth=5)
+2026-10-28 15:50:00,491 INFO root: starting HTTP server on 0.0.0.0:8085 (topic=/mid360/livox/lidar, renderer=auto)
+INFO:     Started server process [1106982]
 INFO:     Waiting for application startup.
 INFO:     Application startup complete.
 INFO:     Uvicorn running on http://0.0.0.0:8085 (Press CTRL+C to quit)
-2026-10-27 16:16:38,238 INFO pc_snapshot.ros_subscriber: subscribed to /ouster/points (depth=5)
-INFO:     127.0.0.1:48230 - "GET /favicon.ico HTTP/1.1" 404 Not Found
-INFO:     127.0.0.1:48224 - "GET /api/health HTTP/1.1" 200 OK
-INFO:     127.0.0.1:48224 - "POST /api/snapshot HTTP/1.1" 409 Conflict
-INFO:     127.0.0.1:57540 - "POST /api/snapshot HTTP/1.1" 409 Conflict
-INFO:     127.0.0.1:35748 - "POST /api/snapshot HTTP/1.1" 409 Conflict
-INFO:     127.0.0.1:35748 - "POST /api/snapshot HTTP/1.1" 409 Conflict
-2026-10-27 16:17:27,252 INFO pc_snapshot.stream: stream started (view=front)
-INFO:     127.0.0.1:35748 - "GET /api/stream?view=front&token=lidar-snap-2026 HTTP/1.1" 200 OK
-INFO:     127.0.0.1:35762 - "GET /api/health HTTP/1.1" 200 OK
-INFO:     127.0.0.1:35762 - "GET /api/health HTTP/1.1" 200 OK
-INFO:     127.0.0.1:35762 - "GET /api/health HTTP/1.1" 200 OK
-INFO:     127.0.0.1:35762 - "GET /api/health HTTP/1.1" 200 OK
-INFO:     127.0.0.1:35762 - "GET /api/health HTTP/1.1" 200 OK
-INFO:     127.0.0.1:35762 - "POST /api/dem HTTP/1.1" 409 Conflict
-INFO:     127.0.0.1:35762 - "GET /api/health HTTP/1.1" 200 OK
-INFO:     127.0.0.1:35762 - "GET /api/health HTTP/1.1" 200 OK
-INFO:     127.0.0.1:35762 - "GET /api/health HTTP/1.1" 200 OK
-INFO:     127.0.0.1:35762 - "GET /api/health HTTP/1.1" 200 OK
-INFO:     127.0.0.1:35762 - "GET /api/health HTTP/1.1" 200 OK
-2026-10-27 16:18:07,432 INFO pc_snapshot.stream: stream idle -> stopping render loop
-2026-10-27 16:18:07,433 INFO pc_snapshot.stream: stream render loop exited
-INFO:     127.0.0.1:58960 - "GET /api/health HTTP/1.1" 200 OK
-INFO:     127.0.0.1:58960 - "GET /favicon.ico HTTP/1.1" 404 Not Found
-INFO:     127.0.0.1:58974 - "POST /api/snapshot HTTP/1.1" 409 Conflict
-INFO:     127.0.0.1:41250 - "GET /api/health HTTP/1.1" 200 OK
-INFO:     127.0.0.1:41250 - "POST /api/snapshot HTTP/1.1" 409 Conflict
+INFO:     127.0.0.1:60568 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET / HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /app.js HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /style.css HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /favicon.ico HTTP/1.1" 404 Not Found
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+2026-10-28 15:50:29,422 INFO pc_snapshot.renderer: shared OffscreenRenderer ready at 1280x720
+Using 'soft' CircularBuffer (12288 KiB)
+FEngine (64 bits) created at 0x7739ec724110 (threading is enabled)
+FEngine resolved backend: Vulkan
+Vulkan device driver: llvmpipe Mesa 23.2.1-1ubuntu3.1~22.04.4 (LLVM 15.0.7)
+Selected physical device 'llvmpipe (LLVM 15.0.7, 256 bits)' from 1 physical devices. (vendor 0x10005, device 0x0, driver 0x1, api 1.3)
+Backend feature level: 3
+FEngine feature level: 1
+2026-10-28 15:50:34,158 INFO pc_snapshot.renderer: rendered 255 with Open3D backend
+2026-10-28 15:50:35,249 INFO pc_snapshot.jobs: snapshot ea6ececad66a41979c67145fb444c3d8 rendered in 9.10s (20062 points)
+[Open3D INFO] EngineInstance: Vulkan software device detected; using Filament's Vulkan backend
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "POST /api/snapshot HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/snapshot/ea6ececad66a41979c67145fb444c3d8/front.png?t=1793182835277 HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/snapshot/ea6ececad66a41979c67145fb444c3d8/top.png?t=1793182835277 HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/snapshot/ea6ececad66a41979c67145fb444c3d8/right.png?t=1793182835277 HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/snapshot/ea6ececad66a41979c67145fb444c3d8/left.png?t=1793182835277 HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/snapshot/ea6ececad66a41979c67145fb444c3d8/back.png?t=1793182835277 HTTP/1.1" 200 OK
+2026-10-28 15:50:55,014 INFO pc_snapshot.stream: stream started (view=front)
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/stream?view=front&token=lidar-snap-2026 HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/stream?view=top&token=lidar-snap-2026 HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+2026-10-28 15:51:59,863 INFO pc_snapshot.jobs: DEM 96f6fb5d01b44ae4b8668c05811c80f1 rendered in 3.59s (97338 cells from 1104 scans, z -4.484000205993652..6.0)
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "POST /api/dem HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/dem/96f6fb5d01b44ae4b8668c05811c80f1/dem.png?t=1793182919982 HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/stream?view=front&token=lidar-snap-2026 HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+2026-10-28 15:53:03,415 INFO pc_snapshot.jobs: DEM ad2c43572efd49708e49613df4cb04dd rendered in 0.76s (106786 cells from 1769 scans, z -4.484000205993652..6.0)
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "POST /api/dem HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/dem/ad2c43572efd49708e49613df4cb04dd/dem.png?t=1793182983542 HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+2026-10-28 15:54:04,485 INFO pc_snapshot.jobs: DEM 99f5516a95c949f5a39e98051771d533 rendered in 0.52s (115354 cells from 2382 scans, z -5.3520002365112305..6.0)
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "POST /api/dem HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/dem/99f5516a95c949f5a39e98051771d533/dem.png?t=1793183044567 HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+2026-10-28 15:55:15,118 INFO pc_snapshot.jobs: DEM 9863e7c78c0d44279ead1ae615dd5524 rendered in 0.40s (129309 cells from 3090 scans, z -5.690000057220459..6.0)
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "POST /api/dem HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/dem/9863e7c78c0d44279ead1ae615dd5524/dem.png?t=1793183115156 HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+2026-10-28 15:57:24,270 INFO pc_snapshot.jobs: DEM db2b7aee3bbb4aa493d3441cba6b3179 rendered in 0.28s (140536 cells from 4383 scans, z -5.900000095367432..6.0)
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "POST /api/dem HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/dem/db2b7aee3bbb4aa493d3441cba6b3179/dem.png?t=1793183244418 HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+2026-10-28 15:57:38,164 INFO pc_snapshot.stream: stream idle -> stopping render loop
+2026-10-28 15:57:38,165 INFO pc_snapshot.stream: stream render loop exited
+2026-10-28 16:00:14,705 INFO pc_snapshot.jobs: DEM d3ec77160b5e4e3d824d48f15e95518d rendered in 0.81s (151549 cells from 7018 scans, z -5.900000095367432..6.0)
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "POST /api/dem HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/dem/d3ec77160b5e4e3d824d48f15e95518d/dem.png?t=1793183414787 HTTP/1.1" 200 OK
+2026-10-28 16:01:04,200 INFO pc_snapshot.jobs: swept 1 expired snapshots
+2026-10-28 16:02:04,196 INFO pc_snapshot.jobs: swept 1 expired snapshots
+2026-10-28 16:03:04,197 INFO pc_snapshot.jobs: swept 1 expired snapshots
+2026-10-28 16:04:34,202 INFO pc_snapshot.jobs: swept 1 expired snapshots
+2026-10-28 16:05:34,203 INFO pc_snapshot.jobs: swept 1 expired snapshots
+2026-10-28 16:07:34,208 INFO pc_snapshot.jobs: swept 1 expired snapshots
+2026-10-28 16:10:34,245 INFO pc_snapshot.jobs: swept 1 expired snapshots
+2026-10-28 16:27:57,704 INFO pc_snapshot.jobs: DEM 8c492c8a859b4dd5b8c0f470a0d6972c rendered in 0.62s (154138 cells from 29231 scans, z -5.900000095367432..5.995999813079834)
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "POST /api/dem HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/dem/8c492c8a859b4dd5b8c0f470a0d6972c/dem.png?t=1793185077893 HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/health HTTP/1.1" 200 OK
+INFO:     2409:4070:4c96:cf92:615c:55cd:6f93:fe39:0 - "GET /api/dem/8c492c8a859b4dd5b8c0f470a0d6972c/dem.png HTTP/1.1" 200 OK
 INFO:     Shutting down
 INFO:     Waiting for application shutdown.
 INFO:     Application shutdown complete.
-INFO:     Finished server process [146035]
+INFO:     Finished server process [1106982]
