@@ -53,6 +53,8 @@ def test_health_without_messages(env):
     assert r.status_code == 200
     h = r.json()
     assert h["status"] == "ok"
+    assert h["source"]["kind"] == "none"
+    assert h["source"]["alive"] is False
     assert h["ros"]["listener_alive"] is False
     assert h["point_cloud"]["topic"] == "/test/points"
     assert h["point_cloud"]["message_received"] is False

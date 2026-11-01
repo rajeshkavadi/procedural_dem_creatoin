@@ -47,14 +47,14 @@ Exit codes: 0 = written, 1 = bad input, 2 = alignment rejected
 (``--allow-poor`` overrides the rejection).
 """
 
-from __future__ import annotations
+from __future__ import division
 
 import argparse
 import datetime as _dt
 import json
 import math
+import os
 import sys
-from pathlib import Path
 
 import numpy as np
 
@@ -62,62 +62,39 @@ from dem_mapping.georef import latlon_to_utm, utm_zone
 from dem_mapping.gnss_align import nearest_match, umeyama
 from dem_mapping import pcd_io
 
+
+def _ensure_dir(path):
+    if path and not os.path.isdir(path):
+        os.makedirs(path)
+
+
+def _write_json(path, data, **kwargs):
+    _ensure_dir(os.path.dirname(os.path.abspath(path)))
+    with open(path, 'w') as fh:
+        fh.write(json.dumps(data, **kwargs))
+
+
 # ---------------------------------------------------------------- coordinates
 
 
-def _load_gnss(path: Path, topic: str):
+def _load_gnss(path, topic):
     """Return (t, x, y, z) arrays of the GNSS pose track.
 
-    Accepts a ROS 1 ``.bag`` or a rosbag2 directory; uses ``rosbags`` when
-    available (works for both) and falls back to ``rosbag2_py``.
+    Reads a ROS 1 ``.bag`` with the Melodic ``rosbag`` Python package.
     """
-    path = Path(path)
-    try:
-        return _load_gnss_rosbags(path, topic)
-    except ImportError:
-        return _load_gnss_rosbag2(path, topic)
-
-
-def _load_gnss_rosbags(path, topic):
-    from rosbags.highlevel import AnyReader
+    import rosbag
     ts, xs, ys, zs = [], [], [], []
-    with AnyReader([path]) as reader:
-        conns = [c for c in reader.connections if c.topic == topic]
-        if not conns:
+    with rosbag.Bag(path, 'r') as bag:
+        info = bag.get_type_and_topic_info().topics
+        if topic not in info:
             raise SystemExit(
-                f'ERROR: topic {topic} not in {path}\n'
-                f'       available: {sorted({c.topic for c in reader.connections})}')
-        for _c, _ts, data in reader.messages(connections=conns):
-            msg = reader.deserialize(data, conns[0].msgtype)
-            ts.append(msg.header.stamp.sec + msg.header.stamp.nanosec * 1e-9)
+                'ERROR: topic {} not in {}\n'
+                '       available: {}'.format(topic, path, sorted(info)))
+        for _t, msg, _ts in bag.read_messages(topics=[topic]):
+            ts.append(msg.header.stamp.to_sec())
             xs.append(msg.pose.position.x)
             ys.append(msg.pose.position.y)
             zs.append(msg.pose.position.z)
-    return (np.asarray(ts), np.asarray(xs), np.asarray(ys), np.asarray(zs))
-
-
-def _load_gnss_rosbag2(path, topic):
-    from rclpy.serialization import deserialize_message
-    import rosbag2_py
-    from rosidl_runtime_py.utilities import get_message
-
-    reader = rosbag2_py.SequentialReader()
-    reader.open(rosbag2_py.StorageOptions(uri=str(path), storage_id='sqlite3'),
-                rosbag2_py.ConverterOptions('', ''))
-    types = {t.name: t.type for t in reader.get_all_topics_and_types()}
-    if topic not in types:
-        raise SystemExit(f'ERROR: topic {topic} not in {path} '
-                         f'(have: {sorted(types)})')
-    cls = get_message(types[topic])
-    reader.set_filter(rosbag2_py.StorageFilter(topics=[topic]))
-    ts, xs, ys, zs = [], [], [], []
-    while reader.has_next():
-        _t, data, _ts = reader.read_next()
-        msg = deserialize_message(data, cls)
-        ts.append(msg.header.stamp.sec + msg.header.stamp.nanosec * 1e-9)
-        xs.append(msg.pose.position.x)
-        ys.append(msg.pose.position.y)
-        zs.append(msg.pose.position.z)
     return (np.asarray(ts), np.asarray(xs), np.asarray(ys), np.asarray(zs))
 
 
@@ -125,7 +102,7 @@ def load_odom(csv_path):
     """Read the odom CSV written by ``dem_replay record_odom``."""
     data = np.genfromtxt(csv_path, delimiter=',', names=True)
     if data.size == 0:
-        raise SystemExit(f'ERROR: {csv_path} holds no rows')
+        raise SystemExit('ERROR: {} holds no rows'.format(csv_path))
     return (np.asarray(data['t'], dtype=np.float64),
             np.stack([data['x'], data['y'], data['z']], axis=1))
 
@@ -141,19 +118,19 @@ def yaw_fit(P, Q):
     qc = Q.mean(axis=0)
     p = P[:, :2] - pc[:2]
     q = Q[:, :2] - qc[:2]
-    cov = q.T @ p / P.shape[0]                    # 2x2
+    cov = np.dot(q.T, p) / P.shape[0]             # 2x2
     U, _, Vt = np.linalg.svd(cov)
-    R2 = U @ Vt
+    R2 = np.dot(U, Vt)
     if np.linalg.det(R2) < 0:
         U[:, -1] *= -1
-        R2 = U @ Vt
+        R2 = np.dot(U, Vt)
     theta = math.atan2(R2[1, 0], R2[0, 0])
     c, s = math.cos(theta), math.sin(theta)
     R = np.array([[c, -s, 0.0], [s, c, 0.0], [0.0, 0.0, 1.0]])
-    t = np.array([qc[0] - (R2 @ pc[:2])[0],
-                  qc[1] - (R2 @ pc[:2])[1],
+    t = np.array([qc[0] - np.dot(R2, pc[:2])[0],
+                  qc[1] - np.dot(R2, pc[:2])[1],
                   float(np.mean(Q[:, 2] - P[:, 2]))])
-    aligned = P @ R.T + t
+    aligned = np.dot(P, R.T) + t
     resid = np.linalg.norm(aligned - Q, axis=1)
     resid_h = np.linalg.norm(aligned[:, :2] - Q[:, :2], axis=1)
     info = {
@@ -171,16 +148,16 @@ def umeyama_scaled(P, Q):
     """Full 3-D rigid fit incl. a scale factor (diagnostic only)."""
     mu_p, mu_q = P.mean(0), Q.mean(0)
     sp, sq = P - mu_p, Q - mu_q
-    cov = sq.T @ sp / P.shape[0]
+    cov = np.dot(sq.T, sp) / P.shape[0]
     U, S, Vt = np.linalg.svd(cov)
     D = np.eye(3)
     if np.linalg.det(U) * np.linalg.det(Vt) < 0:
         D[2, 2] = -1.0
-    R = U @ D @ Vt
+    R = np.dot(np.dot(U, D), Vt)
     var_p = float(np.sum(sp ** 2) / P.shape[0])
     scale = float(np.sum(S * np.diag(D)) / var_p) if var_p > 0 else 1.0
-    t = mu_q - scale * (R @ mu_p)
-    aligned = scale * (P @ R.T) + t
+    t = mu_q - scale * np.dot(R, mu_p)
+    aligned = scale * np.dot(P, R.T) + t
     rms = float(np.sqrt(np.mean(np.sum((aligned - Q) ** 2, axis=1))))
     return R, t, scale, rms
 
@@ -219,7 +196,7 @@ def fit_hypotheses(P_local, t_local, gx, gy, gz, t_gnss, tol):
         n_match = int(good.sum())
         if n_match < 10:
             out.append({'order': order, 'error':
-                        f'only {n_match} time-matched samples (tol {tol}s)'})
+                        'only {} time-matched samples (tol {}s)'.format(n_match, tol)})
             continue
         Pm, Qm = P_local[good], Q[pick[good]]
         R, t, info = yaw_fit(Pm, Qm)
@@ -278,7 +255,7 @@ def reproject_grid(elev, res, origin, R, t, out_res=None, max_dist=None):
     z = elev[iy, ix].astype(np.float64)
 
     pts = np.stack([x, y, z], axis=1)
-    q = pts @ np.asarray(R, dtype=np.float64).T + \
+    q = np.dot(pts, np.asarray(R, dtype=np.float64).T) + \
         np.asarray(t, dtype=np.float64)
 
     # output grid: aligned to multiples of out_res, covering q with margin
@@ -341,7 +318,7 @@ def write_hillshade(dem_path, hs_path):
                            zFactor=1.0, creationOptions=['COMPRESS=DEFLATE'])
         return str(hs_path)
     except Exception as exc:                                     # pragma: no cover
-        return f'skipped ({type(exc).__name__}: {exc})'
+        return 'skipped ({}: {})'.format(type(exc).__name__, exc)
 
 
 def write_preview(tif_path, png_path, epsg, title):
@@ -370,7 +347,7 @@ def write_preview(tif_path, png_path, epsg, title):
     cb.set_label('elevation (m)')
     ax.set_xlabel('UTM easting (m)')
     ax.set_ylabel('UTM northing (m)')
-    ax.set_title(f'{title}\nEPSG:{epsg}', fontsize=10)
+    ax.set_title('{}\nEPSG:{}'.format(title, epsg), fontsize=10)
     ax.set_aspect('equal')
     ax.grid(alpha=0.25, linewidth=0.4)
     fig.tight_layout()
@@ -386,18 +363,18 @@ def main(argv=None):
     ap = argparse.ArgumentParser(
         prog='georef_export', description=__doc__,
         formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument('--dem', required=True, type=Path,
+    ap.add_argument('--dem', required=True,
                     help='DEM grid written by dem_node (*.npz)')
-    ap.add_argument('--odom', type=Path, default=None,
+    ap.add_argument('--odom', default=None,
                     help='CSV written by dem_replay record_odom '
                          '(FAST-LIO trajectory; not needed with '
                          '--already-utm)')
-    ap.add_argument('--bag', required=True, type=Path,
-                    help='bag holding the GNSS topic (ROS 1 .bag or rosbag2)')
+    ap.add_argument('--bag', required=True,
+                    help='ROS 1 .bag holding the GNSS topic')
     ap.add_argument('--gnss-topic', default='/gnss_pose')
-    ap.add_argument('--map', type=Path, default=None,
+    ap.add_argument('--map', default=None,
                     help='FAST-LIO map PCD (from /map_save) to georeference')
-    ap.add_argument('--out-dir', type=Path, default=Path('out'))
+    ap.add_argument('--out-dir', default='out')
     ap.add_argument('--prefix', default='dem')
     ap.add_argument('--resolution', type=float, default=None,
                     help='output grid resolution (default: DEM resolution)')
@@ -425,30 +402,30 @@ def main(argv=None):
                          'was built by dem_node in pose mode from a '
                          'GNSS-warped trajectory, see gnss_warp): no fit '
                          'and no reprojection, the CRS is only stamped')
-    ap.add_argument('--warp-report', type=Path, default=None,
+    ap.add_argument('--warp-report', default=None,
                     help='JSON report of dem_mapping gnss_warp (its '
                          'residuals become the quality gate and provenance '
                          'of an --already-utm export)')
-    ap.add_argument('--json', type=Path, default=None,
+    ap.add_argument('--json', default=None,
                     help='report path (default: <out-dir>/<prefix>_georef.json)')
     args = ap.parse_args(argv)
 
-    if not args.dem.exists():
-        raise SystemExit(f'ERROR: DEM {args.dem} not found')
+    if not os.path.exists(args.dem):
+        raise SystemExit('ERROR: DEM {} not found'.format(args.dem))
     if not args.already_utm:
-        if args.odom is None or not args.odom.exists():
-            raise SystemExit(f'ERROR: odometry {args.odom} not found - '
-                             'record it with: ros2 run dem_replay record_odom'
-                             ' -- --out out/odom.csv  (or pass --already-utm '
-                             'if the grid is already georeferenced)')
-    if not args.bag.exists():
-        raise SystemExit(f'ERROR: bag {args.bag} not found')
+        if args.odom is None or not os.path.exists(args.odom):
+            raise SystemExit('ERROR: odometry {} not found - '
+                             'record it with: rosrun dem_replay record_odom'
+                             ' --out out/odom.csv  (or pass --already-utm '
+                             'if the grid is already georeferenced)'.format(args.odom))
+    if not os.path.exists(args.bag):
+        raise SystemExit('ERROR: bag {} not found'.format(args.bag))
 
-    args.out_dir.mkdir(parents=True, exist_ok=True)
+    _ensure_dir(args.out_dir)
     prefix = args.prefix
 
     # ------------------------------------------------------------- load data
-    npz = np.load(args.dem, allow_pickle=True)
+    npz = np.load(args.dem)
     elev = np.asarray(npz['elevation'], dtype=np.float32)
     res = float(npz['resolution'])
     origin = tuple(float(v) for v in npz['origin'])
@@ -461,8 +438,10 @@ def main(argv=None):
         # quality gate uses the warp residuals.
         R, t = np.eye(3), np.zeros(3)
         t_loc = None
-        warp = (json.loads(args.warp_report.read_text())
-                if args.warp_report and args.warp_report.exists() else {})
+        warp = {}
+        if args.warp_report and os.path.exists(args.warp_report):
+            with open(args.warp_report, 'r') as fh:
+                warp = json.loads(fh.read())
         st = warp.get('stats', {})
         rms = float(st.get('residual_warp_rms_m', 0.0))
         rms_h = st.get('residual_warp_h_rms_m')
@@ -474,35 +453,35 @@ def main(argv=None):
                              'pass --warp-report (preferred) or --epsg')
         verdict = ('consistent' if rms <= args.rms_threshold else
                    'NOT consistent')
-        print(f'\nGNSS-aided build: grid already in EPSG:{epsg}, warp '
-              f'residual RMS={rms:.3f} m  (threshold {args.rms_threshold} m)'
-              f'  -> {verdict}')
+        print('\nGNSS-aided build: grid already in EPSG:{}, warp '
+              'residual RMS={:.3f} m  (threshold {} m)'
+              '  -> {}'.format(epsg, rms, args.rms_threshold, verdict))
         if warp:
-            print(f'  rigid alternative would have been '
-                  f'{warp.get("rigid_fit_rms_m", float("nan")):.3f} m RMS; '
-                  f'windows {st.get("windows_used")}/'
-                  f'{st.get("windows_total")}')
+            print('  rigid alternative would have been '
+                  '{:.3f} m RMS; '
+                  'windows {}/'
+                  '{}'.format(warp.get("rigid_fit_rms_m", float("nan")), st.get("windows_used"), st.get("windows_total")))
         best = {}
         candidates = []
         if rms > args.rms_threshold and not args.allow_poor:
             print('\nERROR: the GNSS warp residual is too large - the '
                   'trajectory could not be tied to the GNSS track.  Check '
                   'the warp report, re-run gnss_warp, or pass --allow-poor.')
-            out_json = args.json or args.out_dir / f'{prefix}_georef.json'
-            out_json.write_text(json.dumps({'warp': warp,
-                                            'verdict': verdict},
-                                           indent=2, default=str))
-            print(f'report: {out_json}')
+            out_json = args.json or os.path.join(
+                args.out_dir, '{}_georef.json'.format(prefix))
+            _write_json(out_json, {'warp': warp, 'verdict': verdict},
+                        indent=2, default=str)
+            print('report: {}'.format(out_json))
             return 2
     else:
         t_loc, P_loc = load_odom(args.odom)
         t_g, gx, gy, gz = _load_gnss(args.bag, args.gnss_topic)
-        print(f'odom : {len(t_loc)} samples, '
-              f'chord {np.linalg.norm(P_loc[-1] - P_loc[0]):.1f} m')
-        print(f'gnss : {len(t_g)} samples, '
-              f'x[{gx.min():.6f},{gx.max():.6f}] '
-              f'y[{gy.min():.6f},{gy.max():.6f}] '
-              f'z[{gz.min():.2f},{gz.max():.2f}]')
+        print('odom : {} samples, '
+              'chord {:.1f} m'.format(len(t_loc), np.linalg.norm(P_loc[-1] - P_loc[0])))
+        print('gnss : {} samples, '
+              'x[{:.6f},{:.6f}] '
+              'y[{:.6f},{:.6f}] '
+              'z[{:.2f},{:.2f}]'.format(len(t_g), gx.min(), gx.max(), gy.min(), gy.max(), gz.min(), gz.max()))
 
         order = np.argsort(t_loc)
         t_loc, P_loc = t_loc[order], P_loc[order]
@@ -518,29 +497,29 @@ def main(argv=None):
             if args.origin_lat is None or args.origin_lon is None:
                 raise SystemExit(
                     'ERROR: the GNSS topic holds a LOCAL METRIC frame '
-                    f'(x[{gx.min():.1f},{gx.max():.1f}] '
-                    f'y[{gy.min():.1f},{gy.max():.1f}]), not WGS84 '
+                    '(x[{:.1f},{:.1f}] '
+                    'y[{:.1f},{:.1f}]), not WGS84 '
                     'degrees.\n'
                     '       Absolute georeferencing then needs the '
                     'reference point of that local frame:\n'
                     '         --origin-lat <deg> --origin-lon <deg> '
                     '[--origin-alt <m>]\n'
                     '       Without it only a local (non-geographic) DEM '
-                    'can be written - see README.')
+                    'can be written - see README.'.format(gx.min(), gx.max(), gy.min(), gy.max()))
             e0, n0, _zone, _north = latlon_to_utm(args.origin_lat,
                                                   args.origin_lon)
             gx = gx + float(e0)
             gy = gy + float(n0)
             gz = gz + float(args.origin_alt)
-            print(f'local GNSS frame anchored at {args.origin_lat}, '
-                  f'{args.origin_lon} -> UTM ({float(e0):.1f}, '
-                  f'{float(n0):.1f})')
+            print('local GNSS frame anchored at {}, '
+                  '{} -> UTM ({:.1f}, '
+                  '{:.1f})'.format(args.origin_lat, args.origin_lon, float(e0), float(n0)))
 
         # ----------------------------------------------------------- fit
         candidates = fit_hypotheses(P_loc, t_loc, gx, gy, gz, t_g, args.tol)
         if not candidates or 'rms_m' not in candidates[0]:
             raise SystemExit('ERROR: no fit could be computed '
-                             f'({json.dumps(candidates, default=str)[:400]})')
+                             '({})'.format(json.dumps(candidates, default=str)[:400]))
         best = candidates[0]
 
         if args.fit == 'full':
@@ -573,16 +552,16 @@ def main(argv=None):
         rms_v = best.get('rms_vertical_m')
         verdict = ('consistent' if rms <= args.rms_threshold else
                    'NOT consistent')
-        print(f'\nfit[{best["order"]}] yaw={best["yaw_deg"]:.2f} deg  '
-              f'RMS={rms:.3f} m  (threshold {args.rms_threshold} m)  '
-              f'-> {verdict}')
+        print('\nfit[{}] yaw={:.2f} deg  '
+              'RMS={:.3f} m  (threshold {} m)  '
+              '-> {}'.format(best["order"], best["yaw_deg"], rms, args.rms_threshold, verdict))
         for c in candidates:
             if 'rms_m' in c:
-                print(f'  hypothesis {c["order"]:>7}: '
-                      f'RMS {c["rms_m"]:8.3f} m  '
-                      f'scale {c["scale_diagnostic"]:.4f}  '
-                      f'chord local {c["chord_local_m"]:.1f} m / '
-                      f'gnss {c["chord_gnss_m"]:.1f} m')
+                print('  hypothesis {:>7}: '
+                      'RMS {:8.3f} m  '
+                      'scale {:.4f}  '
+                      'chord local {:.1f} m / '
+                      'gnss {:.1f} m'.format(c["order"], c["rms_m"], c["scale_diagnostic"], c["chord_local_m"], c["chord_gnss_m"]))
         if rms > args.rms_threshold and not args.allow_poor:
             print('\nERROR: refusing to georeference with that residual - '
                   'the LiDAR trajectory and the GNSS track do not describe '
@@ -595,9 +574,10 @@ def main(argv=None):
                                       if not k.startswith('_')}
                                      for c in candidates],
                       'verdict': verdict}
-            out_json = args.json or args.out_dir / f'{prefix}_georef.json'
-            out_json.write_text(json.dumps(report, indent=2, default=str))
-            print(f'report: {out_json}')
+            out_json = args.json or os.path.join(
+                args.out_dir, '{}_georef.json'.format(prefix))
+            _write_json(out_json, report, indent=2, default=str)
+            print('report: {}'.format(out_json))
             return 2
 
     from osgeo import osr
@@ -612,15 +592,19 @@ def main(argv=None):
     valid = np.isfinite(grid2)
     zmin = float(np.nanmin(grid2))
     zmax = float(np.nanmax(grid2))
-    print(f'grid : {grid_stats["output_shape"]} @ {out_res} m, '
-          f'{int(valid.sum())} valid cells, z {zmin:.2f} .. {zmax:.2f} m, '
-          f'fill {grid_stats["fill_ratio"] * 100:.1f} %')
+    print('grid : {} @ {} m, '
+          '{} valid cells, z {:.2f} .. {:.2f} m, '
+          'fill {:.1f} %'.format(grid_stats["output_shape"], out_res, int(valid.sum()), zmin, zmax, grid_stats["fill_ratio"] * 100))
 
-    dem_tif = args.out_dir / f'{prefix}_dem.tif'
+    dem_tif = os.path.join(args.out_dir, '{}_dem.tif'.format(prefix))
     write_geotiff(dem_tif, grid2, origin2, out_res, epsg)
-    hs = write_hillshade(dem_tif, args.out_dir / f'{prefix}_dem_hillshade.tif')
-    png = write_preview(dem_tif, args.out_dir / f'{prefix}_dem_preview.png',
-                        epsg, f'{prefix} DEM (georeferenced)')
+    hs = write_hillshade(
+        dem_tif, os.path.join(args.out_dir,
+                              '{}_dem_hillshade.tif'.format(prefix)))
+    png = write_preview(
+        dem_tif, os.path.join(args.out_dir,
+                              '{}_dem_preview.png'.format(prefix)),
+        epsg, '{} DEM (georeferenced)'.format(prefix))
 
     # DEM as a point cloud in UTM metres
     ny2, nx2 = grid2.shape
@@ -629,19 +613,19 @@ def main(argv=None):
     py = origin2[1] + (iy + 0.5) * out_res
     pz = grid2[iy, ix].astype(np.float64)
     intensity = (pz - zmin) / (zmax - zmin + 1e-9) * 255.0
-    dem_pcd = args.out_dir / f'{prefix}_dem.pcd'
+    dem_pcd = os.path.join(args.out_dir, '{}_dem.pcd'.format(prefix))
     n_dem = pcd_io.write_pcd(dem_pcd, [px, py, pz, intensity],
                              ['x', 'y', 'z', 'intensity'],
-                             comments=[f'UTM EPSG:{epsg} metres',
-                                       f'resolution {out_res} m',
+                             comments=['UTM EPSG:{} metres'.format(epsg),
+                                       'resolution {} m'.format(out_res),
                                        'z = elevation (m), '
                                        'intensity = 0..255 height ramp'])
 
     # ------------------------------------------------------ the map cloud
     map_out = None
     if args.map:
-        if not Path(args.map).exists():
-            raise SystemExit(f'ERROR: map {args.map} not found')
+        if not os.path.exists(args.map):
+            raise SystemExit('ERROR: map {} not found'.format(args.map))
         map_R, map_t = R, t
         if args.already_utm and warp.get('base_transform'):
             # the map is in the ORIGINAL local frame (not warped per
@@ -650,18 +634,18 @@ def main(argv=None):
             map_t = np.asarray(warp['base_transform']['t'], dtype=np.float64)
             print('map  : applying the base rigid tie from the warp report '
                   '(single transform; the map itself is NOT drift-corrected)')
-        map_out = args.out_dir / f'{prefix}_map_georef.pcd'
+        map_out = os.path.join(args.out_dir, '{}_map_georef.pcd'.format(prefix))
         info = pcd_io.transform_pcd(
             args.map, map_out, map_R, map_t,
-            comments=[f'UTM EPSG:{epsg} metres (FAST-LIO map, georeferenced)'])
-        print(f'map  : {info["count"]} points -> {map_out}')
+            comments=['UTM EPSG:{} metres (FAST-LIO map, georeferenced)'.format(epsg)])
+        print('map  : {} points -> {}'.format(info["count"], map_out))
 
     # ---------------------------------------------------------- the report
     def clean(c):
         return {k: v for k, v in c.items() if not k.startswith('_')}
 
     report = {
-        'generated_utc': _dt.datetime.now(_dt.timezone.utc).isoformat(),
+        'generated_utc': _dt.datetime.utcnow().isoformat() + 'Z',
         'tool': 'dem_mapping.georef_export',
         'inputs': {
             'dem': str(args.dem),
@@ -685,7 +669,7 @@ def main(argv=None):
                   'utm_zone': best.get('utm_zone')}),
         'alignment': ({
             'method': 'gnss_aided_time_warp' if args.already_utm else
-                      f'rigid_{args.fit}',
+                      'rigid_{}'.format(args.fit),
             'rotation_matrix': np.round(R, 9).tolist(),
             'translation_m': [round(float(v), 4) for v in t],
             'rms_m': round(rms, 4),
@@ -716,8 +700,8 @@ def main(argv=None):
             'verdict': verdict,
             'hypotheses': [clean(c) for c in candidates],
         }),
-        'grid': {**grid_stats, 'z_min_m': round(zmin, 3),
-                 'z_max_m': round(zmax, 3), 'nodata': 'nan'},
+        'grid': dict(grid_stats, z_min_m=round(zmin, 3),
+                     z_max_m=round(zmax, 3), nodata='nan'),
         'outputs': {
             'dem_geotiff': str(dem_tif),
             'hillshade': str(hs),
@@ -735,14 +719,15 @@ def main(argv=None):
             'the transform is dataset specific.',
         ],
     }
-    out_json = args.json or args.out_dir / f'{prefix}_georef.json'
-    out_json.write_text(json.dumps(report, indent=2))
+    out_json = args.json or os.path.join(
+        args.out_dir, '{}_georef.json'.format(prefix))
+    _write_json(out_json, report, indent=2)
 
-    print(f'\nEPSG : {epsg} ({crs_name})')
-    print(f'transform: p_utm = R * p_local + t   '
-          f't = {np.round(t, 3).tolist()}')
-    print(f'wrote: {dem_tif}\n       {dem_pcd}\n'
-          f'       {map_out if map_out else "-"}\n       {out_json}')
+    print('\nEPSG : {} ({})'.format(epsg, crs_name))
+    print('transform: p_utm = R * p_local + t   '
+          't = {}'.format(np.round(t, 3).tolist()))
+    print('wrote: {}\n       {}\n'
+          '       {}\n       {}'.format(dem_tif, dem_pcd, map_out if map_out else "-", out_json))
     return 0
 
 

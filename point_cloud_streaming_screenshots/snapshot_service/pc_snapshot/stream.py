@@ -32,8 +32,9 @@ import numpy as np
 from PIL import Image, ImageDraw
 
 from .config import Config
-from .renderer import (RenderError, get_shared_renderer, prepare_cloud,
-                       render_snapshot, render_views_offscreen, submit_render)
+from .renderer import (RenderError, get_shared_renderer, open3d_viable,
+                       prepare_cloud, render_snapshot, render_views_offscreen,
+                       submit_render)
 from .store import SnapshotStore
 
 log = logging.getLogger(__name__)
@@ -272,7 +273,7 @@ class StreamManager:
         prepared, count = prepare_cloud(
             snap, self.cfg, max_points=self.cfg.stream_max_points)
         backend = self.cfg.renderer
-        if backend in ("auto", "open3d"):
+        if backend == "open3d" or (backend == "auto" and open3d_viable(self.cfg)):
             try:
                 # Open3D runs on the dedicated render thread (Filament thread
                 # affinity) at SNAPSHOT resolution, then we scale down for

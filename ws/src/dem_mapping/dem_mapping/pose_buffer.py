@@ -6,6 +6,8 @@ Position is linearly interpolated, orientation is spherically interpolated
 (quaternion slerp) between the two bracketing samples.
 """
 
+from __future__ import division
+
 import numpy as np
 
 
@@ -64,7 +66,7 @@ def quat_slerp(q0, q1, s):
 class PoseBuffer:
     """Bounded, time-sorted buffer of (t, position, orientation)."""
 
-    def __init__(self, max_span_s=10.0, max_size=200_000):
+    def __init__(self, max_span_s=10.0, max_size=200000):
         self.max_span_s = float(max_span_s)
         self.max_size = int(max_size)
         self._t = np.zeros(0, dtype=np.float64)      # seconds

@@ -4,6 +4,13 @@
   "port": 8085,
   "api_token": "",
 
+  "bag_path": "",
+  "bag_rate": 1.0,
+  "bag_loop": true,
+  "bag_start_offset_sec": 0.0,
+  "bag_auto_topic": true,
+  "ros_master_uri": "",
+
   "stale_after_sec": 5.0,
   "stale_policy": "warn",
 

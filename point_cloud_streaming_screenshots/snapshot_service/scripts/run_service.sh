@@ -2,29 +2,32 @@
 # Start the snapshot HTTP service (foreground).
 #
 # Usage:
-#   ./run_service.sh [topic] [port] [clip_range_m]
+#   ./run_service.sh --bag /path/to/recording.bag [options]
+#   ./run_service.sh --topic /livox/lidar --port 8085
 #
-# Defaults come from the config: /mid360/livox/lidar, port 8085.
-# clip_range_m trims sparse far returns so the dense scene fills the frame
-# (0 = disabled). 60 is a good default for a raw spinning LiDAR.
+# All arguments are passed straight to `python -m pc_snapshot`, so every CLI
+# option is available here (--bag, --topic, --port, --clip-range, --no-loop,
+# --dem-*, --api-token, ...).
+#
+# No ROS environment is needed for --bag: the .bag file is read directly with
+# the pure-Python `rosbags` library.
 set -eo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJ_DIR="$(dirname "$SCRIPT_DIR")"
+REPO_ROOT="$(cd "$PROJ_DIR/../.." && pwd)"
 
-# ROS setup scripts reference unset variables; tolerate that while sourcing.
-set +u
-source /opt/ros/humble/setup.bash
-set -u
+# Prefer the project virtualenv (Python 3.8 + FastAPI + rosbags).
+PY="${PCSNAP_PYTHON:-}"
+if [ -z "$PY" ]; then
+  for cand in "$PROJ_DIR/.venv/bin/python" "$REPO_ROOT/.venv/bin/python"; do
+    if [ -x "$cand" ]; then PY="$cand"; break; fi
+  done
+fi
+if [ -z "$PY" ]; then
+  PY="$(command -v python3)"
+fi
+
+echo "Using interpreter: $PY"
 cd "$PROJ_DIR"
-
-TOPIC="${1:-}"
-PORT="${2:-}"
-CLIP="${3:-}"
-
-ARGS=()
-if [ -n "$TOPIC" ]; then ARGS+=(--topic "$TOPIC"); fi
-if [ -n "$PORT" ]; then ARGS+=(--port "$PORT"); fi
-if [ -n "$CLIP" ]; then ARGS+=(--clip-range "$CLIP"); fi
-
-exec python3 -m pc_snapshot "${ARGS[@]}"
+exec "$PY" -m pc_snapshot "$@"

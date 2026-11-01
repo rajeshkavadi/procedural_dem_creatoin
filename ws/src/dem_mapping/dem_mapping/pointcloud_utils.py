@@ -1,5 +1,7 @@
 """PointCloud2 -> NumPy helpers (pure Python/NumPy, no PCL/Open3D)."""
 
+from __future__ import division
+
 import numpy as np
 
 # sensor_msgs/PointField datatypes
@@ -36,7 +38,7 @@ def pointcloud2_to_xyz(msg):
     fields = {f.name: f for f in msg.fields}
     for need in ('x', 'y', 'z'):
         if need not in fields:
-            raise KeyError(f'PointCloud2 has no field "{need}"')
+            raise KeyError('PointCloud2 has no field "{}"'.format(need))
     n = msg.height * msg.width
     if n == 0:
         return np.zeros((0, 3), dtype=np.float64)
@@ -71,7 +73,7 @@ def pointcloud2_point_times(msg):
     in which case the whole scan is assumed to be stamped at header time.
     """
     fields = {f.name: f for f in msg.fields}
-    hdr_ns = msg.header.stamp.sec * 1_000_000_000 + msg.header.stamp.nanosec
+    hdr_ns = msg.header.stamp.to_nsec()
 
     if 'timestamp' in fields:
         ts = pointcloud2_field(msg, 'timestamp')

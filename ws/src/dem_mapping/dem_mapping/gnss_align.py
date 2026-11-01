@@ -1,7 +1,7 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 """Offline GNSS <-> pose alignment check (feasibility of georeferencing).
 
-Reads a ROS 2 bag and compares
+Reads a ROS 1 bag and compares
 
 * the estimated/drone trajectory (odometry or pose topic), and
 * the GNSS stream (geometry_msgs/PoseStamped in a local frame, or
@@ -20,9 +20,11 @@ no GNSS fix, different epochs, ...).  Global georeferencing must then NOT
 be claimed - use a local DEM instead.
 
 Usage:
-    ros2 run dem_mapping gnss_align <bag> \
+    rosrun dem_mapping gnss_align <bag> \
         --pose-topic /Odometry --gnss-topic /gnss_pose
 """
+
+from __future__ import division
 
 import argparse
 import json
@@ -32,29 +34,22 @@ import numpy as np
 
 
 def _sec(stamp):
-    return stamp.sec + stamp.nanosec * 1e-9
+    return stamp.to_sec()
 
 
-def read_topic(bag, topic, type_str, max_msgs=None):
-    import rosbag2_py
-    from rclpy.serialization import deserialize_message
-    from rosidl_runtime_py.utilities import get_message
-
-    reader = rosbag2_py.SequentialReader()
-    reader.open(rosbag2_py.StorageOptions(uri=bag, storage_id='sqlite3'),
-                rosbag2_py.ConverterOptions('', ''))
-    types = {t.name: t.type for t in reader.get_all_topics_and_types()}
-    if topic not in types:
-        raise SystemExit(f'topic {topic} not in bag (have: {list(types)})')
-    cls = get_message(type_str or types[topic])
-    reader.set_filter(rosbag2_py.StorageFilter(topics=[topic]))
+def read_topic(bag, topic, max_msgs=None):
+    """Read every message of ``topic`` from a ROS 1 bag."""
+    import rosbag
     out = []
-    while reader.has_next():
-        _t, data, _ts = reader.read_next()
-        msg = deserialize_message(data, cls)
-        out.append(msg)
-        if max_msgs and len(out) >= max_msgs:
-            break
+    with rosbag.Bag(bag, 'r') as b:
+        info = b.get_type_and_topic_info().topics
+        if topic not in info:
+            raise SystemExit('topic {} not in bag (have: {})'.format(
+                topic, sorted(info)))
+        for _topic, msg, _t in b.read_messages(topics=[topic]):
+            out.append(msg)
+            if max_msgs and len(out) >= max_msgs:
+                break
     return out
 
 
@@ -66,7 +61,7 @@ def pose_xyz(msg):
     if name == 'PoseStamped':
         p = msg.pose.position
         return _sec(msg.header.stamp), np.array([p.x, p.y, p.z])
-    raise SystemExit(f'unsupported pose message: {name}')
+    raise SystemExit('unsupported pose message: {}'.format(name))
 
 
 def gnss_xyz(msg, cache={}):
@@ -82,7 +77,7 @@ def gnss_xyz(msg, cache={}):
     if name == 'PoseStamped':
         p = msg.pose.position
         return _sec(msg.header.stamp), np.array([p.x, p.y, p.z])
-    raise SystemExit(f'unsupported gnss message: {name}')
+    raise SystemExit('unsupported gnss message: {}'.format(name))
 
 
 def umeyama(src, dst):
@@ -91,14 +86,14 @@ def umeyama(src, dst):
     mu_d = dst.mean(axis=0)
     cs = src - mu_s
     cd = dst - mu_d
-    cov = cd.T @ cs / src.shape[0]
+    cov = np.dot(cd.T, cs) / src.shape[0]
     U, S, Vt = np.linalg.svd(cov)
     D = np.eye(3)
     if np.linalg.det(U) * np.linalg.det(Vt) < 0:
         D[2, 2] = -1.0
-    R = U @ D @ Vt
-    t = mu_d - R @ mu_s
-    aligned = (R @ src.T).T + t
+    R = np.dot(np.dot(U, D), Vt)
+    t = mu_d - np.dot(R, mu_s)
+    aligned = np.dot(src, R.T) + t
     rms = float(np.sqrt(np.mean(np.sum((aligned - dst) ** 2, axis=1))))
     return R, t, rms
 
@@ -117,16 +112,14 @@ def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument('bag')
     ap.add_argument('--pose-topic', default='/Odometry')
-    ap.add_argument('--pose-type', default=None)
     ap.add_argument('--gnss-topic', default='/gnss_pose')
-    ap.add_argument('--gnss-type', default=None)
     ap.add_argument('--tol', type=float, default=0.2,
                     help='max time difference for matching samples (s)')
     ap.add_argument('--json', action='store_true')
     args = ap.parse_args(argv)
 
-    poses = read_topic(args.bag, args.pose_topic, args.pose_type)
-    gnss = read_topic(args.bag, args.gnss_topic, args.gnss_type)
+    poses = read_topic(args.bag, args.pose_topic)
+    gnss = read_topic(args.bag, args.gnss_topic)
     if not poses or not gnss:
         raise SystemExit('empty topic(s)')
 
@@ -172,8 +165,8 @@ def main(argv=None):
                 'extrinsics before claiming it.')
         else:
             report['verdict'] = (
-                f'RMS residual after alignment is {rms:.2f} m - the frames '
-                'are NOT consistent. Do not claim global georeferencing.')
+                'RMS residual after alignment is {:.2f} m - the frames '
+                'are NOT consistent. Do not claim global georeferencing.'.format(rms))
 
     if args.json:
         print(json.dumps(report, indent=2))
@@ -181,7 +174,7 @@ def main(argv=None):
         for k, v in report.items():
             if isinstance(v, list):
                 v = json.dumps(v)
-            print(f'{k:>22}: {v}')
+            print('{:>22}: {}'.format(k, v))
     return 0
 
 

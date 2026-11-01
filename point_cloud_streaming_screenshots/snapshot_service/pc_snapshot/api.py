@@ -37,7 +37,6 @@ from .dem import DemAccumulator, DemRenderError
 from .jobs import (JobBusyError, RenderCoordinator, SnapshotNotFound,
                    DemCoordinator, build_zip)
 from .renderer import RenderError
-from .ros_subscriber import RosCloudListener
 from .store import SnapshotStore
 from .stream import BOUNDARY, StreamManager, mjpeg_generator
 
@@ -48,7 +47,7 @@ STATIC_DIR = Path(__file__).resolve().parent.parent / "static"
 
 def create_app(cfg: Config, store: SnapshotStore,
                coordinator: RenderCoordinator,
-               listener: Optional[RosCloudListener] = None,
+               listener=None,
                stream: Optional[StreamManager] = None,
                dem: Optional[DemAccumulator] = None,
                dem_coordinator: Optional[DemCoordinator] = None) -> FastAPI:
@@ -90,10 +89,25 @@ def create_app(cfg: Config, store: SnapshotStore,
     def health() -> dict:
         store_health = store.health()
         listener_alive = listener.alive if listener is not None else False
+        source: dict = {
+            "kind": (getattr(listener, "kind", None) or "none")
+                    if listener is not None else "none",
+            "alive": listener_alive,
+            "connected": listener_alive and store_health["message_received"],
+            "start_error": (listener.start_error
+                            if listener is not None else None),
+        }
+        if listener is not None and hasattr(listener, "status"):
+            try:
+                source.update(listener.status())
+            except Exception as exc:            # never break /api/health
+                log.warning("source status failed: %s", exc)
         return {
             "status": "ok",
             "service": "pc-snapshot",
             "version": __version__,
+            "source": source,
+            # Kept for older browsers/scripts that read the ROS 2-era shape.
             "ros": {
                 "listener_alive": listener_alive,
                 "listener_start_error":
@@ -123,8 +137,8 @@ def create_app(cfg: Config, store: SnapshotStore,
             raise HTTPException(
                 status_code=409,
                 detail=(f"no point cloud has been received yet on topic "
-                        f"'{cfg.topic}'. Start bag playback or the sensor "
-                        f"driver first."))
+                        f"'{cfg.topic}'. Pass --bag <recording.bag> or start "
+                        f"the sensor driver first."))
         if age > cfg.stale_after_sec:
             msg = (f"latest point cloud is stale: last message {age:.1f}s ago "
                    f"(threshold {cfg.stale_after_sec:.1f}s). Bag playback may "
@@ -200,7 +214,7 @@ def create_app(cfg: Config, store: SnapshotStore,
             raise HTTPException(
                 status_code=409,
                 detail=(f"no point cloud has been accumulated yet on topic "
-                        f"'{cfg.topic}'. Start bag playback first, wait for "
+                        f"'{cfg.topic}'. Start bag replay with --bag, wait for "
                         f"the stream to deliver messages, then retry."))
         dem_coord: Optional[DemCoordinator] = app.state.dem_coordinator
         if dem_coord is None:

@@ -14,6 +14,8 @@ Context dict keys (optional, depends on the filter):
     pose_xyz : sensor position (3,)
 """
 
+from __future__ import division
+
 import numpy as np
 
 
@@ -102,7 +104,7 @@ class MaxPointsFilter(GroundFilter):
 
     def __init__(self, max_points=8000, seed=0):
         self.max_points = int(max_points)
-        self._rng = np.random.default_rng(seed)
+        self._rng = np.random.RandomState(seed)
 
     def __call__(self, points, ctx=None):
         if points.shape[0] <= self.max_points:
@@ -134,6 +136,6 @@ def build_filter(name, **params):
     """
     import inspect
     cls = _FILTERS[name]
-    accepted = set(inspect.signature(cls.__init__).parameters) - {'self'}
+    accepted = set(inspect.getargspec(cls.__init__).args) - {'self'}
     kwargs = {k: v for k, v in params.items() if k in accepted}
     return cls(**kwargs)

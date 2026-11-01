@@ -13,6 +13,8 @@ All updates are vectorised NumPy operations over the incoming points, so a
 scan of ~20k points costs well under a millisecond on a laptop CPU.
 """
 
+from __future__ import division
+
 import numpy as np
 
 
@@ -23,7 +25,7 @@ class ElevationGrid:
     def __init__(self, resolution=0.2, size_x=300.0, size_y=300.0,
                  origin_x=-150.0, origin_y=-150.0, aggregation='min'):
         if aggregation not in self.AGGREGATIONS:
-            raise ValueError(f'aggregation must be one of {self.AGGREGATIONS}')
+            raise ValueError('aggregation must be one of {}'.format(self.AGGREGATIONS))
         if resolution <= 0:
             raise ValueError('resolution must be > 0')
 

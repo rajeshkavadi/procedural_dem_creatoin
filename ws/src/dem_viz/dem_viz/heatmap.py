@@ -12,7 +12,8 @@ is reachable it falls back to a non-interactive backend and (optionally)
 writes PNG snapshots instead.
 """
 
-import json
+from __future__ import division
+
 import os
 import threading
 import time
@@ -39,7 +40,8 @@ def pick_backend():
 class DemHeatmap:
     """Owns the matplotlib figure; updates are triggered from the ROS timer."""
 
-    def __init__(self, node, cmap='terrain', title='Incremental DEM'):
+    def __init__(self, node, cmap='terrain', title='Incremental DEM',
+                 save_dir=''):
         import matplotlib.pyplot as plt
         from matplotlib.colors import Normalize
 
@@ -54,8 +56,7 @@ class DemHeatmap:
         self._replay = {}
         self._last_draw = 0.0
         self._frames_saved = 0
-        self._save_dir = node.get_parameter('save_dir').value \
-            if hasattr(node, 'get_parameter') else ''
+        self._save_dir = save_dir or ''
 
         self.fig, self.ax = plt.subplots(figsize=(9, 8))
         self.fig.canvas.manager.set_window_title(title) \
@@ -100,7 +101,7 @@ class DemHeatmap:
 
     # ---------------------------------------------------------- rendering
     def draw(self, force=False, min_interval=0.2):
-        now = time.monotonic()
+        now = time.time()
         if not force and now - self._last_draw < min_interval:
             return False
         with self._lock:
@@ -160,26 +161,26 @@ class DemHeatmap:
         grid = stats.get('grid', {})
         proc = stats.get('processing_ms', {}).get('total', {})
         lines = [
-            f"playback [{bar}] {100.0 * prog:5.1f}%  "
-            f"state={replay.get('state', '-')} rate={replay.get('rate', '-')}x",
-            f"bag t={replay.get('bag_time_s', 0.0):.1f}s/"
-            f"{replay.get('bag_duration_s', 0.0):.1f}s  "
-            f"msgs={replay.get('messages_published', 0)}",
-            f"scans={stats.get('clouds_received', 0)}  "
-            f"input={stats.get('input_hz', 0.0):.1f} Hz  "
-            f"proc total={proc.get('mean', 0.0):.1f} ms "
-            f"(p95 {proc.get('p95', 0.0):.1f} ms)",
-            f"cells={grid.get('valid_cells', 0)}  "
-            f"coverage={grid.get('coverage_m2', 0.0):.0f} m2  "
-            f"elev [{grid.get('z_min')}, {grid.get('z_max')}] m"
+            "playback [{}] {:5.1f}%  "
+            "state={} rate={}x".format(bar, 100.0 * prog, replay.get('state', '-'), replay.get('rate', '-')),
+            "bag t={:.1f}s/"
+            "{:.1f}s  "
+            "msgs={}".format(replay.get('bag_time_s', 0.0), replay.get('bag_duration_s', 0.0), replay.get('messages_published', 0)),
+            "scans={}  "
+            "input={:.1f} Hz  "
+            "proc total={:.1f} ms "
+            "(p95 {:.1f} ms)".format(stats.get('clouds_received', 0), stats.get('input_hz', 0.0), proc.get('mean', 0.0), proc.get('p95', 0.0)),
+            "cells={}  "
+            "coverage={:.0f} m2  "
+            "elev [{}, {}] m".format(grid.get('valid_cells', 0), grid.get('coverage_m2', 0.0), grid.get('z_min'), grid.get('z_max'))
             if grid.get('z_min') is not None else
-            f"cells={grid.get('valid_cells', 0)}",
-            f"dropped(no pose)={stats.get('clouds_dropped_no_pose', 0)}",
+            "cells={}".format(grid.get('valid_cells', 0)),
+            "dropped(no pose)={}".format(stats.get('clouds_dropped_no_pose', 0)),
         ]
         self._info.set_text('\n'.join(lines))
         self.title.set_text(
-            f"Incremental DEM  ({nx}x{ny} @ {res} m, "
-            f"{grid.get('aggregation', '?')} aggregation)")
+            "Incremental DEM  ({}x{} @ {} m, "
+            "{} aggregation)".format(nx, ny, res, grid.get('aggregation', '?')))
 
         self.fig.canvas.draw_idle()
         self.fig.canvas.flush_events()
@@ -196,16 +197,17 @@ class DemHeatmap:
             return
         self._last_bucket = bucket
         try:
-            os.makedirs(self._save_dir, exist_ok=True)
+            if not os.path.isdir(self._save_dir):
+                os.makedirs(self._save_dir)
             path = os.path.join(
                 self._save_dir,
-                f'dem_progress_{self._frames_saved:03d}_'
-                f'{int(prog * 100):03d}pct.png')
+                'dem_progress_{:03d}_'
+                '{:03d}pct.png'.format(self._frames_saved, int(prog * 100)))
             self.fig.savefig(path, dpi=110)
             self._frames_saved += 1
-            self._node.get_logger().info(f'saved snapshot {path}')
+            self._node.get_logger().info('saved snapshot {}'.format(path))
         except Exception as exc:
-            self._node.get_logger().warn(f'could not save snapshot: {exc}')
+            self._node.get_logger().warn('could not save snapshot: {}'.format(exc))
 
     def close(self):
         import matplotlib.pyplot as plt

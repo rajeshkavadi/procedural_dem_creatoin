@@ -1,0 +1,147 @@
+<?xml version="1.0"?>
+<!--
+  Full pipeline launch (ROS 1 Melodic): replay -> (FAST-LIO2) ->
+  incremental DEM -> heatmap.
+
+  Launch arguments
+  ================
+  bag            : path to the ROS 1 .bag file (required)
+  rate           : playback speed factor (0.5, 1.0, 2.0, ...)
+  player         : 'custom' (dem_replay: pause/resume/restart services +
+                   /replay/status) or 'stock' (rosbag play)
+  use_fastlio    : run FAST-LIO2 for the trajectory + registered clouds
+                   (the fast_lio package must be built in this workspace)
+  use_gnss       : also replay the GNSS topic
+  dem_mode       : 'registered' (default) or 'pose'
+  pose_topic     : pose stream for dem_node pose mode
+  use_viz        : live matplotlib heatmap
+  use_rviz       : RViz (clouds, path, elevation image)
+  use_monitor    : stream-order / synchronisation monitor
+  use_sim_time   : honour /clock published by the replay node
+-->
+<launch>
+  <arg name="bag" default=""/>
+  <arg name="rate" default="1.0"/>
+  <arg name="player" default="custom"/>
+  <arg name="use_fastlio" default="false"/>
+  <arg name="use_gnss" default="true"/>
+  <arg name="dem_mode" default="registered"/>
+  <arg name="pose_topic" default="/gnss_pose"/>
+  <arg name="pose_type" default="geometry_msgs/PoseStamped"/>
+  <arg name="use_viz" default="false"/>
+  <arg name="use_rviz" default="false"/>
+  <arg name="use_monitor" default="false"/>
+  <arg name="use_sim_time" default="false"/>
+  <arg name="start_offset" default="0.0"/>
+  <arg name="loop" default="false"/>
+  <arg name="save_dir" default="$(env HOME)/dem_snapshots"/>
+
+  <arg name="lidar_topic" default="/mid360/livox/lidar"/>
+  <arg name="imu_topic" default="/mid360/livox/imu"/>
+  <arg name="gnss_topic" default="/gnss_pose"/>
+  <arg name="fastlio_config"
+       default="$(find dem_bringup)/config/fastlio_mid360.yaml"/>
+  <arg name="dem_config" default="$(find dem_bringup)/config/dem.yaml"/>
+  <arg name="rviz_config" default="$(find dem_bringup)/config/dem.rviz"/>
+
+  <param name="/use_sim_time" value="$(arg use_sim_time)"/>
+
+  <!-- ================================================== bag player -->
+  <group if="$(eval arg('player') == 'custom')">
+    <group if="$(arg use_gnss)">
+      <node pkg="dem_replay" type="replay" name="replay" output="screen">
+        <param name="bag_path" value="$(arg bag)"/>
+        <param name="rate" value="$(arg rate)"/>
+        <param name="start_offset" value="$(arg start_offset)"/>
+        <param name="loop" value="$(arg loop)"/>
+        <param name="publish_clock" value="true"/>
+        <param name="auto_start" value="true"/>
+        <rosparam param="topics" subst_value="true">
+          [$(arg lidar_topic), $(arg imu_topic), $(arg gnss_topic)]
+        </rosparam>
+      </node>
+    </group>
+    <group unless="$(arg use_gnss)">
+      <node pkg="dem_replay" type="replay" name="replay" output="screen">
+        <param name="bag_path" value="$(arg bag)"/>
+        <param name="rate" value="$(arg rate)"/>
+        <param name="start_offset" value="$(arg start_offset)"/>
+        <param name="loop" value="$(arg loop)"/>
+        <param name="publish_clock" value="true"/>
+        <param name="auto_start" value="true"/>
+        <rosparam param="topics" subst_value="true">[$(arg lidar_topic), $(arg imu_topic)]</rosparam>
+      </node>
+    </group>
+  </group>
+
+  <group if="$(eval arg('player') == 'stock')">
+    <group if="$(arg use_gnss)">
+      <node pkg="rosbag" type="play" name="rosbag_play" output="screen"
+            args="$(arg bag) -r $(arg rate) --clock --topics $(arg lidar_topic) $(arg imu_topic) $(arg gnss_topic)"/>
+    </group>
+    <group unless="$(arg use_gnss)">
+      <node pkg="rosbag" type="play" name="rosbag_play" output="screen"
+            args="$(arg bag) -r $(arg rate) --clock --topics $(arg lidar_topic) $(arg imu_topic)"/>
+    </group>
+  </group>
+
+  <!-- ============================== FAST-LIO2 (optional) ============ -->
+  <group if="$(arg use_fastlio)">
+    <!-- Livox publishes acceleration in g; FAST-LIO2 expects m/s^2 -->
+    <node pkg="dem_replay" type="imu_relay" name="imu_relay" output="screen">
+      <param name="input_topic" value="$(arg imu_topic)"/>
+      <param name="output_topic" value="$(arg imu_topic)_si"/>
+      <param name="accel_scale" value="9.80665"/>
+    </node>
+    <node pkg="fast_lio" type="fastlio_mapping" name="fastlio_mapping"
+          output="screen">
+      <rosparam file="$(arg fastlio_config)" command="load"/>
+    </node>
+  </group>
+
+  <!-- ======================================================== DEM ==== -->
+  <group if="$(arg use_fastlio)">
+    <node pkg="dem_mapping" type="dem_node" name="dem_node" output="screen">
+      <rosparam file="$(arg dem_config)" command="load"/>
+      <param name="mode" value="$(arg dem_mode)"/>
+      <param name="cloud_topic" value="/cloud_registered"/>
+      <param name="pose_topic" value="/Odometry"/>
+      <param name="pose_type" value="nav_msgs/Odometry"/>
+      <param name="output_frame" value="camera_init"/>
+      <param name="save_dir" value="$(arg save_dir)"/>
+    </node>
+  </group>
+  <group unless="$(arg use_fastlio)">
+    <node pkg="dem_mapping" type="dem_node" name="dem_node" output="screen">
+      <rosparam file="$(arg dem_config)" command="load"/>
+      <param name="mode" value="$(arg dem_mode)"/>
+      <param name="cloud_topic" value="$(arg lidar_topic)"/>
+      <param name="pose_topic" value="$(arg pose_topic)"/>
+      <param name="pose_type" value="$(arg pose_type)"/>
+      <param name="output_frame" value="map"/>
+      <param name="save_dir" value="$(arg save_dir)"/>
+    </node>
+  </group>
+
+  <!-- ============================== stream monitor ================= -->
+  <node if="$(arg use_monitor)" pkg="dem_replay" type="stream_monitor"
+        name="stream_monitor" output="screen">
+    <param name="reference_topic" value="$(arg lidar_topic)"/>
+    <rosparam param="topics" subst_value="true">
+      ["$(arg lidar_topic):sensor_msgs/PointCloud2",
+       "$(arg imu_topic):sensor_msgs/Imu",
+       "$(arg gnss_topic):geometry_msgs/PoseStamped"]
+    </rosparam>
+  </node>
+
+  <!-- ================================================= heatmap ====== -->
+  <node if="$(arg use_viz)" pkg="dem_viz" type="heatmap" name="dem_heatmap"
+        output="screen">
+    <param name="update_rate" value="5.0"/>
+    <param name="save_dir" value="$(arg save_dir)"/>
+  </node>
+
+  <!-- ==================================================== RViz ====== -->
+  <node if="$(arg use_rviz)" pkg="rviz" type="rviz" name="rviz"
+        args="-d $(arg rviz_config)" output="log"/>
+</launch>

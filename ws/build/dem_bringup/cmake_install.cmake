@@ -1,8 +1,8 @@
-# Install script for directory: /home/rajesh/proc_dem_creation/ws/src/dem_bringup
+# Install script for directory: /procedural_dem_creatoin/ws/src/dem_bringup
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "/home/rajesh/proc_dem_creation/ws/install/dem_bringup")
+  set(CMAKE_INSTALL_PREFIX "/procedural_dem_creatoin/ws/install")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -37,22 +37,25 @@ if(NOT DEFINED CMAKE_CROSSCOMPILING)
   set(CMAKE_CROSSCOMPILING "FALSE")
 endif()
 
-# Set default install directory permissions.
-if(NOT DEFINED CMAKE_OBJDUMP)
-  set(CMAKE_OBJDUMP "/usr/bin/objdump")
+if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/pkgconfig" TYPE FILE FILES "/procedural_dem_creatoin/ws/build/dem_bringup/catkin_generated/installspace/dem_bringup.pc")
 endif()
 
 if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
-  include("/home/rajesh/proc_dem_creation/ws/build/dem_bringup/ament_cmake_symlink_install/ament_cmake_symlink_install.cmake")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/dem_bringup/cmake" TYPE FILE FILES
+    "/procedural_dem_creatoin/ws/build/dem_bringup/catkin_generated/installspace/dem_bringupConfig.cmake"
+    "/procedural_dem_creatoin/ws/build/dem_bringup/catkin_generated/installspace/dem_bringupConfig-version.cmake"
+    )
 endif()
 
-if(CMAKE_INSTALL_COMPONENT)
-  set(CMAKE_INSTALL_MANIFEST "install_manifest_${CMAKE_INSTALL_COMPONENT}.txt")
-else()
-  set(CMAKE_INSTALL_MANIFEST "install_manifest.txt")
+if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/dem_bringup" TYPE FILE FILES "/procedural_dem_creatoin/ws/src/dem_bringup/package.xml")
 endif()
 
-string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
-       "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/rajesh/proc_dem_creation/ws/build/dem_bringup/${CMAKE_INSTALL_MANIFEST}"
-     "${CMAKE_INSTALL_MANIFEST_CONTENT}")
+if("x${CMAKE_INSTALL_COMPONENT}x" STREQUAL "xUnspecifiedx" OR NOT CMAKE_INSTALL_COMPONENT)
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/dem_bringup" TYPE DIRECTORY FILES
+    "/procedural_dem_creatoin/ws/src/dem_bringup/launch"
+    "/procedural_dem_creatoin/ws/src/dem_bringup/config"
+    )
+endif()
+

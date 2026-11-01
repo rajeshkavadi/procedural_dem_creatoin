@@ -19,9 +19,19 @@ VIEW_NAMES = ("top", "front", "back", "left", "right")
 
 @dataclass
 class Config:
-    # ROS
+    # Input source
     topic: str = "/mid360/livox/lidar"   # PointCloud2 topic to snapshot (Livox Mid-360)
-    ros_domain_id: Optional[str] = None  # set before rclpy init if provided
+
+    # ROS 1 bag replay (preferred: needs no ROS environment, see bag_source.py)
+    bag_path: str = ""                   # .bag file or directory of split bags
+    bag_rate: float = 1.0                # playback speed factor
+    bag_loop: bool = True                # restart at the end (keeps stream alive)
+    bag_start_offset_sec: float = 0.0    # skip into the recording
+    bag_auto_topic: bool = True          # fall back to the only PointCloud2 topic
+
+    # Live ROS 1 subscriber (optional; Melodic rospy is Python 2 only, see
+    # ros_subscriber.py). Empty master URI = ROS_MASTER_URI/default localhost.
+    ros_master_uri: str = ""
 
     # HTTP
     host: str = "0.0.0.0"
@@ -104,6 +114,10 @@ class Config:
         return cfg
 
     def validate(self) -> None:
+        if self.bag_rate <= 0:
+            raise ValueError("bag_rate must be > 0")
+        if self.bag_start_offset_sec < 0:
+            raise ValueError("bag_start_offset_sec must be >= 0")
         if self.up_axis not in ("z", "y"):
             raise ValueError(f"up_axis must be 'z' or 'y', got {self.up_axis!r}")
         if self.color_mode not in ("height", "intensity"):

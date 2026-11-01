@@ -1,3 +1,0 @@
-[console_scripts]
-heatmap = dem_viz.heatmap_node:main
-

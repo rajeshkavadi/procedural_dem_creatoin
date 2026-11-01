@@ -1,6 +1,26 @@
-# ROS bag files
+# ROS bag / point-cloud data
 *.bag
 *.db3
 *.pcd
 *.lvx2
 
+# catkin build artefacts
+ws/build/
+ws/devel/
+ws/install/
+ws/log/
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+
+# runtime state (PIDs, logs, Cloudflare tunnel output)
+.run/
+*.log
+
+# generated exports
+out/*.npz
+out/*.tif
+out/*.png

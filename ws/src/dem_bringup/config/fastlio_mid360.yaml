@@ -1,67 +1,68 @@
-/**:
-    ros__parameters:
-        feature_extract_enable: false
-        point_filter_num: 3
-        max_iteration: 3
-        filter_size_surf: 0.5
-        filter_size_map: 0.5
-        cube_side_length: 1000.0
-        runtime_pos_log_enable: false
-        # ABSOLUTE path: the relative "./test.pcd" resolves against the node's
-        # working directory (usually ~/.ros), not this package.
-        map_file_path: "/home/rajesh/proc_dem_creation/out/map_fastlio.pcd"
+# FAST-LIO2 (ROS 1) parameters for the Livox Mid-360.
+# Loaded into the fastlio_mapping node namespace; FAST-LIO reads the
+# nested keys as ~common/lid_topic, ~mapping/acc_cov, ...
+feature_extract_enable: false
+point_filter_num: 3
+max_iteration: 3
+filter_size_surf: 0.5
+filter_size_map: 0.5
+cube_side_length: 1000.0
+runtime_pos_log_enable: false
+# ABSOLUTE path: the relative "./test.pcd" resolves against the node's
+# working directory (usually ~/.ros), not this package.
+map_file_path: "out/map_fastlio.pcd"
 
-        common:
-            lid_topic:  "/mid360/livox/lidar"
-            imu_topic:  "/mid360/livox/imu_si"   # SI units (see imu_relay)
-            time_sync_en: false
-            time_offset_lidar_to_imu: 0.0
-        preprocess:
-            # 1 = Livox CustomMsg, 2 = Velodyne, 3 = Ouster,
-            # 4 = MID360 (sensor_msgs/PointCloud2 in Livox format)
-            lidar_type: 4
-            scan_line:  4
-            blind: 0.5
-            timestamp_unit: 3     # nanoseconds
-            scan_rate: 10
+common:
+    lid_topic:  "/mid360/livox/lidar"
+    imu_topic:  "/mid360/livox/imu_si"   # SI units (see imu_relay)
+    time_sync_en: false
+    time_offset_lidar_to_imu: 0.0
+preprocess:
+    # 1 = Livox CustomMsg, 2 = Velodyne, 3 = Ouster,
+    # 4 = MID360 (sensor_msgs/PointCloud2 in Livox format)
+    lidar_type: 4
+    scan_line:  4
+    blind: 0.5
+    timestamp_unit: 3     # nanoseconds
+    scan_rate: 10
 
-        mapping:
-            # This rig vibrates hard (raw IMU: |acc| p99 = 5.2 g,
-            # |gyr| mean 0.59 rad/s).  The upstream defaults (0.1) model a
-            # much quieter IMU; with them the EKF over-trusts the
-            # accelerometer and slowly trades accel bias + gravity tilt for
-            # position drift (z drifts ~10 m over 10 min).  0.5 makes the
-            # filter lean on the LiDAR instead.
-            acc_cov: 0.5
-            gyr_cov: 0.5
-            b_acc_cov: 0.0001
-            b_gyr_cov: 0.0001
-            fov_degree:    360.0
-            det_range:     100.0
-            # Mid-360 built-in IMU <-> lidar extrinsic is factory-known and
-            # listed below: estimating it online (extrinsic_est_en) is
-            # UNOBSERVABLE on this slowly-rotating vibrating platform and
-            # diverges - FAST-LIO/Log/mat_pre.txt shows offset_R_L_I drifting
-            # to hundreds of degrees, dragging accel bias and attitude with
-            # it until the whole state blows up (~300 s into the run).
-            extrinsic_est_en:  false
-            # built-in IMU of the Mid-360 relative to the LiDAR frame
-            extrinsic_T: [ -0.011, -0.02329, 0.04412 ]
-            extrinsic_R: [ 1., 0., 0.,
-                            0., 1., 0.,
-                            0., 0., 1.]
+mapping:
+    # This rig vibrates hard (raw IMU: |acc| p99 = 5.2 g,
+    # |gyr| mean 0.59 rad/s).  The upstream defaults (0.1) model a
+    # much quieter IMU; with them the EKF over-trusts the
+    # accelerometer and slowly trades accel bias + gravity tilt for
+    # position drift (z drifts ~10 m over 10 min).  0.5 makes the
+    # filter lean on the LiDAR instead.
+    acc_cov: 0.5
+    gyr_cov: 0.5
+    b_acc_cov: 0.0001
+    b_gyr_cov: 0.0001
+    fov_degree:    360.0
+    det_range:     100.0
+    # Mid-360 built-in IMU <-> lidar extrinsic is factory-known and
+    # listed below: estimating it online (extrinsic_est_en) is
+    # UNOBSERVABLE on this slowly-rotating vibrating platform and
+    # diverges - FAST-LIO/Log/mat_pre.txt shows offset_R_L_I drifting
+    # to hundreds of degrees, dragging accel bias and attitude with
+    # it until the whole state blows up (~300 s into the run).
+    extrinsic_est_en:  false
+    # built-in IMU of the Mid-360 relative to the LiDAR frame
+    extrinsic_T: [ -0.011, -0.02329, 0.04412 ]
+    extrinsic_R: [ 1., 0., 0.,
+                   0., 1., 0.,
+                   0., 0., 1.]
 
-        publish:
-            path_en: true
-            effect_map_en: false
-            map_en: true           # accumulate the map cloud (needed by /map_save)
-                                   # -> published to /Laser_map only if subscribed
-            scan_publish_en:  true
-            dense_publish_en: true # keep full undistorted scans for the DEM
-            scan_bodyframe_pub_en: true
+publish:
+    path_en: true
+    effect_map_en: false
+    map_en: true           # accumulate the map cloud (needed by /map_save)
+                           # -> published to /Laser_map only if subscribed
+    scan_publish_en:  true
+    dense_publish_en: true # keep full undistorted scans for the DEM
+    scan_bodyframe_pub_en: true
 
-        pcd_save:
-            # pcd_save_en gates the /map_save service (the shutdown-save path
-            # upstream is dead) - it must be true to get map_fastlio.pcd
-            pcd_save_en: true
-            interval: -1
+pcd_save:
+    # pcd_save_en gates the /map_save service (the shutdown-save path
+    # upstream is dead) - it must be true to get map_fastlio.pcd
+    pcd_save_en: true
+    interval: -1

@@ -20,6 +20,25 @@ def _snapshot(n=5000, **kw):
     return snapshot_from_cloud(make_scene_cloud(n), seq=1)
 
 
+def _require_open3d():
+    """Skip unless Open3D can actually render offscreen on this host.
+
+    Importing Open3D succeeds on headless machines, but creating an
+    OffscreenRenderer *segfaults* without a GL/EGL context, so the check must
+    include the display/render-node probe.
+    """
+    import os
+    try:
+        import open3d  # noqa: F401
+    except Exception as exc:
+        pytest.skip(f"Open3D not available: {exc}")
+    if os.environ.get("PCSNAP_FORCE_OPEN3D") in ("1", "true", "yes"):
+        return
+    if not (os.environ.get("DISPLAY") or os.environ.get("WAYLAND_DISPLAY")
+            or os.path.exists("/dev/dri")):
+        pytest.skip("Open3D offscreen rendering needs a display or /dev/dri")
+
+
 @pytest.fixture(scope="module")
 def cfg():
     c = Config()
@@ -164,10 +183,7 @@ def test_open3d_backend_forced():
     """Forced Open3D render must succeed — `renderer=auto` would otherwise
     silently fall back to Matplotlib and hide Open3D-specific regressions
     (e.g. wrong scene API), which is exactly how a real bug shipped once."""
-    try:
-        import open3d  # noqa: F401
-    except Exception as exc:
-        pytest.skip(f"Open3D not available: {exc}")
+    _require_open3d()
 
     cfg = Config()
     cfg.image_width = 320
@@ -190,10 +206,7 @@ def test_open3d_backend_forced():
 def test_persistent_renderer_reuse():
     """The live stream reuses the ONE shared OffscreenRenderer across frames:
     render twice with the same instance (exercises the remove/re-add path)."""
-    try:
-        import open3d  # noqa: F401
-    except Exception as exc:
-        pytest.skip(f"Open3D not available: {exc}")
+    _require_open3d()
 
     from pc_snapshot.renderer import (get_shared_renderer, prepare_cloud,
                                       render_views_offscreen, submit_render)

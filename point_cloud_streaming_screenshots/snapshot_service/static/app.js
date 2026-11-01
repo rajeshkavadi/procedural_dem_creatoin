@@ -80,24 +80,32 @@ async function checkHealth() {
     });
     if (!resp.ok) throw new Error("HTTP " + resp.status);
     const h = await resp.json();
-    const rosOk = h.ros && h.ros.connected;
+    const src = h.source || h.ros || {};
+    const srcOk = src.connected;
     const received = h.point_cloud && h.point_cloud.message_received;
     let txt = "API online";
-    if (h.ros && !h.ros.listener_alive) {
-      txt += " — ROS listener DOWN";
-      if (h.ros.listener_start_error) txt += " (" + h.ros.listener_start_error + ")";
+    if (src.kind && src.kind !== "none" && !src.alive) {
+      txt += " — " + (src.kind === "bag" ? "bag replay" : "ROS source") + " DOWN";
+      const why = src.start_error || src.last_error;
+      if (why) txt += " (" + why + ")";
       setConn(false, txt);
     } else if (!received) {
       txt += " — waiting for point cloud on " + (h.point_cloud ? h.point_cloud.topic : "?");
       setConn(null, txt);
+    } else if (!srcOk && src.kind === "bag" && src.state === "finished") {
+      txt += " — bag finished; last cloud kept";
+      setConn(null, txt);
     } else {
       const age = h.point_cloud.latest_message_age_sec;
       const stale = h.point_cloud.stale ? " (stale)" : "";
-      txt += ` — cloud OK, ${h.point_cloud.latest_point_count} pts, age ${age}s${stale}`;
+      const pct = (src.kind === "bag" && src.progress != null)
+        ? `, bag ${Math.round(src.progress * 100)}%` : "";
+      txt += ` — cloud OK, ${h.point_cloud.latest_point_count} pts, age ${age}s${stale}${pct}`;
       setConn(true, txt);
     }
     $("status").textContent =
-      `Topic: ${(h.point_cloud || {}).topic || "?"} | renderer: ${h.render ? h.render.renderer : "?"}` +
+      `Topic: ${(h.point_cloud || {}).topic || "?"} | source: ${src.kind || "none"}` +
+      ` | renderer: ${h.render ? h.render.renderer : "?"}` +
       demStatusText(h.dem);
     return true;
   } catch (err) {

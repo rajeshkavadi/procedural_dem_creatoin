@@ -1,14 +1,19 @@
 #!/usr/bin/env bash
-# One command: start snapshot service + bag playback + Cloudflare tunnel,
-# then print the clickable public URL and API token.
+# One command: start the snapshot service + direct ROS 1 bag replay + a
+# Cloudflare quick tunnel, then print the clickable public URL and API token.
 #
 # Usage:
-#   ./scripts/start_remote.sh /path/to/bag.db3 [topic]
+#   ./scripts/start_remote.sh /path/to/recording.bag [topic]
+#
+# The bag is read *inside* the service (pure-Python `rosbags`, no ROS
+# environment, no `rosbag play` process), so there is nothing to source and
+# only two background processes are started.
 #
 # Env overrides:
-#   PCSNAP_API_TOKEN   API token (default: lidar-snap-2026)
-#   PCSNAP_PORT        HTTP port  (default: 8085)
+#   PCSNAP_API_TOKEN    API token (default: lidar-snap-2026)
+#   PCSNAP_PORT         HTTP port  (default: 8085)
 #   PCSNAP_CLIP_RANGE_M radial clip in meters (default: 60)
+#   PCSNAP_BAG_RATE     bag speed factor (default: 1.0)
 #
 # Stop everything with: ./scripts/stop_all.sh
 set -eo pipefail
@@ -18,10 +23,11 @@ PROJ_DIR="$(dirname "$SCRIPT_DIR")"
 RUN_DIR="$PROJ_DIR/.run"
 mkdir -p "$RUN_DIR"
 
-BAG="${1:?usage: start_remote.sh /path/to/bag.db3 [topic]}"
+BAG="${1:?usage: start_remote.sh /path/to/recording.bag [topic]}"
 TOPIC="${2:-/mid360/livox/lidar}"
 PORT="${PCSNAP_PORT:-8085}"
 CLIP="${PCSNAP_CLIP_RANGE_M:-60}"
+RATE="${PCSNAP_BAG_RATE:-1.0}"
 TOKEN="${PCSNAP_API_TOKEN:-lidar-snap-2026}"
 
 if [ ! -e "$BAG" ]; then
@@ -29,20 +35,18 @@ if [ ! -e "$BAG" ]; then
   exit 1
 fi
 
-# Clean up any previous run first (service, bag, tunnel) so we never stack
+# Clean up any previous run first (service + tunnel) so we never stack
 # orphans or leave a stale process holding the port.
 "$SCRIPT_DIR/stop_all.sh" >/dev/null 2>&1 || true
 
-echo "[1/3] Starting snapshot service (topic=$TOPIC, port=$PORT, clip=${CLIP}m)..."
-PCSNAP_API_TOKEN="$TOKEN" "$SCRIPT_DIR/run_service.sh" "$TOPIC" "$PORT" "$CLIP" \
+echo "[1/2] Starting snapshot service + bag replay (topic=$TOPIC, port=$PORT, clip=${CLIP}m)..."
+PCSNAP_API_TOKEN="$TOKEN" "$SCRIPT_DIR/run_service.sh" \
+  --bag "$BAG" --bag-rate "$RATE" --topic "$TOPIC" --port "$PORT" \
+  --clip-range "$CLIP" \
   > "$RUN_DIR/service.log" 2>&1 &
 echo $! > "$RUN_DIR/service.pid"
 
-echo "[2/3] Starting bag playback: $BAG"
-"$SCRIPT_DIR/run_bag.sh" "$BAG" > "$RUN_DIR/bag.log" 2>&1 &
-echo $! > "$RUN_DIR/bag.pid"
-
-echo "[3/3] Starting Cloudflare tunnel..."
+echo "[2/2] Starting Cloudflare tunnel..."
 CF="$(command -v cloudflared || echo "$HOME/.local/bin/cloudflared")"
 if [ ! -x "$CF" ]; then
   echo "ERROR: cloudflared not found. Install it first (see README 7.7)." >&2
@@ -61,8 +65,9 @@ for _ in $(seq 1 30); do
   sleep 1
 done
 
-# Wait briefly for the service to accept connections + bag discovery.
-sleep 5
+# Wait briefly for the service to accept connections and decode the first
+# bag message.
+sleep 3
 
 echo
 if [ -n "$URL" ]; then
@@ -84,4 +89,4 @@ curl -s "http://127.0.0.1:$PORT/api/health" \
   || echo "service not up yet; check $RUN_DIR/service.log"
 echo
 echo "Stop everything with:  ./scripts/stop_all.sh"
-echo "Logs:  $RUN_DIR/service.log  $RUN_DIR/bag.log  $RUN_DIR/tunnel.log"
+echo "Logs:  $RUN_DIR/service.log  $RUN_DIR/tunnel.log"

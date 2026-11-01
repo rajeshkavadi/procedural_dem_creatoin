@@ -20,8 +20,8 @@ _TYPECHAR = {'F': 'f', 'U': 'u', 'I': 'i'}
 
 def _np_dtype(type_char, size):
     if type_char not in _TYPECHAR:
-        raise ValueError(f'unsupported PCD TYPE {type_char!r}')
-    return np.dtype(f'<{_TYPECHAR[type_char]}{size}')
+        raise ValueError('unsupported PCD TYPE {!r}'.format(type_char))
+    return np.dtype('<{}{}'.format(_TYPECHAR[type_char], size))
 
 
 def read_pcd(path):
@@ -41,7 +41,7 @@ def read_pcd(path):
         while True:
             line = fh.readline()
             if not line:
-                raise ValueError(f'{path}: unexpected EOF in PCD header')
+                raise ValueError('{}: unexpected EOF in PCD header'.format(path))
             text = line.decode('ascii', 'replace').strip()
             header.append(text)
             if text.startswith('DATA'):
@@ -92,14 +92,14 @@ def read_pcd(path):
             blob = fh.read(n * dtype.itemsize)
             if len(blob) < n * dtype.itemsize:
                 raise ValueError(
-                    f'{path}: truncated PCD payload '
-                    f'({len(blob)} of {n * dtype.itemsize} bytes)')
+                    '{}: truncated PCD payload '
+                    '({} of {} bytes)'.format(path, len(blob), n * dtype.itemsize))
             pts = np.frombuffer(blob, dtype=dtype, count=n).copy()
         else:
             raise ValueError(
-                f'{path}: DATA {data_kind!r} is not supported by '
-                f'dem_mapping.pcd_io (convert with '
-                f'pcl_convert_pcd_ascii_binary / pdal first)')
+                '{}: DATA {!r} is not supported by '
+                'dem_mapping.pcd_io (convert with '
+                'pcl_convert_pcd_ascii_binary / pdal first)'.format(path, data_kind))
 
     return {'fields': fields, 'points': pts, 'header': header,
             'count': int(n)}
@@ -126,17 +126,17 @@ def write_pcd(path, columns, names, comments=()):
 
     lines = ['# .PCD v0.7 - Point Cloud Data file format',
              'VERSION 0.7',
-             f'FIELDS {" ".join(names)}',
-             f'SIZE {" ".join("4" for _ in names)}',
-             f'TYPE {" ".join("F" for _ in names)}',
-             f'COUNT {" ".join("1" for _ in names)}',
-             f'WIDTH {n}',
+             'FIELDS {}'.format(" ".join(names)),
+             'SIZE {}'.format(" ".join("4" for _ in names)),
+             'TYPE {}'.format(" ".join("F" for _ in names)),
+             'COUNT {}'.format(" ".join("1" for _ in names)),
+             'WIDTH {}'.format(n),
              'HEIGHT 1',
              'VIEWPOINT 0 0 0 1 0 0 0',
-             f'POINTS {n}',
+             'POINTS {}'.format(n),
              'DATA binary']
     for c in comments:
-        lines.insert(1, f'# {c}')
+        lines.insert(1, '# {}'.format(c))
 
     dtype = np.dtype([(name, '<f4') for name in names])
     pts = np.empty(n, dtype=dtype)
@@ -161,7 +161,7 @@ def transform_pcd(path_in, path_out, rotation, translation,
     pts = from_dem['points']
     xyz = np.stack([pts[in_names[0]], pts[in_names[1]],
                     pts[in_names[2]]], axis=1).astype(np.float64)
-    xyz2 = xyz @ np.asarray(rotation, dtype=np.float64).T + \
+    xyz2 = np.dot(xyz, np.asarray(rotation, dtype=np.float64).T) + \
         np.asarray(translation, dtype=np.float64)
 
     names = ['x', 'y', 'z']

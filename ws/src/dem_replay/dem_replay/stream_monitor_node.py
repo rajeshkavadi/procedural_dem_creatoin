@@ -1,9 +1,11 @@
-#!/usr/bin/env python3
-"""Stream-order / synchronisation verifier.
+#!/usr/bin/env python
+"""Stream-order / synchronisation verifier (ROS 1 / Melodic).
 
-Subscribe to any number of topics (given as ``topic:=ros2/type`` pairs),
-measure their arrival statistics and verify that the replayed streams keep
-the recorded temporal order:
+Subscribe to any number of topics (given as ``topic:type`` pairs, ROS 1
+types such as ``sensor_msgs/PointCloud2``; ROS 2-style
+``sensor_msgs/msg/PointCloud2`` is accepted too), measure their arrival
+statistics and verify that the replayed streams keep the recorded temporal
+order:
 
 * per topic: message count, rate, header-stamp monotonicity, first/last stamp,
 * global check: the sequence of *header stamps* of a reference topic compared
@@ -16,115 +18,108 @@ periodically to the log.  This is the deliverable "verify that the LiDAR,
 GNSS and IMU streams are received in the correct temporal order".
 """
 
+from __future__ import division
+
 import json
 import threading
 import time
 
 import numpy as np
-import rclpy
-from rclpy.node import Node
-from rclpy.qos import (HistoryPolicy, QoSProfile, ReliabilityPolicy)
-from rclpy.serialization import deserialize_message
-from rosidl_runtime_py.utilities import get_message
+import rospy
 from std_msgs.msg import String
 
 
-class StreamMonitor(Node):
+class StreamMonitor(object):
 
     def __init__(self):
-        super().__init__('stream_monitor')
-        self.declare_parameter(
-            'topics',
-            ['/mid360/livox/lidar:sensor_msgs/msg/PointCloud2',
-             '/mid360/livox/imu:sensor_msgs/msg/Imu',
-             '/gnss_pose:geometry_msgs/msg/PoseStamped'])
-        self.declare_parameter('reference_topic', '/mid360/livox/lidar')
-        self.declare_parameter('report_period', 5.0)
-        # header stamps of different sensors are allowed to be offset from
-        # each other (sensor time vs. record time); the merged arrival order
-        # must be non-decreasing within this tolerance
-        self.declare_parameter('order_tolerance_ms', 250.0)
-
-        self._tol = float(self.get_parameter('order_tolerance_ms').value) / 1e3
+        rospy.init_node('stream_monitor')
+        self._tol = float(rospy.get_param('~order_tolerance_ms', 250.0)) / 1e3
         self._lock = threading.Lock()
         self._stamps = {}       # topic -> list of header stamps (float s)
         self._arrival = {}      # topic -> list of wall arrival times
         self._bad_order = {}    # topic -> count of non-monotonic stamps
         self._arrival_seq = []  # header stamps in global arrival order
 
-        qos = QoSProfile(depth=1000,
-                         reliability=ReliabilityPolicy.RELIABLE,
-                         history=HistoryPolicy.KEEP_LAST)
-        pairs = [p for p in self.get_parameter('topics').value if p]
+        pairs = [p for p in rospy.get_param(
+            '~topics',
+            ['/mid360/livox/lidar:sensor_msgs/PointCloud2',
+             '/mid360/livox/imu:sensor_msgs/Imu',
+             '/gnss_pose:geometry_msgs/PoseStamped']) if p]
         self._topics = []
+        from roslib.message import get_message_class
+        self._subs = []
         for pair in pairs:
             topic, _, type_str = pair.partition(':')
             if not type_str:
                 raise RuntimeError(
-                    f"topic '{pair}' must be given as topic:ros2/type")
-            cls = get_message(type_str)
+                    "topic '{}' must be given as topic/type".format(pair))
+            cls = get_message_class(type_str.replace('/msg/', '/'))
+            if cls is None:
+                raise RuntimeError('unknown message type: {}'.format(type_str))
             self._topics.append(topic)
             self._stamps[topic] = []
             self._arrival[topic] = []
             self._bad_order[topic] = 0
-            # accumulate: deserialize via generic callback closure
-            self.create_subscription(
-                cls, topic,
-                self._make_cb(topic, cls, type_str), qos)
+            self._subs.append(rospy.Subscriber(
+                topic, cls, self._make_cb(topic), queue_size=1000))
 
-        self._ref = self.get_parameter('reference_topic').value
-        self._status_pub = self.create_publisher(
-            String, '/stream_monitor/status', 10)
-        period = float(self.get_parameter('report_period').value)
+        self._ref = rospy.get_param('~reference_topic',
+                                    '/mid360/livox/lidar')
+        self._status_pub = rospy.Publisher(
+            '/stream_monitor/status', String, queue_size=10)
+        period = float(rospy.get_param('~report_period', 5.0))
         if period > 0:
-            self.create_timer(period, self._report)
-        self.get_logger().info(f'monitoring {self._topics}')
+            self._timer = rospy.Timer(rospy.Duration(period),
+                                      self._report)
+        rospy.loginfo('monitoring %s', self._topics)
 
-    def _make_cb(self, topic, cls, type_str):
+    def _make_cb(self, topic):
         def cb(msg):
-            # msg is already the deserialized object
             hdr = getattr(msg, 'header', None)
             if hdr is None:
                 stamp = time.time()
             else:
-                stamp = hdr.stamp.sec + hdr.stamp.nanosec * 1e-9
+                stamp = hdr.stamp.to_sec()
             with self._lock:
                 lst = self._stamps[topic]
                 if lst and stamp < lst[-1]:
                     self._bad_order[topic] += 1
                 lst.append(stamp)
-                self._arrival[topic].append(time.monotonic())
+                self._arrival[topic].append(time.time())
                 self._arrival_seq.append(stamp)
         return cb
 
     # ------------------------------------------------------------- reporting
-    def _report(self):
+    def _report(self, _event=None):
         with self._lock:
             data = self._snapshot()
         msg = String()
         msg.data = json.dumps(data)
         self._status_pub.publish(msg)
-        lines = [f"stream monitor @ {data['wall_time']:.1f}s"]
+        lines = ['stream monitor @ {:.1f}s'.format(data['wall_time'])]
         for t in self._topics:
             s = data['topics'][t]
             lines.append(
-                f"  {t:<26} n={s['count']:<6} rate={s['rate_hz']:7.2f} Hz "
-                f"monotonic={'OK' if s['non_monotonic'] == 0 else 'FAIL'} "
-                f"span={s['span_s']:.2f}s")
+                '  {:<26} n={:<6} rate={:7.2f} Hz monotonic={} span={:.2f}s'
+                .format(t, s['count'], s['rate_hz'],
+                        'OK' if s['non_monotonic'] == 0 else 'FAIL',
+                        s['span_s']))
         for t, d in data['sync_to_reference_ms'].items():
-            lines.append(f"  sync {self._ref} <-> {t}: "
-                         f"median |dt| = {d['median_abs_ms']:.2f} ms, "
-                         f"max = {d['max_abs_ms']:.2f} ms")
+            lines.append('  sync {} <-> {}: median |dt| = {:.2f} ms, '
+                         'max = {:.2f} ms'.format(
+                             self._ref, t, d['median_abs_ms'],
+                             d['max_abs_ms']))
         if self._ref in data['topics']:
             lines.append(
-                f"  global order check: "
-                f"{'OK' if data['global_order']['ok'] else 'FAIL'} "
-                f"(max inversion {data['global_order']['max_inversion_ms']} ms "
-                f"within {data['global_order']['tolerance_ms']} ms tolerance)")
-        self.get_logger().info('\n'.join(lines))
+                '  global order check: {} (max inversion {} ms within '
+                '{} ms tolerance)'.format(
+                    'OK' if data['global_order']['ok'] else 'FAIL',
+                    data['global_order']['max_inversion_ms'],
+                    data['global_order']['tolerance_ms']))
+        rospy.loginfo('\n'.join(lines))
 
     def _snapshot(self):
-        now = time.monotonic()
+        now = time.time()
         out = {'wall_time': now, 'topics': {}, 'non_monotonic_total': 0}
         for t in self._topics:
             st = np.asarray(self._stamps[t], dtype=np.float64)
@@ -142,7 +137,8 @@ class StreamMonitor(Node):
                 'last_stamp': float(st[-1]) if n else None,
                 'span_s': round(span, 3),
                 'non_monotonic': int(self._bad_order[t]),
-                'arrival_span_s': round(float(ar[-1] - ar[0]), 3) if n > 1 else 0.0,
+                'arrival_span_s': round(float(ar[-1] - ar[0]), 3)
+                if n > 1 else 0.0,
             }
             out['non_monotonic_total'] += int(self._bad_order[t])
 
@@ -185,17 +181,9 @@ class StreamMonitor(Node):
             return self._snapshot()
 
 
-def main(args=None):
-    rclpy.init(args=args)
-    node = StreamMonitor()
-    try:
-        rclpy.spin(node)
-    except KeyboardInterrupt:
-        pass
-    finally:
-        node.destroy_node()
-        if rclpy.ok():
-            rclpy.shutdown()
+def main():
+    StreamMonitor()
+    rospy.spin()
 
 
 if __name__ == '__main__':

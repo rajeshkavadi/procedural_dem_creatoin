@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 """GNSS-aided trajectory warping: tie a drifting LIO track to GNSS over time.
 
 Why
@@ -29,16 +29,18 @@ report as provenance.
 
 Usage
 -----
-    ros2 run dem_mapping gnss_warp -- \
-        --odom out/odom.csv --bag OutdoorRoad_dataset_ros2 \
+    rosrun dem_mapping gnss_warp \
+        --odom out/odom.csv --bag OutdoorRoad_dataset.bag \
         --out out/warped_odom.csv --report out/warp_report.json
 """
+
+from __future__ import division
 
 import argparse
 import json
 import math
+import os
 import sys
-from pathlib import Path
 
 import numpy as np
 
@@ -156,16 +158,16 @@ def fit_smooth_correction(t, res, knot_s=10.0, iters=4):
         return A
 
     A = design(t)
-    x = np.linalg.lstsq(A, res, rcond=None)[0]
+    x = np.linalg.lstsq(A, res)[0]
     for _ in range(iters):
-        r = res - A @ x
+        r = res - np.dot(A, x)
         rn = np.linalg.norm(r, axis=1)
         s = 1.4826 * np.median(rn) + 1e-9
         w = np.minimum(1.0, (1.345 * s) / np.maximum(rn, 1e-9))
-        x = np.linalg.lstsq(A * w[:, None], res * w[:, None], rcond=None)[0]
+        x = np.linalg.lstsq(A * w[:, None], res * w[:, None])[0]
 
     def evaluate(tq):
-        return design(np.asarray(tq, dtype=np.float64)) @ x
+        return np.dot(design(np.asarray(tq, dtype=np.float64)), x)
 
     return evaluate
 
@@ -226,13 +228,13 @@ def main(argv=None):
     ap = argparse.ArgumentParser(
         prog='gnss_warp', description=__doc__,
         formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument('--odom', required=True, type=Path,
+    ap.add_argument('--odom', required=True,
                     help='CSV written by dem_replay record_odom')
-    ap.add_argument('--bag', required=True, type=Path)
+    ap.add_argument('--bag', required=True)
     ap.add_argument('--gnss-topic', default='/gnss_pose')
-    ap.add_argument('--out', required=True, type=Path,
+    ap.add_argument('--out', required=True,
                     help='output CSV: warped poses in UTM metres')
-    ap.add_argument('--report', type=Path, default=None)
+    ap.add_argument('--report', default=None)
     ap.add_argument('--window', type=float, default=60.0)
     ap.add_argument('--step', type=float, default=30.0)
     ap.add_argument('--tol', type=float, default=0.2)
@@ -243,8 +245,8 @@ def main(argv=None):
 
     t_loc, P = load_odom(args.odom)
     t_g, gx, gy, gz = _load_gnss(args.bag, args.gnss_topic)
-    print(f'odom: {len(P)} samples, {t_loc[-1] - t_loc[0]:.1f} s')
-    print(f'gnss: {len(t_g)} samples')
+    print('odom: {} samples, {:.1f} s'.format(len(P), t_loc[-1] - t_loc[0]))
+    print('gnss: {} samples'.format(len(t_g)))
 
     # lat/lon order: the metric hypothesis with the lower rigid RMS wins
     best = None
@@ -254,7 +256,7 @@ def main(argv=None):
         if good.sum() < 100:
             continue
         _R, _t, rms = umeyama(P[good], Q[pick[good]])
-        print(f'  hypothesis {order}: rigid RMS {rms:.3f} m')
+        print('  hypothesis {}: rigid RMS {:.3f} m'.format(order, rms))
         if best is None or rms < best[0]:
             best = (rms, order, Q, zone, north)
     if best is None:
@@ -263,8 +265,8 @@ def main(argv=None):
     rigid_rms, order, Q, zone, north = best
     epsg = (32600 if north else 32700) + int(zone)
     suffix = 'N' if north else 'S'
-    print(f'order: {order} -> UTM zone {int(zone)}{suffix} '
-          f'(EPSG:{epsg}), rigid-fit RMS {rigid_rms:.3f} m')
+    print('order: {} -> UTM zone {}{} '
+          '(EPSG:{}), rigid-fit RMS {:.3f} m'.format(order, int(zone), suffix, epsg, rigid_rms))
 
     pick, good = nearest_match(t_loc, t_g, args.tol)
     Pm, Qm, tm = P[good], Q[pick[good]], t_loc[good]
@@ -272,20 +274,20 @@ def main(argv=None):
     R0, t0, _rms0 = umeyama(Pm, Qm)      # single rigid base (drift shows up)
 
     windows = estimate_windows(tm, Pm, Qm, args.window, args.step)
-    print(f'windows: {len(windows[0])} fits '
-          f'({args.window:.0f} s window, {args.step:.0f} s step), '
-          f'median RMS {np.median(windows[3]):.3f} m, '
-          f'max {windows[3].max():.3f} m')
+    print('windows: {} fits '
+          '({:.0f} s window, {:.0f} s step), '
+          'median RMS {:.3f} m, '
+          'max {:.3f} m'.format(len(windows[0]), args.window, args.step, np.median(windows[3]), windows[3].max()))
 
     P_utm, R_s, stats = warp_trajectory(t_loc, P, Q, windows, t_g,
                                         knot_s=max(args.knot, 0.1))
     stats['residual_rigid_rms_m'] = float(rigid_rms)
     s = stats
-    print(f'post-warp residual: RMS {s["residual_warp_rms_m"]:.3f} m '
-          f'(h {s["residual_warp_h_rms_m"]:.3f}, '
-          f'v {s["residual_warp_v_rms_m"]:.3f}, '
-          f'max {s["residual_warp_max_m"]:.3f}) over '
-          f'{s["matched_samples"]} matched samples')
+    print('post-warp residual: RMS {:.3f} m '
+          '(h {:.3f}, '
+          'v {:.3f}, '
+          'max {:.3f}) over '
+          '{} matched samples'.format(s["residual_warp_rms_m"], s["residual_warp_h_rms_m"], s["residual_warp_v_rms_m"], s["residual_warp_max_m"], s["matched_samples"]))
 
     # warped orientations: R'_wb(t) = R(t) R_wb(t) - handled in _finish
     return _finish(args, t_loc, P, P_utm, R_s, stats, order, zone, north,
@@ -299,14 +301,14 @@ def _finish(args, t_loc, P, P_utm, R_s, stats, order, zone, north, epsg,
     q = np.stack([data['qx'], data['qy'], data['qz'], data['qw']], axis=1)
     q_new = quat_mul(rot_to_quat(R_s), q)
 
-    args.out.parent.mkdir(parents=True, exist_ok=True)
+    _ensure_parent(args.out)
     with open(args.out, 'w') as fh:
         fh.write('t,x,y,z,qx,qy,qz,qw\n')
         for i in range(len(t_loc)):
-            fh.write(f'{t_loc[i]:.9f},{P_utm[i,0]:.4f},{P_utm[i,1]:.4f},'
-                     f'{P_utm[i,2]:.4f},{q_new[i,0]:.9f},{q_new[i,1]:.9f},'
-                     f'{q_new[i,2]:.9f},{q_new[i,3]:.9f}\n')
-    print(f'wrote {len(t_loc)} warped poses -> {args.out}')
+            fh.write('{:.9f},{:.4f},{:.4f},'
+                     '{:.4f},{:.9f},{:.9f},'
+                     '{:.9f},{:.9f}\n'.format(t_loc[i], P_utm[i,0], P_utm[i,1], P_utm[i,2], q_new[i,0], q_new[i,1], q_new[i,2], q_new[i,3]))
+    print('wrote {} warped poses -> {}'.format(len(t_loc), args.out))
 
     e, n = P_utm[:, 0], P_utm[:, 1]
     report = {
@@ -333,10 +335,19 @@ def _finish(args, t_loc, P, P_utm, R_s, stats, order, zone, north, epsg,
                            float(e.max()), float(n.max())],
         'stats': stats,
     }
-    rep = args.report or args.out.with_name(args.out.stem + '_report.json')
-    rep.write_text(json.dumps(report, indent=2, default=str))
-    print(f'report: {rep}')
+    rep = args.report or os.path.join(
+        os.path.dirname(os.path.abspath(args.out)),
+        os.path.splitext(os.path.basename(args.out))[0] + '_report.json')
+    with open(rep, 'w') as fh:
+        fh.write(json.dumps(report, indent=2, default=str))
+    print('report: {}'.format(rep))
     return 0
+
+
+def _ensure_parent(path):
+    parent = os.path.dirname(os.path.abspath(path))
+    if parent and not os.path.isdir(parent):
+        os.makedirs(parent)
 
 
 if __name__ == '__main__':

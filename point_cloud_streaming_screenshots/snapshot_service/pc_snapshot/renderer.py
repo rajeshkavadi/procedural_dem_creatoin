@@ -337,6 +337,46 @@ def _import_open3d():
         raise RenderError(f"Open3D is not importable: {exc}")
 
 
+_O3D_VIABLE = None
+
+
+def open3d_viable(cfg: Config) -> bool:
+    """Cheap, cached check that Open3D offscreen rendering can work here.
+
+    Open3D's Filament backend needs a GL/EGL context. On a truly headless
+    host (no X/Wayland display and no /dev/dri render node) creating an
+    ``OffscreenRenderer`` *segfaults* the process -- it cannot be caught. In
+    ``auto`` mode we therefore skip Open3D unless a display or a GPU render
+    node is present, and use the Matplotlib fallback instead.
+
+    Set ``PCSNAP_FORCE_OPEN3D=1`` to override (e.g. after installing a
+    software EGL driver), or pass ``--renderer open3d`` to force it.
+    """
+    global _O3D_VIABLE
+    if cfg.renderer == "matplotlib":
+        return False
+    if _O3D_VIABLE is not None:
+        return _O3D_VIABLE
+    import os
+    if os.environ.get("PCSNAP_FORCE_OPEN3D") in ("1", "true", "yes"):
+        _O3D_VIABLE = True
+        return True
+    try:
+        _import_open3d()
+    except RenderError:
+        _O3D_VIABLE = False
+        return False
+    has_display = bool(os.environ.get("DISPLAY")
+                       or os.environ.get("WAYLAND_DISPLAY"))
+    has_render_node = os.path.exists("/dev/dri")
+    _O3D_VIABLE = has_display or has_render_node
+    if not _O3D_VIABLE:
+        log.warning("Open3D disabled in 'auto' mode: headless host (no "
+                    "DISPLAY/WAYLAND_DISPLAY, no /dev/dri). Using Matplotlib. "
+                    "Set PCSNAP_FORCE_OPEN3D=1 to override.")
+    return _O3D_VIABLE
+
+
 def make_offscreen_renderer(cfg: Config, width: int = None,
                             height: int = None):
     """Create an Open3D OffscreenRenderer (background applied).
@@ -557,7 +597,7 @@ def render_snapshot(snap: PointCloudSnapshot,
     prepared, count = prepare_cloud(snap, cfg)
 
     backend = cfg.renderer
-    if backend in ("auto", "open3d"):
+    if backend == "open3d" or (backend == "auto" and open3d_viable(cfg)):
         try:
             images = _render_open3d(prepared, snap, cfg)
             log.info("rendered %s with Open3D backend", snap.seq)
