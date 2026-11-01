@@ -1,34 +1,36 @@
 #!/usr/bin/env bash
 # ---------------------------------------------------------------------------
-# run_pipeline.sh - one command from ROS 2 bag to georeferenced DEM + PCD
+# run_pipeline.sh - one command from a ROS 1 bag to georeferenced DEM + PCD
 #
 #   ./run_pipeline.sh [options]
 #
-#     --bag PATH      rosbag2 directory to replay
-#                     (default: /home/rajesh/proc_dem_creation/OutdoorRoad_dataset_ros2)
-#     --out DIR       output directory           (default: <repo>/out)
-#     --prefix NAME   output file prefix         (default: outdoorroad)
-#     --rate N        playback speed             (default: 1.0)
-#     --start N       seconds into the bag       (default: 0)
-#     --rviz          also open RViz2
+#     --bag PATH      ROS 1 .bag to replay     (default: <repo>/OutdoorRoad_dataset.bag)
+#     --out DIR       output directory         (default: <repo>/out)
+#     --prefix NAME   output file prefix       (default: outdoorroad)
+#     --rate N        playback speed           (default: 1.0)
+#     --start N       seconds into the bag     (default: 0)
+#     --rviz          also open RViz
 #     --no-georef     stop after saving the local DEM/PCD
 #
 # What it runs, in order:
-#   1. dem_replay record_odom   - stores the live FAST-LIO trajectory to CSV
-#   2. dem_bringup pipeline     - replay -> imu_relay -> FAST-LIO2 -> dem_node
+#   1. dem_replay record_odom     - stores the live FAST-LIO trajectory to CSV
+#   2. dem_bringup pipeline.launch - replay -> imu_relay -> FAST-LIO2 -> dem_node
 #   3. waits until /replay/status reports state "finished"
-#   4. /map_save  (std_srvs/Trigger) -> out/map_fastlio.pcd
-#   5. /dem_node/save             -> out/dem_<stamp>.npz
-#   6. dem_mapping georef_export  -> *_dem.tif, *_dem.pcd, *_map_georef.pcd,
-#                                    *_georef.json  (UTM / EPSG auto)
+#   4. /map_save  (std_srvs/Trigger) -> out/map_fastlio.pcd  (if FAST-LIO offers it)
+#   5. /dem_node/save                -> out/dem_<stamp>.npz
+#   6. dem_mapping georef_export     -> *_dem.tif, *_dem.pcd, *_map_georef.pcd,
+#                                       *_georef.json  (UTM / EPSG auto)
+#
+# Requires ROS 1 Melodic and a built workspace:
+#   cd ws && catkin_make && source devel/setup.bash
 #
 # Everything is logged under <out>/logs/.
 # ---------------------------------------------------------------------------
 set -uo pipefail
 
-ROOT="/home/rajesh/proc_dem_creation"
+ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 WS="$ROOT/ws"
-BAG="$ROOT/OutdoorRoad_dataset_ros2"
+BAG="$ROOT/OutdoorRoad_dataset.bag"
 OUT="$ROOT/out"
 PREFIX="outdoorroad"
 RATE="1.0"
@@ -55,28 +57,48 @@ mkdir -p "$OUT" "$LOGDIR"
 MAIN_LOG="$LOGDIR/pipeline_$(date +%Y%m%d_%H%M%S).log"
 MEM_LOG="$LOGDIR/mem_$(date +%Y%m%d_%H%M%S).csv"
 
-[ -d "$BAG" ] || {
-  echo "ERROR: ROS 2 bag '$BAG' not found."
-  echo "       convert it first:"
-  echo "         pip install --user rosbags"
-  echo "         ros2 run dem_replay bag_convert -- \\"
-  echo "             $ROOT/OutdoorRoad_dataset.bag -o $BAG"
+[ -f "$BAG" ] || {
+  echo "ERROR: ROS 1 bag '$BAG' not found."
+  echo "       pass a recording with --bag /path/to/recording.bag"
   exit 1
 }
 
 set +u                                     # ROS setup files are not nounset-clean
-source /opt/ros/humble/setup.bash
-source "$WS/install/setup.bash"
+source /opt/ros/melodic/setup.bash
+source "$WS/devel/setup.bash"
 set -u
 
-# Wait up to $2 seconds for $1 to exit; escalate TERM -> KILL.  Plain
+rospack find fast_lio >/dev/null 2>&1 || {
+  echo "ERROR: the 'fast_lio' package is not on the ROS package path."
+  echo "       clone https://github.com/hku-mars/FAST_LIO into $WS/src"
+  echo "       (git clone --recursive), run catkin_make, and source $WS/devel/setup.bash"
+  exit 1
+}
+
+# Nodes this pipeline may leave behind (matched by name, never by command line).
+PIPELINE_NODES=(/replay /fastlio_mapping /laserMapping /dem_node /imu_relay
+                /stream_monitor /record_odom /dem_heatmap)
+
+stop_ros_nodes() {
+  local running name
+  running="$(timeout 10 rosnode list 2>/dev/null || true)"
+  [ -n "$running" ] || return 0
+  for name in "${PIPELINE_NODES[@]}"; do
+    if printf '%s\n' "$running" | grep -qx "$name"; then
+      timeout 10 rosnode kill "$name" >/dev/null 2>&1 || true
+    fi
+  done
+  sleep 1
+}
+
+# Wait up to $2 seconds for $1 to exit; escalate INT -> TERM -> KILL.  Plain
 # `wait` is dangerous here: async commands inherit SIG_IGN for SIGINT in
-# non-interactive shells (so `ros2 run` swallows it) and an idle rclpy
-# node blocked in rcl_wait() does not process signals either - a run once
-# hung for 1.5 h at such a wait.
+# non-interactive shells, and an idle rospy node blocked in rospy.spin() does
+# not process signals either.
 stop_pid() {
   local pid="$1" grace="${2:-15}" i
   [ -n "$pid" ] || return 0
+  kill -INT "$pid" 2>/dev/null
   for ((i = 0; i < grace; i++)); do
     kill -0 "$pid" 2>/dev/null || return 0
     sleep 1
@@ -90,56 +112,28 @@ stop_pid() {
   return 0
 }
 
-# Stop every process this script started (never unrelated ones)
-stop_pipeline_nodes() {
-  pkill -INT  -f 'lib/dem_replay/record_odom --topic' 2>/dev/null
-  pkill -TERM -f 'fast_lio/lib/fast_lio/fastlio_mapping' 2>/dev/null
-  pkill -TERM -f 'dem_mapping/lib/dem_mapping/dem_node' 2>/dev/null
-  pkill -TERM -f 'dem_replay/lib/dem_replay/replay --ros-args' 2>/dev/null
-  pkill -TERM -f 'dem_replay/lib/dem_replay/imu_relay' 2>/dev/null
-  pkill -TERM -f 'dem_replay/lib/dem_replay/stream_monitor' 2>/dev/null
-  sleep 2
-  pkill -KILL -f 'fast_lio/lib/fast_lio/fastlio_mapping' 2>/dev/null
-  pkill -KILL -f 'dem_mapping/lib/dem_mapping/dem_node' 2>/dev/null
-  pkill -KILL -f 'dem_replay/lib/dem_replay/(replay|imu_relay|stream_monitor)' 2>/dev/null
-  pkill -KILL -f 'lib/dem_replay/record_odom --topic' 2>/dev/null
-  return 0
-}
-
 cleanup() {
-  # stop everything this script started, never touch unrelated processes
-  [ -n "${MEM_PID:-}" ]  && kill "$MEM_PID" 2>/dev/null
+  [ -n "${MEM_PID:-}" ] && kill "$MEM_PID" 2>/dev/null
   if [ -n "${REC_PID:-}" ]; then
-    kill -INT "$REC_PID" 2>/dev/null
-    pkill -INT -f 'lib/dem_replay/record_odom --topic' 2>/dev/null
     stop_pid "$REC_PID" 10
     REC_PID=""
   fi
   if [ -n "${LAUNCH_PID:-}" ]; then
-    kill -INT "$LAUNCH_PID" 2>/dev/null
-    stop_pid "$LAUNCH_PID" 10
+    stop_pid "$LAUNCH_PID" 15
     LAUNCH_PID=""
   fi
-  stop_pipeline_nodes          # ros2 launch may have died without children
+  stop_ros_nodes                      # roslaunch may have died without children
   MEM_PID=""
 }
 trap cleanup EXIT
 
 # never run on top of a previous session
-pkill -f 'ros2 [l]aunch dem_bringup' 2>/dev/null
-pkill -f 'fastlio_[m]apping' 2>/dev/null
-pkill -f 'dem_[n]ode' 2>/dev/null
-pkill -f 'record_[o]dom' 2>/dev/null
-pkill -f '[r]viz2' 2>/dev/null
-sleep 2
+stop_ros_nodes
+sleep 1
 
-BAG_DURATION=$(python3 - "$BAG" <<'EOF'
-import sys, yaml
-print(yaml.safe_load(open(sys.argv[1] + '/metadata.yaml'))
-      ['rosbag2_bagfile_information']['duration']['nanoseconds'] / 1e9)
-EOF
-)
-MAX_WAIT=$(python3 -c "print(int($BAG_DURATION / $RATE) + 180)")
+BAG_DURATION=$(rosbag info "$BAG" 2>/dev/null | awk '/^duration:/ {gsub("s","",$2); print $2}')
+[ -n "$BAG_DURATION" ] || BAG_DURATION=0
+MAX_WAIT=$(awk -v d="$BAG_DURATION" -v r="$RATE" 'BEGIN {printf "%d", d / r + 180}')
 echo "bag duration ${BAG_DURATION}s at ${RATE}x -> wait budget ${MAX_WAIT}s"
 
 (
@@ -153,16 +147,18 @@ MEM_PID=$!
 
 : > "$MAIN_LOG"
 echo "== 1/6 trajectory recorder -> $OUT/odom.csv"
-ros2 run dem_replay record_odom -- --topic /Odometry \
-      --out "$OUT/odom.csv" >> "$LOGDIR/record_odom.log" 2>&1 &
+rosrun dem_replay record_odom --topic /Odometry --out "$OUT/odom.csv" \
+      >> "$LOGDIR/record_odom.log" 2>&1 &
 REC_PID=$!
 sleep 2
 kill -0 "$REC_PID" 2>/dev/null || { echo "record_odom died (see $LOGDIR/record_odom.log)"; exit 1; }
 
 echo "== 2/6 pipeline (replay + FAST-LIO2 + DEM) -> $MAIN_LOG"
-ros2 launch dem_bringup pipeline.launch.py \
-      bag:="$BAG" rate:="$RATE" use_rviz:="$RVIZ" use_viz:=false \
-      use_monitor:=true player:=custom use_fastlio:=true use_gnss:=true \
+roslaunch dem_bringup pipeline.launch \
+      bag:="$BAG" rate:="$RATE" start_offset:="$START" \
+      use_rviz:="$RVIZ" use_viz:=false use_monitor:=true \
+      player:=custom use_fastlio:=true use_gnss:=true \
+      save_dir:="$OUT" \
       >> "$MAIN_LOG" 2>&1 &
 LAUNCH_PID=$!
 
@@ -171,14 +167,11 @@ for _ in $(seq 1 60); do
   kill -0 "$LAUNCH_PID" 2>/dev/null || break
   sleep 1
 done
-grep -q 'Node init finished' "$MAIN_LOG" \
-  || { echo "FAST-LIO did not start (see $MAIN_LOG)"; tail -20 "$MAIN_LOG"; exit 1; }
-grep -q 'p_pre->lidar_type 4' "$MAIN_LOG" \
-  || { echo "ERROR: lidar_type is not 4 - see $MAIN_LOG"; exit 1; }
-
-if [ "$START" != "0.0" ] && [ "$START" != "0" ]; then
-  echo "   (starting ${START}s into the bag)"
-  ros2 topic pub --once /replay/rate std_msgs/msg/Float64 "{data: $RATE}" >/dev/null 2>&1
+if grep -q 'Node init finished' "$MAIN_LOG"; then
+  grep -q 'p_pre->lidar_type 4' "$MAIN_LOG" \
+    || echo "WARNING: lidar_type is not 4 - check fastlio_mid360.yaml in $MAIN_LOG"
+else
+  echo "WARNING: FAST-LIO did not report startup - see $MAIN_LOG"
 fi
 
 echo "== 3/6 waiting for playback to finish (up to ${MAX_WAIT}s)"
@@ -186,10 +179,10 @@ finished=0
 deadline=$(( $(date +%s) + MAX_WAIT ))
 while [ "$(date +%s)" -lt "$deadline" ]; do
   kill -0 "$LAUNCH_PID" 2>/dev/null || { echo "pipeline exited early (see $MAIN_LOG)"; break; }
-  st=$(timeout 25 ros2 topic echo /replay/status --once 2>/dev/null | tr -d '\n' || true)
-  if echo "$st" | grep -q '"state": "finished"'; then
+  st=$(timeout 25 rostopic echo -n 1 /replay/status 2>/dev/null | tr -d '\n' || true)
+  if echo "$st" | grep -q '"state": *"finished"'; then
     finished=1
-    echo "   $st"
+    echo "   $(echo "$st" | tail -c 200)"
     break
   fi
   sleep 5
@@ -198,15 +191,19 @@ done
 
 sleep 5                                   # let the last scans propagate
 echo "== 4/6 saving the FAST-LIO map -> $OUT/map_fastlio.pcd"
-ros2 service call /map_save std_srvs/srv/Trigger {} 2>&1 | tee -a "$LOGDIR/services.log"
+if rosservice list 2>/dev/null | grep -qx '/map_save'; then
+  rosservice call /map_save 2>&1 | tee -a "$LOGDIR/services.log"
+else
+  echo "   /map_save not offered by this FAST-LIO build - skipping the map PCD"
+  echo "   (the DEM, trajectory and georeferencing are unaffected)" \
+    | tee -a "$LOGDIR/services.log"
+fi
 
 echo "== 5/6 saving the DEM grid -> $OUT/dem_<stamp>.npz"
-ros2 service call /dem_node/save std_srvs/srv/Trigger {} 2>&1 | tee -a "$LOGDIR/services.log"
+rosservice call /dem_node/save 2>&1 | tee -a "$LOGDIR/services.log"
 
 sleep 2
-kill -INT "$REC_PID" 2>/dev/null
-pkill -INT -f 'lib/dem_replay/record_odom --topic' 2>/dev/null
-stop_pid "$REC_PID" 10; REC_PID=""        # bounded - never hang on wait
+stop_pid "${REC_PID:-}" 10; REC_PID=""
 echo "   odom rows: $(wc -l < "$OUT/odom.csv" 2>/dev/null || echo 0)"
 
 cleanup; trap - EXIT                       # pipeline finished, stop the nodes
@@ -222,12 +219,14 @@ if [ "$GEOREF" = "1" ]; then
   echo
   echo "== 6/6 georeferencing (local map frame -> WGS84/UTM) + PCD export"
   [ -n "$DEM" ] || { echo "ERROR: no DEM file to georeference"; exit 1; }
-  ros2 run dem_mapping georef_export -- \
+  MAP_ARG=""
+  [ -f "$OUT/map_fastlio.pcd" ] && MAP_ARG="--map=$OUT/map_fastlio.pcd"
+  rosrun dem_mapping georef_export \
       --dem "$DEM" \
       --odom "$OUT/odom.csv" \
       --bag "$BAG" \
       --gnss-topic /gnss_pose \
-      --map "$OUT/map_fastlio.pcd" \
+      $MAP_ARG \
       --out-dir "$OUT" --prefix "$PREFIX"
   rc=$?
   echo

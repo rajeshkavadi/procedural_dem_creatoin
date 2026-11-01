@@ -46,5 +46,6 @@ occ_z_min: -6.0
 occ_z_max: 4.0
 trajectory_rate: 2.0
 stats_rate: 2.0
-# non-empty => final grid saved on shutdown (also used by ~/save)
+# non-empty => final grid saved on shutdown (also used by the ~save service,
+# i.e. /dem_node/save)
 save_dir: "out"

@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 """Georeference the pipeline results: local mapper frame -> WGS84 / UTM.
 
 Why this step exists
@@ -12,7 +12,7 @@ it with satellite imagery or store it as a GeoTIFF.
 This tool ties that local frame to the world:
 
 1. reads the GNSS track (``/gnss_pose`` - WGS84 latitude/longitude/altitude
-   in degrees/metres) from the bag (ROS 1 ``.bag`` **or** rosbag2),
+   in degrees/metres) from the recorded ROS 1 ``.bag``,
 2. reads the recorded FAST-LIO trajectory (``odom.csv``),
 3. matches the two tracks by timestamp and estimates the rigid transform
    ``p_utm = R * p_local + t`` (yaw about the gravity axis by default, so the
@@ -36,11 +36,11 @@ the JSON so the decision can be audited.
 
 Usage
 -----
-    ros2 run dem_mapping georef_export \
+    rosrun dem_mapping georef_export \
         --dem out/dem_20261015.npz \
         --odom out/odom.csv \
-        --bag OutdoorRoad_dataset_ros2 \
-        --map out/map.pcd \
+        --bag OutdoorRoad_dataset.bag \
+        --map out/map_fastlio.pcd \
         --out-dir out --prefix outdoorroad
 
 Exit codes: 0 = written, 1 = bad input, 2 = alignment rejected

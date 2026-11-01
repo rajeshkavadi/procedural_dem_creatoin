@@ -46,6 +46,20 @@
 
   <param name="/use_sim_time" value="$(arg use_sim_time)"/>
 
+  <!-- FAST-LIO2 (upstream ROS 1) reads its parameters from the GLOBAL
+       namespace (`common/lid_topic`, `mapping/acc_cov`, ...), exactly like
+       its own launch/mapping_mid360.launch.  Loading the file inside the
+       <node> tag would put them under ~/ and the node would silently keep
+       its defaults (wrong topics, default extrinsic estimation). -->
+  <group if="$(arg use_fastlio)">
+    <rosparam file="$(arg fastlio_config)" command="load"/>
+    <!-- absolute: a relative map path resolves against the node cwd (~/.ros) -->
+    <param name="map_file_path" value="$(arg save_dir)/map_fastlio.pcd"/>
+    <!-- keep the estimator's topics in step with the replay arguments -->
+    <param name="common/lid_topic" value="$(arg lidar_topic)"/>
+    <param name="common/imu_topic" value="$(arg imu_topic)_si"/>
+  </group>
+
   <!-- ================================================== bag player -->
   <group if="$(eval arg('player') == 'custom')">
     <group if="$(arg use_gnss)">
@@ -94,9 +108,7 @@
       <param name="accel_scale" value="9.80665"/>
     </node>
     <node pkg="fast_lio" type="fastlio_mapping" name="fastlio_mapping"
-          output="screen">
-      <rosparam file="$(arg fastlio_config)" command="load"/>
-    </node>
+          output="screen"/>
   </group>
 
   <!-- ======================================================== DEM ==== -->

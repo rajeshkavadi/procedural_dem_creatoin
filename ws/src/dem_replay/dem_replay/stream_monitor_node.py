@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 """Stream-order / synchronisation verifier (ROS 1 / Melodic).
 
-Subscribe to any number of topics (given as ``topic:type`` pairs, ROS 1
-types such as ``sensor_msgs/PointCloud2``; ROS 2-style
-``sensor_msgs/msg/PointCloud2`` is accepted too), measure their arrival
+Subscribe to any number of topics (given as ``topic:type`` pairs with ROS 1
+types such as ``sensor_msgs/PointCloud2``; the ``sensor_msgs/msg/PointCloud2``
+spelling is accepted too), measure their arrival
 statistics and verify that the replayed streams keep the recorded temporal
 order:
 

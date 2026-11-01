@@ -1,26 +1,64 @@
-Confirmed — exactly one service, one bag, one tunnel (the earlier "2" was just my own shell command matching the text pattern). The stack is clean and healthy.
-The bug is fixed
-My script had a set -eo pipefail bug: the URL-wait loop ran grep against the tunnel log before Cloudflare had written anything to it. grep returned non-zero (no match yet), and set -e aborted the whole script right after [3/3] — so it never reached the print block. The background processes had already launched (that's why things were running), but the link was never shown.
-Fix: the grep now has || true so an empty log just retries instead of killing the script.
-Your launch command + output
-cd /home/rajesh/point_cloud_streaming_screenshots/snapshot_service
-source /opt/ros/humble/setup.bash
-./scripts/start_remote.sh /home/rajesh/proc_dem_creation/OutdoorRoad_dataset_ros2/OutdoorRoad_dataset_ros2.db3
-It now prints (verified, exit code 0):
-==========================================================
-  OPEN IN BROWSER (remote OK):
-  https://sleeping-knife-lawyers-eating.trycloudflare.com
+# Point-cloud streaming screenshots
 
-  API token (paste in the UI's token box): lidar-snap-2026
-  Local-only URL: http://127.0.0.1:8085/
-==========================================================
-…followed by a health check and Stop everything with: ./scripts/stop_all.sh.
-Current live state (verified through the public URL)
-- Open this on your friend's PC: https://sleeping-knife-lawyers-eating.trycloudflare.com
-- Token: lidar-snap-2026
-- Public health: OK · ROS connected · 131,072 pts · not stale
-- Exactly 1 service + 1 bag + 1 tunnel (no orphans)
-Reminder: the quick-tunnel URL is new again (it changed from the last one). Always use the fresh URL that the script prints. ./scripts/stop_all.sh stops all three.
-Still open if you want them:
-- Wire up FAST-LIO2 (configs already exist) for registered/motion-compensated clouds instead of the raw sweep — I'd test before claiming it works.
-- Named tunnel for a permanent URL that never changes.
+One command starts a looping **ROS 1 bag playback** and a small HTTP service
+that turns it into browser screenshots and an elevation model:
+
+```
+recording.bag ──► pc_snapshot bag reader ──► latest cloud ──► POST /api/snapshot
+   (looping)          (pure Python)              │             5 PNG views
+                                                 └──────────► POST /api/dem
+                                                              top-down DEM heatmap
+                                                                     │
+                                                          FastAPI + static UI
+                                                                     │
+                                                     localhost / Cloudflare tunnel
+```
+
+* **Fetch Point Cloud** — captures exactly one `PointCloud2` message and
+  renders five PNG views (top / front / back / left / right) of that message.
+* **Get DEM** — merges every message since playback started into one
+  incremental elevation grid and renders a top-down heatmap.
+* **Live View** — optional MJPEG stream of the current cloud (`/api/stream`).
+
+The service reads the `.bag` directly with the pure-Python `rosbags` library,
+so it runs on Python 3 next to ROS Melodic without needing `rospy` (Melodic's
+`rospy`/`rosbag` are Python 2.7 only). No `rosbag play` process is needed.
+
+## Quick start
+
+```bash
+cd snapshot_service
+
+# Python 3.8+ with the requirements (FastAPI, rosbags, matplotlib, …)
+python3 -m venv .venv && . .venv/bin/activate
+pip install -r requirements.txt
+
+# service + looping bag + Cloudflare quick tunnel (prints a public URL)
+./scripts/start_remote.sh /path/to/recording.bag
+#   or, local only:
+./scripts/start_all.sh /path/to/recording.bag
+```
+
+Then open the printed URL, paste the API token into the UI, and click
+**Fetch Point Cloud** / **Get DEM**. Stop everything with
+`./scripts/stop_all.sh`.
+
+Inspect a bag without starting anything:
+
+```bash
+./scripts/bag_info.sh /path/to/recording.bag
+```
+
+Full documentation — architecture, every option, the HTTP API, the renderer
+and DEM internals, tests — is in
+[snapshot_service/README.md](snapshot_service/README.md).
+
+## Relation to the DEM pipeline
+
+The service imports `dem_mapping.ElevationGrid` and `ground_filters` from
+`../ws/src/dem_mapping`, so the incremental grid here is the same
+implementation the offline FAST-LIO2 → DEM → georeference pipeline uses. The
+service does **no** scan registration: the grid is filled in the raw sensor
+frame (fine for a stationary sensor; point it at a registered topic such as
+`/cloud_registered` for a moving one). See the root [README](../README.md) for
+the full offline pipeline.

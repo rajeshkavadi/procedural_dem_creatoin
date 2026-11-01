@@ -10,7 +10,7 @@ i.e. from the initial position of playback up to the instant the user clicks
 
 Reuse of the existing incremental DEM
 -------------------------------------
-The grid/filter core is the *same* ROS-free code the `dem_mapping` ROS 2
+The grid/filter core is the *same* ROS-free code the `dem_mapping`
 package uses (`ws/src/dem_mapping/dem_mapping/{elevation_grid,ground_
 filters}.py`) and is imported from the workspace at runtime — there is exactly
 one implementation of the algorithm in this repository.

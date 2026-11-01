@@ -7,7 +7,7 @@
 #
 # The bag is read *inside* the service (pure-Python `rosbags`, no ROS
 # environment, no `rosbag play` process), so there is nothing to source and
-# only two background processes are started.
+# only the service and the tunnel run in the background.
 #
 # Env overrides:
 #   PCSNAP_API_TOKEN    API token (default: lidar-snap-2026)

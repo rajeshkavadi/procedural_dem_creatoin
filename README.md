@@ -1,179 +1,145 @@
-# Procedural DEM creation from a ROS bag (ROS 1 → ROS 2, FAST-LIO2, georeferenced output)
+# Procedural DEM creation from a ROS 1 bag (Melodic, FAST-LIO2, georeferenced output)
 
----
-
-
-Converts a recorded road dataset (ROS 1 `.bag`) into ROS 2, replays it through
-FAST-LIO2 LiDAR-inertial odometry, builds an elevation grid online, and exports
-the result **georeferenced** (WGS84 / UTM) as GeoTIFF + PCD point clouds —
-with one command.
+Converts a recorded road dataset (ROS 1 `.bag`) into a **georeferenced**
+elevation model (WGS84 / UTM) as GeoTIFF + PCD point clouds, with one command:
 
 ```
-OutdoorRoad_dataset.bag   (ROS 1, 47 GB)
-        │  bag_convert  (one-off, no ROS 1 install needed)
-        ▼
-OutdoorRoad_dataset_ros2/ (rosbag2, 45 GB)
+recording.bag                 (ROS 1, topics: Mid-360 LiDAR + IMU + GNSS pose)
         │  ./run_pipeline.sh
         ├──► replay ─► imu_relay ─► FAST-LIO2 ─► dem_node ─► DEM grid (.npz)
         │                 │             │            │
         │                 │             └─ /Odometry ─► record_odom (CSV)
-        │                 │             └─ /map_save ─► map_fastlio.pcd
+        │                 │             └─ /map_save ─► map_fastlio.pcd (optional)
         ▼
 georef_export  (GNSS track ⟷ LIO trajectory fit)
         │
         ▼
-out/outdoorroad_dem.tif   (+ hillshade, preview PNG)
-out/outdoorroad_dem.pcd   (DEM cells in UTM metres)
-out/outdoorroad_map_georef.pcd (FAST-LIO map in UTM metres)
-out/outdoorroad_georef.json    (CRS, transform, RMS provenance)
+out/outdoorroad_dem.tif          (+ hillshade, preview PNG)
+out/outdoorroad_dem.pcd          (DEM cells in UTM metres)
+out/outdoorroad_map_georef.pcd   (FAST-LIO map in UTM metres)
+out/outdoorroad_georef.json      (CRS, transform, RMS provenance)
 ```
+
+The whole toolchain is **ROS 1 Melodic**: `rospy` nodes + `catkin` packages,
+`pipeline.launch` (XML), `rosrun` / `roslaunch` / `rosservice`, and bag I/O
+through the Melodic `rosbag` Python module. No ROS 2 component is required.
 
 ---
 
 ## Contents
 
 1. [Requirements](#1-requirements)
-2. [Quick start](#2-quick-start)
-3. [ROS 1 → ROS 2 bag conversion](#3-ros-1--ros-2-bag-conversion)
+2. [Build the workspace](#2-build-the-workspace)
+3. [Quick start](#3-quick-start)
 4. [The pipeline, stage by stage](#4-the-pipeline-stage-by-stage)
 5. [Georeferencing — how the DEM gets real coordinates](#5-georeferencing--how-the-dem-gets-real-coordinates)
 6. [Outputs](#6-outputs)
 7. [Configuration & tuning](#7-configuration--tuning)
 8. [Running the stages manually](#8-running-the-stages-manually)
 9. [Errors and how they were fixed](#9-errors-and-how-they-were-fixed)
-10. [Switching the pipeline ROS 1 → ROS 2 (and back)](#10-switching-the-pipeline-ros-1--ros-2-and-back)
-11. [Development: build, test, layout](#11-development-build-test-layout)
+10. [Using a different recording](#10-using-a-different-recording)
+11. [Development: layout and tests](#11-development-layout-and-tests)
 
 ---
 
 ## 1. Requirements
 
-* Ubuntu 22.04 + **ROS 2 Humble** (`/opt/ros/humble`)
-* Python 3.10 with:
+* Ubuntu 18.04 + **ROS 1 Melodic** (`/opt/ros/melodic`)
+* Python 2.7 with the ROS packages (`rospy`, `rosbag`, `roslib`) and:
 
   ```bash
-  sudo apt install python3-numpy python3-scipy python3-matplotlib python3-gdal
-  pip install --user rosbags          # ROS 1 bag reading / conversion
+  sudo apt install python-numpy python-scipy python-matplotlib python-gdal
   ```
 
-  | package     | used for                                   | tested with |
-  |-------------|--------------------------------------------|-------------|
-  | `rosbags`   | ROS 1 `.bag` read + ROS 1→2 conversion      | 0.10.x      |
-  | `numpy`     | grids, fits                                | 1.26.4      |
-  | `scipy`     | `cKDTree` reprojection, KD-tree lookups    | 1.8.0       |
-  | `matplotlib`| preview / hillshade PNG                    | 3.5.1       |
-  | GDAL (`osgeo`) | GeoTIFF write/read                      | 3.4.1       |
+  | package     | used for                                | Melodic build |
+  |-------------|-----------------------------------------|---------------|
+  | `rospy`     | every node                              | 1.14.x        |
+  | `rosbag`    | replay, GNSS read-back, bag inspection  | 1.14.x        |
+  | `numpy`     | grids, fits                             | 1.13+         |
+  | `scipy`     | `cKDTree` reprojection, KD-tree lookups | 1.x           |
+  | `matplotlib`| preview / hillshade PNG, live heatmap   | 2.x/3.x       |
+  | GDAL (`osgeo`) | GeoTIFF write/read                   | 2.x/3.x       |
 
-  > The Ubuntu `python3-scipy` package prints a benign
-  > `UserWarning: A NumPy version >=1.17.3 and <1.25.0 is required …`
-  > on import. It is cosmetic — everything works; see
-  > [§9](#9-errors-and-how-they-were-fixed).
-
-* ~65 GB free disk for bag conversion (47 GB in + 45 GB out) and ≥ 8 GB RAM
-  recommended (the FAST-LIO map cloud grows to several hundred MB; peak RSS
-  observed ≈ 4–5 GB).
-* No ROS 1, no `ros1_bridge`, no Docker: the ROS 1 bag is read with the
-  pure-Python `rosbags` library.
+* ~8 GB RAM recommended (the FAST-LIO map cloud grows to several hundred MB;
+  peak RSS observed ≈ 4–5 GB) and enough disk for the outputs.
+* **FAST-LIO2** (ROS 1) and **livox_ros_driver** (ROS 1, for the `CustomMsg`
+  header FAST-LIO includes) in `ws/src` — see §2. They are *not* vendored here.
+* Optional: `rviz` for `--rviz`.
 
 Environment for every command below:
 
 ```bash
-source /opt/ros/humble/setup.bash
-source /home/rajesh/proc_dem_creation/ws/install/setup.bash
+source /opt/ros/melodic/setup.bash
+source <repo>/ws/devel/setup.bash
 ```
 
-## 2. Quick start
+## 2. Build the workspace
 
 ```bash
-# 1. one-off: convert the ROS 1 bag (≈ 5.5 min for 47 GB)
-pip install --user rosbags
-ros2 run dem_replay bag_convert -- \
-    OutdoorRoad_dataset.bag -o OutdoorRoad_dataset_ros2
+cd <repo>/ws
 
-# 2. everything else: replay → LIO → DEM → georeference (≈ 13 min at rate 1.0)
-./run_pipeline.sh
+# LIO + Livox message definitions (ROS 1), once.  --recursive pulls the
+# ikd-Tree submodule FAST-LIO links against.
+git clone --recursive https://github.com/hku-mars/FAST_LIO.git src/FAST_LIO
+git clone https://github.com/Livox-SDK/livox_ros_driver.git src/livox_ros_driver
+
+# FAST-LIO is C++ and needs PCL, Eigen and the Python 2 headers:
+sudo apt install ros-melodic-pcl-ros ros-melodic-eigen-conversions \
+    libeigen3-dev libpcl-dev python-dev
+
+catkin_make -DCMAKE_BUILD_TYPE=Release
+source devel/setup.bash
+```
+
+`livox_ros_driver` is only needed for its `CustomMsg` definition (FAST-LIO
+includes that header); building its driver node additionally needs the
+[Livox SDK](https://github.com/Livox-SDK/Livox-SDK). The bag already contains
+sensor data, so the driver itself is not used by this pipeline.
+
+The repository's own packages (`dem_replay`, `dem_mapping`, `dem_bringup`,
+`dem_viz`) build with `catkin_make`/`catkin build` and are plain Python, so
+editing them needs no rebuild (they are installed from source paths; rerun
+`catkin_make` only after changing a `CMakeLists.txt`, `package.xml` or adding
+an executable).
+
+`ws/src/CMakeLists.txt` is the standard catkin `toplevel.cmake` symlink that
+`catkin_make` expects. `dem_bringup/config/fastlio_mid360.yaml` targets the
+upstream ROS 1 FAST-LIO parameter layout (`common/lid_topic`,
+`mapping/acc_cov`, `pcd_save/pcd_save_en`, …), which `pipeline.launch` loads
+into the **global** namespace exactly like FAST-LIO's own launch file.
+
+> **`/map_save` is optional.** Upstream FAST-LIO only writes its PCD on
+> shutdown; some builds add a `/map_save` service. `run_pipeline.sh` calls it
+> when it exists and otherwise skips `map_fastlio.pcd`. DEM generation and
+> georeferencing use `/cloud_registered`, `/Odometry` and `/gnss_pose`, so
+> they work with a stock build.
+
+## 3. Quick start
+
+```bash
+./run_pipeline.sh --bag /path/to/recording.bag
 ```
 
 Useful flags of `run_pipeline.sh`:
 
 ```
---bag PATH      rosbag2 directory to replay (default OutdoorRoad_dataset_ros2)
---out DIR       output directory            (default <repo>/out)
---prefix NAME   output file prefix          (default outdoorroad)
---rate N        playback speed              (default 1.0)
---rviz          also open RViz2
+--bag PATH      ROS 1 .bag to replay      (default <repo>/OutdoorRoad_dataset.bag)
+--out DIR       output directory          (default <repo>/out)
+--prefix NAME   output file prefix        (default outdoorroad)
+--rate N        playback speed            (default 1.0)
+--start N       seconds into the bag      (default 0)
+--rviz          also open RViz
 --no-georef     stop after the local DEM/PCD (skip step 6)
 ```
 
 All node output is logged under `out/logs/`; a memory sampler writes
 `out/logs/mem_*.csv` every 10 s so you can inspect the peak RAM of the run.
 
-## 3. ROS 1 → ROS 2 bag conversion
-
-### Why a custom tool
-
-`ros2 bag convert` and `ros1_bridge` need a ROS 1 environment or a bridge
-setup. `rosbags` (`pip install rosbags`) reads the ROS 1 serialization format
-directly and we re-serialise into CDR, so **only Python is needed**.
-
-The wrapper `dem_replay/bag_convert.py` adds, over the stock
-`rosbags-convert`:
-
-* `--topics` / `--exclude-topics` — keep only what the pipeline consumes,
-* `--start` / `--duration` — cut a time window (handy for quick tests),
-* `--dry-run` — inspect without converting,
-* progress + ETA + per-topic byte statistics,
-* **automatic post-conversion validation**: the result is re-read, message
-  counts are compared per topic and one payload per topic is
-  de-serialised; a JSON report is written.
-
-### What it does to the messages
-
-* `std_msgs/Header`: ROS 1 has a `seq` field, ROS 2 dropped it — it is
-  removed (this is the only structural difference for standard messages).
-* everything else: byte-copy when the wire formats match, otherwise field
-  migration (renames applied, removed fields dropped, added fields defaulted).
-* Output: rosbag2 **bagfile version 8** (readable by Humble's rosbag2;
-  version 9 would require a newer rosbag2), storage `sqlite3`, no
-  compression.
-
-### The conversion used here
+Check a recording before running the pipeline:
 
 ```bash
-ros2 run dem_replay bag_convert -- \
-    OutdoorRoad_dataset.bag -o OutdoorRoad_dataset_ros2
-```
-
-Result (`/tmp/opencode/convert_report.json` on this machine):
-
-* 657.3 s, **432,794 messages**, 7 topics, 47.73 GB → 45 GB
-* wall time 332 s (≈ 145 MB/s), validation `ok: true`
-
-| topic | type | count | rate |
-|---|---|---|---|
-| `/mid360/livox/lidar` | `PointCloud2` | 6 573 | 10 Hz |
-| `/mid360/livox/imu`   | `Imu`         | 131 462 | 200 Hz |
-| `/gnss_pose`          | `PoseStamped` | 65 732 | 100 Hz |
-| `/avia/livox/lidar`   | `PointCloud2` | 6 573 | 10 Hz |
-| `/avia/livox/imu`     | `Imu`         | 133 719 | 203 Hz |
-| `/ouster/points`      | `PointCloud2` | 6 573 | 10 Hz |
-| `/ouster/imu`         | `Imu`         | 82 162 | 125 Hz |
-
-All 7 topics were converted (full fidelity). The DEM pipeline itself consumes
-only `/mid360/livox/{lidar,imu}` + `/gnss_pose`; to save disk use:
-
-```bash
-ros2 run dem_replay bag_convert -- OutdoorRoad_dataset.bag -o small_ros2 \
-    --topics /mid360/livox/lidar /mid360/livox/imu /gnss_pose \
-    --start 0 --duration 120
-```
-
-Check a bag (any bag) without converting:
-
-```bash
-ros2 run dem_replay bag_convert -- OutdoorRoad_dataset.bag --dry-run
-ros2 run dem_replay inspect_bag -- OutdoorRoad_dataset_ros2   # rates, stamp monotonicity, samples
-ros2 bag info OutdoorRoad_dataset_ros2                        # stock ROS 2 view
+rosrun dem_replay inspect_bag /path/to/recording.bag   # rates, stamps, fields, samples
+rosbag info /path/to/recording.bag                     # stock view
 ```
 
 ## 4. The pipeline, stage by stage
@@ -186,22 +152,25 @@ ros2 bag info OutdoorRoad_dataset_ros2                        # stock ROS 2 view
    The trajectory is computed *live* during replay and is **not** in the bag,
    so someone has to write it down for the georeferencing step. `t` is the
    header stamp (bag epoch time) so it matches the GNSS track timestamps.
-2. **`pipeline.launch.py`** (`dem_bringup`) starts:
+2. **`pipeline.launch`** (`dem_bringup`) starts:
    * `replay` (`dem_replay`) — timestamp-preserving bag player with rate
-     control, `/replay/status` JSON, pause/resume/restart services,
+     control, `/replay/status` JSON and pause/resume/restart services
+     (`player:=stock` uses plain `rosbag play` instead),
    * `imu_relay` — Livox IMU accelerations are recorded in **g**; FAST-LIO
      needs m/s², so `/mid360/livox/imu` is republished as
      `/mid360/livox/imu_si` scaled ×9.80665 (raw topic untouched),
    * `fastlio_mapping` (FAST-LIO2, C++) — LiDAR-inertial odometry,
      publishes `/Odometry`, `/cloud_registered`, and accumulates the map
-     cloud for `/map_save`,
+     cloud,
    * `dem_node` (`dem_mapping`) — incremental elevation grid from the
      registered clouds (`mode: registered`, output frame `camera_init`),
    * optional: `stream_monitor` (ordering/synchronisation watchdog),
-     `rviz`, matplotlib live view.
+     `rviz`, matplotlib live heatmap (`use_viz:=true`).
 3. **wait** until `/replay/status` reports `"state": "finished"`.
-4. **`/map_save`** (`std_srvs/Trigger`, FAST-LIO2) → `out/map_fastlio.pcd`.
-5. **`/dem_node/save`** (`std_srvs/Trigger`) → `out/dem_<stamp>.npz`.
+4. **`/map_save`** (`std_srvs/Trigger`, when the build offers it) →
+   `out/map_fastlio.pcd`.
+5. **`/dem_node/save`** (`std_srvs/Trigger`) → `out/dem_<stamp>.npz`
+   (`dem_node` also saves on shutdown when `~save_dir` is non-empty).
 6. **`georef_export`** (`dem_mapping`) — the georeferencing step, see below.
 
 ## 5. Georeferencing — how the DEM gets real coordinates
@@ -212,13 +181,12 @@ FAST-LIO2 and `dem_node` work in the **local mapper frame** `camera_init`:
 metres, but an arbitrary origin and an arbitrary yaw (whatever direction the
 vehicle happened to start in). A DEM in that frame cannot be put on a map,
 compared with satellite imagery, or stored as a GeoTIFF. The `/gnss_pose`
-topic in the bag *is* geographic (WGS84 lat/lon in degrees, ~60.44° N /
+topic in the bag *is* geographic (WGS84 lat/lon in degrees, e.g. ~60.44° N /
 22.31° E — Turku, Finland; UTM zone 34N), so the two must be tied together.
 
 ### The method (`dem_mapping/georef_export.py`)
 
-1. Read `/gnss_pose` from the bag (ROS 1 `.bag` **or** rosbag2 — same code
-   path as the converter, no ROS 1 needed).
+1. Read `/gnss_pose` from the ROS 1 `.bag` (Melodic `rosbag`).
 2. Read the recorded FAST-LIO trajectory (`out/odom.csv`).
 3. Match the two tracks by timestamp (default tolerance `--tol 0.2 s`).
 4. Estimate the rigid transform `p_utm = R · p_local + t`:
@@ -229,7 +197,7 @@ topic in the bag *is* geographic (WGS84 lat/lon in degrees, ~60.44° N /
      with `--fit full` and is reported as a diagnostic (`scale` should be
      ≈ 1.0 if the two tracks describe the same motion).
    * convert the GNSS lat/lon to UTM — the zone is derived from longitude
-     (here **EPSG:32634**, zone 34N); `--epsg` forces a code.
+     (`--epsg` forces a code, e.g. `--epsg 32634` for zone 34N).
 5. **Lat/lon order auto-detection**: a `PoseStamped` can hold
    `(x=lat, y=lon)` or `(x=lon, y=lat)` and both look plausible. Both
    hypotheses are fitted; they differ by up to 2× in metric scale, so the one
@@ -254,7 +222,8 @@ topic in the bag *is* geographic (WGS84 lat/lon in degrees, ~60.44° N /
 * `outdoorroad_dem_hillshade.tif`, `outdoorroad_dem_preview.png` — visual
   control,
 * `outdoorroad_dem.pcd` — DEM cells as a point cloud in UTM metres,
-* `outdoorroad_map_georef.pcd` — the whole FAST-LIO map in UTM metres,
+* `outdoorroad_map_georef.pcd` — FAST-LIO map in UTM metres (when the map PCD
+  exists),
 * `outdoorroad_georef.json` — provenance: CRS, `R`, `t`, yaw, RMS, both
   lat/lon hypotheses, scale diagnostic, grid statistics.
 
@@ -262,6 +231,14 @@ Run again with `--origin-lat … --origin-lon …` when your GNSS topic holds a
 **local metric** frame (`x=East, y=North` metres) instead of degrees: the
 origin anchors it to a WGS84 position (and then `--epsg` is required if no
 UTM zone can be derived).
+
+If the LIO trajectory drifts (RMS too large) there are two options:
+
+* `dem_mapping gnss_warp` fits a **time-parameterised** alignment (sliding
+  windows) and writes `warped_odom.csv`, then `dem_replay pose_play`
+  republishes that track while `dem_node` runs in `mode: pose`, so the grid
+  is built directly in UTM; `georef_export --warp-report …` documents it.
+* otherwise accept a local DEM only (omit step 6).
 
 ## 6. Outputs
 
@@ -271,7 +248,7 @@ Everything lands in `out/`:
 |---|---|---|
 | `dem_<stamp>.npz` | `dem_node` `/dem_node/save` | local elevation grid (z, mask, params) |
 | `odom.csv` | `record_odom` | FAST-LIO trajectory, one row per `/Odometry` |
-| `map_fastlio.pcd` | FAST-LIO2 `/map_save` | registered map cloud, `camera_init` frame |
+| `map_fastlio.pcd` | FAST-LIO `/map_save` (optional) | registered map cloud, `camera_init` frame |
 | `<prefix>_dem.tif` | `georef_export` | **georeferenced DEM** (GeoTIFF, EPSG auto) |
 | `<prefix>_dem_hillshade.tif` | `georef_export` | hillshade rendering |
 | `<prefix>_dem_preview.png` | `georef_export` | quick-look image with colour bar |
@@ -291,7 +268,7 @@ Everything lands in `out/`:
 | `origin_x/y` | `-200.0` | grid origin; shift if the trajectory leaves the grid (watch `/dem_node/trajectory`) |
 | `ground_filter` | `height_band` | keep 6 m below … 4 m above the vehicle |
 | `min_range` / `max_range` | `1.0` / `60.0` m | blind zone / max useful range |
-| `save_dir` | `…/out` | where `~/save` writes; **absolute path** (node cwd is `~/.ros`) |
+| `save_dir` | passed by the launch file | absolute path; a relative one resolves against the node cwd (`~/.ros`) |
 
 ### `ws/src/dem_bringup/config/fastlio_mid360.yaml` (FAST-LIO2)
 
@@ -299,64 +276,60 @@ Everything lands in `out/`:
 |---|---|---|
 | `preprocess.lidar_type` | `4` | Mid-360 = `sensor_msgs/PointCloud2` in Livox format (1 = CustomMsg, 2 = Velodyne, 3 = Ouster) |
 | `common.imu_topic` | `/mid360/livox/imu_si` | SI units from `imu_relay` |
-| `mapping.extrinsic_est_en` | `false` | never estimate the factory Mid-360 IMU extrinsic online — it diverges (see error #14) |
-| `mapping.acc_cov` / `gyr_cov` | `0.5` | this rig vibrates hard (`|acc|` p99 5.2 g); upstream 0.1 makes the EKF over-trust the IMU and drift (error #16) |
-| `pcd_save.pcd_save_en` | `true` | gates the `/map_save` service (upstream shutdown-save is dead) |
-| `publish.map_en` | `true` | accumulate the map cloud (needed by `/map_save`) |
+| `mapping.extrinsic_est_en` | `false` | never estimate the factory Mid-360 IMU extrinsic online — it diverges (see error #9) |
+| `mapping.acc_cov` / `gyr_cov` | `0.5` | this rig vibrates hard (`|acc|` p99 5.2 g); upstream 0.1 makes the EKF over-trust the IMU and drift (error #10) |
+| `pcd_save.pcd_save_en` | `true` | enables map saving (`/map_save` where the build supports it) |
+| `publish.map_en` | `true` | accumulate the map cloud |
 | `publish.dense_publish_en` | `true` | full undistorted scans for the DEM |
-| `map_file_path` | **absolute** | relative paths resolve against `~/.ros` |
+| `map_file_path` | absolute (set by the launch file) | relative paths resolve against `~/.ros` |
 
-`pcd_save_en`/`map_en` cost memory (the map cloud grows continuously); the
-`publish_map()` patch ([§9](#9-errors-and-how-they-were-fixed)) makes the
-per-second map serialization a no-op while nothing subscribes to
-`/Laser_map`, which removes the large periodic copies.
+`pcd_save_en`/`map_en` cost memory (the map cloud grows continuously).
 
-**FAST-LIO diagnostics:** `ws/src/FAST_LIO/Log/mat_pre.txt` is rewritten on
-**every run** (no flag needed) with the full filter state, one row per scan:
+**FAST-LIO diagnostics:** upstream FAST-LIO's runtime log
+(`Log/mat_pre.txt`, written when `runtime_pos_log_enable: true`) has one row
+per scan with the full filter state:
 
 ```
 t  euler(3)  pos(3)  ext_euler(3)  offset_T_L_I(3)  vel(3)  bg(3)  ba(3)  grav(3)
 ```
 
 Suspicious signatures: `ext_euler`/`offset_T` drifting away from the fixed
-extrinsic (should stay ≈0° / ≈0.05 m — divergence here meant
-`extrinsic_est_en` must be false), `|ba|` growing past ~1 m/s², `vel`
+extrinsic (should stay ≈0° / ≈0.05 m), `|ba|` growing past ~1 m/s², `vel`
 exceeding anything the vehicle can do, or `grav` tilting away from
-`(0, 0, −9.81)`. `Log/fast_lio_time_log.csv` (only with
-`runtime_pos_log_enable: true`) adds per-iteration timing/ikdtree stats.
+`(0, 0, −9.81)`.
 
 ### Playback
 
 `--rate 0.5` for slow/paranoid runs, `2.0` for a fast pass; `--start N` to
 begin N seconds into the bag (note: FAST-LIO's IMU initialisation
 `MAX_INI_COUNT` needs the vehicle stationary at the start — keep the first
-few seconds of the bag motionless or raise it in
-`ws/src/FAST_LIO/include/utility.h`).
+few seconds of the bag motionless or raise it in FAST-LIO's
+`IMU_Processing.hpp`).
 
 ## 8. Running the stages manually
 
 ```bash
-source /opt/ros/humble/setup.bash && source ws/install/setup.bash
-OUT=/home/rajesh/proc_dem_creation/out && mkdir -p "$OUT"
+source /opt/ros/melodic/setup.bash && source ws/devel/setup.bash
+OUT=/path/to/repo/out && mkdir -p "$OUT"
 
 # 1. trajectory recorder (terminal A)
-ros2 run dem_replay record_odom -- --topic /Odometry --out "$OUT/odom.csv"
+rosrun dem_replay record_odom --topic /Odometry --out "$OUT/odom.csv"
 
-# 2. pipeline (terminal B)
-ros2 launch dem_bringup pipeline.launch.py \
-    bag:=/home/rajesh/proc_dem_creation/OutdoorRoad_dataset_ros2 \
-    rate:=1.0 use_rviz:=false
+# 2. pipeline (terminal B; starts a roscore if none is running)
+roslaunch dem_bringup pipeline.launch \
+    bag:=/path/to/recording.bag rate:=1.0 use_rviz:=false \
+    save_dir:="$OUT"
 
 # 3. when /replay/status says "finished" (terminal C):
-ros2 topic echo /replay/status --once
-ros2 service call /map_save   std_srvs/srv/Trigger {}
-ros2 service call /dem_node/save std_srvs/srv/Trigger {}
+rostopic echo -n 1 /replay/status
+rosservice call /map_save            # optional (if offered)
+rosservice call /dem_node/save
 # Ctrl-C the recorder in terminal A -> flushes odom.csv
 
 # 4. georeference
-ros2 run dem_mapping georef_export -- \
+rosrun dem_mapping georef_export \
     --dem "$OUT"/dem_*.npz --odom "$OUT/odom.csv" \
-    --bag /home/rajesh/proc_dem_creation/OutdoorRoad_dataset_ros2 \
+    --bag /path/to/recording.bag \
     --gnss-topic /gnss_pose --map "$OUT/map_fastlio.pcd" \
     --out-dir "$OUT" --prefix outdoorroad
 ```
@@ -364,114 +337,88 @@ ros2 run dem_mapping georef_export -- \
 Replay control while running:
 
 ```bash
-ros2 service call /replay/pause  std_srvs/srv/Trigger {}
-ros2 service call /replay/resume std_srvs/srv/Trigger {}
-ros2 topic pub --once /replay/rate std_msgs/msg/Float64 "{data: 2.0}"
+rosservice call /replay/pause
+rosservice call /replay/resume
+rostopic pub -1 /replay/rate std_msgs/Float64 "data: 2.0"
 ```
 
 ## 9. Errors and how they were fixed
 
 | # | Symptom / error | Cause | Fix |
 |---|---|---|---|
-| 1 | `colcon build` fails: `install/dem_replay ... File exists` / stale overlay entries after adding a new executable | leftover `build/` + `install/` dirs from before `--symlink-install`, mixing copy- and symlink-installed layouts | delete the affected package's `build/<pkg>` **and** `install/<pkg>`, rebuild: `rm -rf ws/build/fast_lio ws/install/fast_lio && colcon build --packages-select fast_lio` |
-| 2 | `/map_save` returns failure / no `map_fastlio.pcd` | upstream FAST-LIO only saves on shutdown and only when `pcd_save_en` is true | set `pcd_save.pcd_save_en: true` **and** `publish.map_en: true` in `fastlio_mid360.yaml`; call the service explicitly |
-| 3 | FAST-LIO diverges / "Initialize error" at replay start, or a systematically tilted trajectory (gravity init error) | IMU initialisation (`MAX_INI_COUNT`) averages only the first samples; the upstream default of **10 samples ≈ 0.05 s** is far too short for a vibrating platform (here it produced a ~1.5° tilted gravity estimate that the whole trajectory inherits) | keep the first seconds of the recording stationary (verified: static for ~4 s here) **and** raise `MAX_INI_COUNT` — this repo uses **400** (2 s @ 200 Hz) in `src/FAST_LIO/src/IMU_Processing.hpp` |
-| 4 | FAST-LIO drifts immediately, gravity never converges | Livox driver records acceleration in **g**; the estimator expects m/s² | `imu_relay` node republishes the topic with `accel_scale 9.80665` and FAST-LIO subscribes to `/mid360/livox/imu_si` |
-| 5 | No data reaches `dem_node` although topics publish | QoS mismatch: sensor data is `BEST_EFFORT`, subscribers requested `RELIABLE` (or vice versa) | use sensor-data `BEST_EFFORT` QoS for cloud/IMU subscriptions (`dem_node`, `stream_monitor`, `replay` publishers aligned) |
-| 6 | FAST-LIO errors on the point cloud / empty preprocess | wrong `lidar_type`: default is Livox `CustomMsg`, the Mid-360 records `PointCloud2` | `preprocess.lidar_type: 4`, `timestamp_unit: 3` (ns), `scan_rate: 10` |
-| 7 | Map never saved although the service exists | `map_file_path` was relative (`./test.pcd`) → resolved against the node's cwd `~/.ros` | use an **absolute** `map_file_path` in `fastlio_mid360.yaml` |
-| 8 | `UserWarning: A NumPy version >=1.17.3 and <1.25.0 is required …` on import | Ubuntu's `python3-scipy` 1.8.0 built against numpy < 1.25, system numpy is 1.26.4 | benign — ignore, or `pip install --user 'scipy>=1.11'` if it ever becomes an error |
-| 9 | Georeferencing impossible: `/gnss_pose` is not degrees | some datasets ship a **local metric** GNSS (`x=East, y=North`) | pass `--origin-lat/--origin-lon [--origin-alt]` to anchor the local frame to WGS84 (and `--epsg`) |
-| 10 | `AttributeError: 'str' object has no attribute '__name__'` — `record_odom` dies at startup | `msgtype` passed to the log line is the type *string*, not the class | log `cls.__name__` (the class from `get_message()`); also handle `ExternalShutdownException` so SIGINT stops the node without a traceback |
-| 11 | DEM ends up shifted against the GNSS track / RMS ≈ several m | (a) lat/lon order swapped, (b) trajectory and GNSS clock mismatch, (c) grid too small so part of the trajectory fell outside | (a) both orders are now auto-fitted and the winner reported; (b) `--tol` + RMS gate refuses bad fits; (c) 400×400 m grid covers the full ~230 m extent |
-| 12 | `ros2` / `ros2 bag info` → `command not found` | environment not sourced | `source /opt/ros/humble/setup.bash && source ws/install/setup.bash` (rosbags are **not** on the default `PATH`) |
-| 13 | Big RAM spikes / near-OOM on long recordings | FAST-LIO serialized the whole growing map into a `PointCloud2` every second even with no subscriber | patched `publish_map()` in `laserMapping.cpp`: `reserve()` up front and return early when `/Laser_map` has 0 subscribers (only the internal accumulation continues) |
-| 14 | **FAST-LIO track diverges mid-run** (here: healthy for ~280 s, then velocity spikes to 14 m/s while GNSS says 1.2 m/s, z collapses by 200 m; the georef fit then correctly refuses with RMS ≫ 1 m) | `extrinsic_est_en: true` lets the EKF estimate the IMU↔LiDAR extrinsic online. On this (vibrating, slowly rotating) platform that quantity is unobservable: the estimate random-walks away from the factory value and drags accel bias + attitude with it until the whole state blows up | set `extrinsic_est_en: false` in `fastlio_mid360.yaml` (the Mid-360 built-in IMU extrinsic is factory-known and already listed as `extrinsic_T/R`). **Diagnosis:** `ws/src/FAST_LIO/Log/mat_pre.txt` is written *every run, unconditionally*, one row per scan: `t, euler(3), pos(3), ext_euler(3), offset_T(3), vel(3), bg(3), ba(3), grav(3)` — plot `ext_euler`/`vel` and the culprit state component is immediately visible (`ext_euler` grew 0° → 599° over the run while the truth is 0°) |
-| 15 | `./run_pipeline.sh` hangs forever after the save services (observed: stuck 1.5 h between stage 5 and georeferencing) | (a) in non-interactive shells backgrounded commands **inherit SIGINT as ignored** (POSIX), so `ros2 run … &` swallowed `kill -INT $REC_PID`; (b) the idle recorder node was blocked in `rcl_wait()`, rmw retries on EINTR and the Python signal handler never ran — SIGINT is a no-op while a node has no traffic | `run_pipeline.sh` now has `stop_pid()` (bounded poll, escalates INT→TERM→KILL, never a bare `wait`) and `stop_pipeline_nodes()` (reaps any children `ros2 launch` left behind); `record_odom` spins with `timeout_sec=0.5` so it processes pending signals within half a second even when idle |
-| 16 | Slow degradation over a long run: LIO-vs-GNSS RMS grows from 0.15 m (first minute) to metres after ~8 min; `mat_pre.txt` shows accel bias growing and the gravity estimate tilting while `ext_euler` stays 0 | IMU noise parameters model a much quieter sensor than this rig produces (raw `|acc|` p99 = 5.2 g of vibration): the EKF over-trusts the accelerometer and slowly trades bias + gravity tilt for position (z) drift | raise `mapping.acc_cov` / `gyr_cov` from the upstream `0.1` to `0.5` so the filter leans on the LiDAR; measure the residual drift with prefix fits (see §7) and document it |
+| 1 | `/map_save` returns failure / no `map_fastlio.pcd` | stock FAST-LIO only saves on shutdown | call the service only if `rosservice list` shows `/map_save`; the DEM and georeference do not need the PCD |
+| 2 | FAST-LIO diverges / "Initialize error" at replay start, or a systematically tilted trajectory | IMU initialisation (`MAX_INI_COUNT`) averages only the first samples; the upstream default of 10 samples ≈ 0.05 s is far too short for a vibrating platform (here it produced a ~1.5° tilted gravity estimate that the whole trajectory inherits) | keep the first seconds of the recording stationary and raise `MAX_INI_COUNT` (this rig uses 400 ≈ 2 s @ 200 Hz in FAST-LIO's `IMU_Processing.hpp`) |
+| 3 | FAST-LIO drifts immediately, gravity never converges | Livox driver records acceleration in **g**; the estimator expects m/s² | `imu_relay` republishes the topic with `accel_scale 9.80665`; FAST-LIO subscribes to `/mid360/livox/imu_si` |
+| 4 | FAST-LIO errors on the point cloud / empty preprocess | wrong `lidar_type`: default is Livox `CustomMsg`, the Mid-360 records `PointCloud2` | `preprocess.lidar_type: 4`, `timestamp_unit: 3` (ns), `scan_rate: 10` |
+| 5 | Nodes miss messages although topics publish | subscriber `queue_size` too small for 10 Hz clouds + 200 Hz IMU | sensor subscriptions use `queue_size` 100–1000 (`dem_node`, `stream_monitor`, replay publishers) |
+| 6 | Map saved to an unexpected place | `map_file_path` was relative (`./test.pcd`) → resolved against the node cwd `~/.ros` | `pipeline.launch` sets an absolute `map_file_path` from `save_dir` |
+| 7 | Georeferencing impossible: `/gnss_pose` is not degrees | some datasets ship a **local metric** GNSS (`x=East, y=North`) | pass `--origin-lat/--origin-lon [--origin-alt]` to anchor the local frame to WGS84 (and `--epsg`) |
+| 8 | DEM ends up shifted against the GNSS track / RMS ≈ several m | (a) lat/lon order swapped, (b) trajectory and GNSS clock mismatch, (c) grid too small so part of the trajectory fell outside | (a) both orders are auto-fitted and the winner reported; (b) `--tol` + RMS gate refuses bad fits; (c) enlarge the grid in `dem.yaml` |
+| 9 | **FAST-LIO track diverges mid-run** (healthy for ~280 s, then velocity spikes to 14 m/s while GNSS says 1.2 m/s, z collapses) | `extrinsic_est_en: true` lets the EKF estimate the IMU↔LiDAR extrinsic online; unobservable on this slowly rotating, vibrating platform, so it random-walks away and drags accel bias + attitude with it | `extrinsic_est_en: false` (the Mid-360 IMU extrinsic is factory-known and listed as `extrinsic_T/R`) |
+| 10 | Slow degradation over a long run: LIO-vs-GNSS RMS grows from 0.15 m to metres after ~8 min | IMU noise parameters model a much quieter sensor than this rig produces (raw `|acc|` p99 = 5.2 g of vibration) | raise `mapping.acc_cov` / `gyr_cov` from 0.1 to 0.5 so the filter leans on the LiDAR |
+| 11 | `./run_pipeline.sh` hangs after the save services | in non-interactive shells backgrounded commands inherit SIGINT as ignored, and an idle `rospy.spin()` node processes no signals | the script stops nodes by name (`rosnode kill`), uses bounded INT→TERM→KILL escalation and never a bare `wait` |
+| 12 | `rosrun` / `roslaunch` → command not found | environment not sourced | `source /opt/ros/melodic/setup.bash && source ws/devel/setup.bash` |
+| 13 | Big RAM spikes / near-OOM | FAST-LIO accumulates the whole map (`map_en`) | lower `publish.map_en` / `pcd_save.pcd_save_en` when the map PCD is not needed |
+| 14 | `rosbag.Bag` / `import rospy` fails under `python3` | Melodic ships `rospy`/`rosbag` for Python **2.7** only | run nodes with `rosrun`/`roslaunch` (they use `#!/usr/bin/env python`); use Python 3 only for the ROS-free snapshot service |
 
 Checklist when a run misbehaves: `out/logs/pipeline_*.log` (all node output),
 `out/logs/record_odom.log`, `out/logs/services.log` (service responses),
-`out/logs/mem_*.csv` (RAM trace), `ws/src/FAST_LIO/Log/mat_pre.txt` (full
-FAST-LIO state history — see [§7](#7-configuration--tuning)), and
-`ros2 run dem_replay inspect_bag -- <bag>` (topic rates, stamp monotonicity).
+`out/logs/mem_*.csv` (RAM trace), FAST-LIO's `Log/` files, and
+`rosrun dem_replay inspect_bag <bag>` (topic rates, stamp monotonicity).
 
-## 10. Switching the pipeline ROS 1 → ROS 2 (and back)
+## 10. Using a different recording
 
-The dataset arrived as **ROS 1**; the pipeline is **ROS 2 (Humble)**. The
-hinge is the bag — everything downstream is ROS 2 native.
+1. inspect it: `rosrun dem_replay inspect_bag new.bag` — check rates, stamp
+   ordering, and whether the IMU is in g (`mean |acc| ≈ 1`); if so, `imu_relay`
+   handles it,
+2. fix topic names / `lidar_type` / extrinsics in `fastlio_mid360.yaml` and
+   `dem.yaml` for the new sensor,
+3. run `./run_pipeline.sh --bag new.bag --prefix newname`.
 
-**What changed, conceptually**
-
-| layer | ROS 1 input | ROS 2 here |
-|---|---|---|
-| bag format | `OutdoorRoad_dataset.bag` (ROS 1 V2.0, 47 GB) | `OutdoorRoad_dataset_ros2/` (rosbag2 v8, sqlite3, 45 GB) |
-| conversion | — | `ros2 run dem_replay bag_convert -- in.bag -o out_dir` (pure Python, `rosbags`; no ROS 1/bridge/Docker) |
-| message formats | `Header.seq` exists, older field names | `seq` dropped, fields migrated where needed (done by the converter) |
-| transport | topics + `rosbag play` | `dem_replay/replay` (timestamp-preserving, rate control, status topic) |
-| nodes | `ros::NodeHandle`, catkin | `rclpy` nodes + `colcon` packages (`dem_replay`, `dem_mapping`, `dem_bringup`) |
-| services | `std_srvs/Trigger` via `rosservice` | same srv type, `ros2 service call` |
-| launch | `.launch` XML | `pipeline.launch.py` |
-| QoS | queue size only | explicit reliability/history — must match publisher and subscriber |
-
-**To bring up a *different* ROS 1 dataset**
-
-1. convert: `ros2 run dem_replay bag_convert -- new.bag -o new_ros2`
-   (add `--topics … --duration …` for a reduced bag),
-2. inspect: `ros2 run dem_replay inspect_bag -- new_ros2` — check rates,
-   stamp ordering, and whether the IMU is in g (`mean |acc| ≈ 1`) — if so,
-   `imu_relay` handles it,
-3. point the launch at it: `--bag new_ros2` or edit the default in
-   `ws/src/dem_bringup/launch/pipeline.launch.py`,
-4. fix topic names / `lidar_type` / extrinsics in
-   `fastlio_mid360.yaml` and `dem.yaml` for the new sensor,
-5. run `./run_pipeline.sh --bag … --prefix …`.
-
-**To go back to ROS 1**: the original `.bag` is untouched, and the converter
-reports per-topic byte counts on both sides; `rosbags` can also read the
-converted data at any time (`--dry-run`, `inspect_bag`). Nothing in `ws/`
-requires ROS 1 to be installed.
-
-## 11. Development: build, test, layout
+The launch arguments `lidar_topic`, `imu_topic`, `gnss_topic` let you remap
+without editing files:
 
 ```bash
-source /opt/ros/humble/setup.bash
-cd /home/rajesh/proc_dem_creation/ws
-colcon build --symlink-install                 # python packages: edits take effect without rebuild
-colcon build --packages-select fast_lio        # C++ changes (laserMapping.cpp) need this
-python3 -m pytest src/dem_mapping/test -q      # 11 tests (fits, regridding, PCD I/O, guards)
+roslaunch dem_bringup pipeline.launch bag:=new.bag \
+    lidar_topic:=/livox/lidar imu_topic:=/livox/imu
 ```
 
-`dem_replay` and `dem_mapping` are installed with `--symlink-install`
-(hard-linked into `build/`), so editing a `.py` file needs **no rebuild**;
-editing FAST-LIO C++ does.
+## 11. Development: layout and tests
+
+```bash
+source /opt/ros/melodic/setup.bash
+cd ws && catkin_make
+python -m pytest src/dem_mapping/test -q      # fits, regridding, PCD I/O, guards
+```
+
+The Python packages are installed from `ws/src`, so editing a `.py` file takes
+effect without a rebuild; editing FAST-LIO C++ needs `catkin_make`.
 
 ```
-proc_dem_creation/
-├── OutdoorRoad_dataset.bag          # source ROS 1 bag (47 GB)
-├── OutdoorRoad_dataset_ros2/        # converted rosbag2 (45 GB)
+<repo>/
+├── recording.bag                    # source ROS 1 bag
 ├── run_pipeline.sh                  # one-command end-to-end runner
 ├── out/                             # all results (DEM, PCD, logs)
 └── ws/
     ├── src/
-    │   ├── FAST_LIO/                # FAST-LIO2 (C++, patched: /map_save + publish_map)
-    │   ├── livox_ros_driver2/       # Livox driver (reference)
-    │   ├── dem_bringup/             # launch + config (pipeline.launch.py, dem.yaml, fastlio_mid360.yaml)
-    │   ├── dem_replay/              # bag_convert, inspect_bag, replay, imu_relay, record_odom, stream_monitor
-    │   ├── dem_mapping/             # dem_node, georef_export, pcd_io, ground_filters, georef
+    │   ├── FAST_LIO/                # FAST-LIO2 (cloned; upstream ROS 1)
+    │   ├── livox_ros_driver/        # Livox messages (cloned; upstream ROS 1)
+    │   ├── dem_bringup/             # launch + config (pipeline.launch, dem.yaml, fastlio_mid360.yaml)
+    │   ├── dem_replay/              # replay, imu_relay, record_odom, stream_monitor, inspect_bag, pose_play
+    │   ├── dem_mapping/             # dem_node, georef_export, gnss_warp, gnss_align, pcd_io, ground_filters, georef
     │   └── dem_viz/                 # optional live visualisation
-    ├── build/  install/  log/
+    └── build/  devel/  log/
 ```
 
 Key entry points:
 
 | command | purpose |
 |---|---|
-| `ros2 run dem_replay bag_convert -- <bag> -o <dir>` | ROS 1 → ROS 2 conversion (+ validation) |
-| `ros2 run dem_replay inspect_bag -- <bag>` | topic/rate/stamp report for either format |
-| `ros2 run dem_replay record_odom -- --out odom.csv` | record the live LIO trajectory |
-| `ros2 launch dem_bringup pipeline.launch.py` | replay + LIO + DEM |
-| `ros2 run dem_mapping georef_export -- --dem … --odom … --bag …` | local → WGS84/UTM export |
+| `rosrun dem_replay inspect_bag <bag>` | topic/rate/stamp report |
+| `rosrun dem_replay replay _bag_path:=<bag>` | timestamp-preserving replay alone |
+| `rosrun dem_replay record_odom --out odom.csv` | record the live LIO trajectory |
+| `roslaunch dem_bringup pipeline.launch bag:=…` | replay + LIO + DEM |
+| `rosrun dem_mapping georef_export --dem … --odom … --bag …` | local → WGS84/UTM export |
 | `./run_pipeline.sh` | all of the above, end to end |
 
 ---

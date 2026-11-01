@@ -1,6 +1,6 @@
-# FAST-LIO2 (ROS 1) parameters for the Livox Mid-360.
-# Loaded into the fastlio_mapping node namespace; FAST-LIO reads the
-# nested keys as ~common/lid_topic, ~mapping/acc_cov, ...
+# FAST-LIO2 (upstream ROS 1) parameters for the Livox Mid-360.
+# Loaded into the GLOBAL namespace by pipeline.launch, which is where
+# upstream FAST-LIO reads them (common/lid_topic, mapping/acc_cov, ...).
 feature_extract_enable: false
 point_filter_num: 3
 max_iteration: 3
@@ -8,9 +8,10 @@ filter_size_surf: 0.5
 filter_size_map: 0.5
 cube_side_length: 1000.0
 runtime_pos_log_enable: false
-# ABSOLUTE path: the relative "./test.pcd" resolves against the node's
-# working directory (usually ~/.ros), not this package.
-map_file_path: "out/map_fastlio.pcd"
+# Overridden by pipeline.launch with <save_dir>/map_fastlio.pcd.  Keep it
+# absolute when setting it by hand: a relative path resolves against the
+# node's working directory (usually ~/.ros), not this package.
+map_file_path: "/tmp/map_fastlio.pcd"
 
 common:
     lid_topic:  "/mid360/livox/lidar"
@@ -62,7 +63,9 @@ publish:
     scan_bodyframe_pub_en: true
 
 pcd_save:
-    # pcd_save_en gates the /map_save service (the shutdown-save path
-    # upstream is dead) - it must be true to get map_fastlio.pcd
+    # Required for map saving; only builds that offer the /map_save service
+    # can write map_fastlio.pcd before shutdown (upstream ROS 1 saves on
+    # shutdown).  run_pipeline.sh skips the map PCD when the service is
+    # absent - the DEM and the georeference do not depend on it.
     pcd_save_en: true
     interval: -1

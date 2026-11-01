@@ -107,14 +107,14 @@ DEM until a valid fix appears**.
 
 Record simultaneously:
 
-- Mid-360 LiDAR + IMU into a rosbag2.
+- Mid-360 LiDAR + IMU into a ROS 1 bag (`rosbag record`).
 - Raw NMEA to a text file, one line per sentence, with a host timestamp added to each
   line.
 - Ideally also run `nmea_navsat_driver` or `gpsd` so the bag contains `/fix` and `/vel`.
 
 Minimum files to keep:
 
-- `rosbag2/` containing `/mid360/livox/lidar` and `/mid360/livox/imu`
+- the `.bag` containing `/mid360/livox/lidar` and `/mid360/livox/imu`
 - `gps.nmea` raw log
 - a short `notes.txt` with date, route, antenna height/position, start/end times, and
   weather/sky-view notes

@@ -29,12 +29,6 @@ if pgrep -f "cloudflared tunnel" >/dev/null 2>&1; then
   pkill -f "cloudflared tunnel" 2>/dev/null && echo "Stopped Cloudflare tunnel" || true
 fi
 
-# Legacy: a ROS 2 `ros2 bag play` from an older checkout would still feed the
-# old topic; stop it if it is somehow running.
-if pgrep -f "ros2 bag play" >/dev/null 2>&1; then
-  pkill -f "ros2 bag play" 2>/dev/null && echo "Stopped legacy ros2 bag play" || true
-fi
-
 # Give processes a moment to exit so the port is released.
 sleep 1
 PORT="${PCSNAP_PORT:-8085}"

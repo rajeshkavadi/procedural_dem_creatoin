@@ -12,5 +12,6 @@
   <exec_depend>dem_replay</exec_depend>
   <exec_depend>dem_mapping</exec_depend>
   <exec_depend>dem_viz</exec_depend>
+  <exec_depend>rosbag</exec_depend>
   <exec_depend>rviz</exec_depend>
 </package>

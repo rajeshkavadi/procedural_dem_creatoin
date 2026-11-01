@@ -14,7 +14,7 @@ Replays a ROS 1 ``.bag`` as a live sensor stream:
 * a JSON status topic reports progress and per-topic publish counters.
 
 Services (std_srvs/Trigger):
-    ~/pause, ~/resume, ~/restart, ~/toggle   (also mirrored on /replay/*)
+    ~pause, ~resume, ~restart, ~toggle   (= /replay/pause, /replay/resume, ...)
 
 Topics:
     /replay/rate (std_msgs/Float64)   set playback speed factor
@@ -80,14 +80,13 @@ class ReplayNode(object):
         self._available = {}
         self._given_types = {}
 
+        # ROS 1 private names are '~name', not '~/name'; with node name
+        # 'replay' these are the documented /replay/{pause,resume,...} services.
         for name in ('pause', 'resume', 'restart', 'toggle'):
             cb = getattr(self, '_srv_' + name)
-            rospy.Service('/replay/' + name, Trigger, cb)
-            rospy.Service('~/' + name, Trigger, cb)
+            rospy.Service('~' + name, Trigger, cb)
         self._sub_rate = rospy.Subscriber(
             '/replay/rate', Float64, self._on_rate, queue_size=10)
-        self._sub_rate_local = rospy.Subscriber(
-            'rate', Float64, self._on_rate, queue_size=10)
 
         self._status_pub = rospy.Publisher(
             '/replay/status', String, queue_size=10)

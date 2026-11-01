@@ -6,18 +6,18 @@ by an odometry pipeline such as FAST-LIO2, or raw scans that are transformed
 with a live pose stream), filters them, and merges them **in place** into a
 2-D elevation grid.  The grid is never rebuilt from historical points.
 
-Published topics
-----------------
-~/elevation_image   sensor_msgs/Image   32FC1 elevation, NaN = NoData
-~/elevation_cloud   sensor_msgs/PointCloud2  cell centres coloured by height
-~/occupancy         nav_msgs/OccupancyGrid   -1 = unknown, 0..100 = scaled z
-~/trajectory        nav_msgs/Path           vehicle trajectory (if poses seen)
-~/stats             std_msgs/String         JSON processing statistics
+Published topics (node name dem_node -> /dem_node/*)
+-----------------------------------------------------
+~elevation_image   sensor_msgs/Image   32FC1 elevation, NaN = NoData
+~elevation_cloud   sensor_msgs/PointCloud2  cell centres coloured by height
+~occupancy         nav_msgs/OccupancyGrid   -1 = unknown, 0..100 = scaled z
+~trajectory        nav_msgs/Path           vehicle trajectory (if poses seen)
+~stats             std_msgs/String         JSON processing statistics
 
 Services
 --------
-~/reset  std_srvs/Trigger   clear the grid
-~/save   std_srvs/Trigger   dump the grid to <save_dir>/dem_<stamp>.npz
+~reset  std_srvs/Trigger   clear the grid
+~save   std_srvs/Trigger   dump the grid to <save_dir>/dem_<stamp>.npz
 """
 
 from __future__ import division
@@ -72,7 +72,7 @@ def _message_class(type_str):
     from roslib.message import get_message_class
     if not type_str:
         return None
-    # tolerate ROS 2 style strings ('nav_msgs/msg/Odometry')
+    # tolerate the 'nav_msgs/msg/Odometry' spelling as well
     type_str = type_str.replace('/msg/', '/')
     cls = get_message_class(type_str)
     if cls is None:
@@ -158,19 +158,20 @@ class DemNode(object):
             rospy.loginfo('pose source: %s (%s)', pose_topic,
                           pose_cls.__name__)
 
+        # ROS 1 private names use '~name' (node name dem_node -> /dem_node/...)
         self._pub_img = rospy.Publisher(
-            '~/elevation_image', Image, queue_size=5)
+            '~elevation_image', Image, queue_size=5)
         self._pub_cloud = rospy.Publisher(
-            '~/elevation_cloud', PointCloud2, queue_size=5)
+            '~elevation_cloud', PointCloud2, queue_size=5)
         self._pub_occ = rospy.Publisher(
-            '~/occupancy', OccupancyGrid, queue_size=5)
+            '~occupancy', OccupancyGrid, queue_size=5)
         self._pub_traj = rospy.Publisher(
-            '~/trajectory', Path, queue_size=5)
+            '~trajectory', Path, queue_size=5)
         self._pub_stats = rospy.Publisher(
-            '~/stats', String, queue_size=10)
+            '~stats', String, queue_size=10)
 
-        self._srv_reset = rospy.Service('~/reset', Trigger, self._srv_reset_cb)
-        self._srv_save = rospy.Service('~/save', Trigger, self._srv_save_cb)
+        self._srv_reset = rospy.Service('~reset', Trigger, self._srv_reset_cb)
+        self._srv_save = rospy.Service('~save', Trigger, self._srv_save_cb)
 
         self._rate_event('image_rate', 'image', self._publish_image, 1.0)
         self._rate_event('cloud_rate', 'cloud', self._publish_cloud, 1.0)
