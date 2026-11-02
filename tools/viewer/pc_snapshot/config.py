@@ -29,6 +29,11 @@ class Config:
     bag_start_offset_sec: float = 0.0    # skip into the recording
     bag_auto_topic: bool = True          # fall back to the only PointCloud2 topic
 
+    # GNSS log recorded separately with gpspipe (raw NMEA).  Used to report
+    # where the dataset was recorded and to annotate the DEM; it does not
+    # transform the DEM (see gnss.py).
+    gnss_path: str = ""
+
     # Live ROS 1 subscriber (optional; Melodic rospy is Python 2 only, see
     # ros_subscriber.py). Empty master URI = ROS_MASTER_URI/default localhost.
     ros_master_uri: str = ""

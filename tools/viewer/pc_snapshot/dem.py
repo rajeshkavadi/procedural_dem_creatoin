@@ -124,8 +124,11 @@ class DemAccumulator:
     status()  -> cheap health block for /api/health
     """
 
-    def __init__(self, cfg: Config):
+    def __init__(self, cfg: Config, gnss=None):
         self.cfg = cfg
+        # Optional pc_snapshot.gnss.GnssSummary: anchors the rendered map to
+        # the recording location (the grid itself stays sensor-frame).
+        self.gnss = gnss
         self._lock = threading.Lock()
         self._grid = None
         self._filters = ()
@@ -312,6 +315,7 @@ class DemAccumulator:
             "image_size": [cfg.dem_image_width, cfg.dem_image_height],
             "colormap": cfg.dem_colormap,
             "last_error": self._last_error,
+            "gnss": (self.gnss.dem_block() if self.gnss is not None else None),
         }
 
     def status(self) -> dict:
@@ -358,6 +362,24 @@ def _span(seconds: Optional[float]) -> str:
     if seconds < 3600:
         return f"{int(seconds // 60)}m{int(seconds % 60):02d}s"
     return f"{int(seconds // 3600)}h{int((seconds % 3600) // 60):02d}m"
+
+
+def _gnss_line(gnss) -> str:
+    """One caption line placing the recording on Earth (empty without GNSS)."""
+    if not isinstance(gnss, dict) or not gnss.get("anchor"):
+        return ""
+    a = gnss["anchor"]
+    lat, lon = float(a["lat"]), float(a["lon"])
+    ns = "N" if lat >= 0 else "S"
+    ew = "E" if lon >= 0 else "W"
+    text = (f"GNSS anchor {abs(lat):.6f}\u00b0{ns} {abs(lon):.6f}\u00b0{ew} "
+            f"\u00b7 {a.get('alt_m', 0):.1f} m MSL")
+    if a.get("utm_easting") is not None:
+        text += (f" \u00b7 UTM {a.get('utm_zone')}{a.get('utm_hemisphere', '')} "
+                 f"E {a['utm_easting']:.0f} N {a['utm_northing']:.0f}")
+    text += (f" \u00b7 {gnss.get('fixes_valid', 0)} fixes"
+             f" \u00b7 DEM axes are sensor frame (not georeferenced)")
+    return text
 
 
 def render_dem(capture: DemCapture, cfg: Config, path: Path) -> float:
@@ -451,7 +473,11 @@ def render_dem(capture: DemCapture, cfg: Config, path: Path) -> float:
                 f"accumulated {window} since service start")
     fig.text(0.075, 0.965, title, color="#dbe2ee", fontsize=12,
              fontweight="bold", va="top")
+    gnss_line = _gnss_line(meta.get("gnss"))
     fig.text(0.075, 0.925, subtitle, color="#8b96a8", fontsize=8.5, va="top")
+    if gnss_line:
+        fig.text(0.075, 0.895, gnss_line, color="#8b96a8", fontsize=8,
+                 va="top")
 
     try:
         path.parent.mkdir(parents=True, exist_ok=True)

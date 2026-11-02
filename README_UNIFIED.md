@@ -34,14 +34,26 @@ This will:
 
 ## 2. View Point Cloud in Browser (Cloudflare Tunnel)
 
-View your recorded bag in browser with live snapshots:
+One command runs the whole streaming stack — environment, bag replay, GPS
+anchor, Cloudflare tunnel and a snapshot/DEM/stream self-test:
 
 ```bash
-export PATH=/home/rajesh:$PATH
-./tools/viewer/scripts/start_remote.sh ~/livox_bags/20261030_221123_mid360s.bag /livox/lidar
+./tools/viewer/scripts/start_cloudflare.sh
 ```
 
-It will give you a public URL like `https://xxx.trycloudflare.com` and token `lidar-snap-2026`. Paste token in UI to view.
+With no arguments it uses the repository dataset
+(`20261030_221123_mid360s.bag` + `ublox7_raw.txt`) and the `/livox/lidar`
+topic, prints a public `https://xxx.trycloudflare.com` URL and token
+`lidar-snap-2026`. Paste the token in the UI and use **Fetch Point Cloud**,
+**Get DEM** and **Start Live View**.
+
+For another recording:
+
+```bash
+./tools/viewer/scripts/start_cloudflare.sh \
+    --bag ~/livox_bags/rec.bag --gnss ~/gps_raw/ublox7_20261030.txt \
+    --topic /livox/lidar
+```
 
 Stop viewer:
 ```bash
@@ -50,7 +62,7 @@ Stop viewer:
 
 Local only (no tunnel):
 ```bash
-./tools/viewer/scripts/start_all.sh ~/livox_bags/20261030_221123_mid360s.bag /livox/lidar
+./tools/viewer/scripts/start_cloudflare.sh --no-tunnel
 # Open http://127.0.0.1:8085/
 ```
 

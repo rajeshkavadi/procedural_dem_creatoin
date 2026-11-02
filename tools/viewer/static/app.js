@@ -107,10 +107,59 @@ async function checkHealth() {
       `Topic: ${(h.point_cloud || {}).topic || "?"} | source: ${src.kind || "none"}` +
       ` | renderer: ${h.render ? h.render.renderer : "?"}` +
       demStatusText(h.dem);
+    displayGnss(h.gnss);
     return true;
   } catch (err) {
     setConn(false, "API unreachable: " + err.message);
     return false;
+  }
+}
+
+/** GNSS block from /api/health: where the dataset was recorded. */
+function fmtLatLon(lat, lon) {
+  const ns = lat >= 0 ? "N" : "S";
+  const ew = lon >= 0 ? "E" : "W";
+  return `${Math.abs(lat).toFixed(6)}°${ns} ${Math.abs(lon).toFixed(6)}°${ew}`;
+}
+
+function fmtUtm(a) {
+  if (!a || a.utm_easting == null) return "—";
+  return `${a.utm_zone}${a.utm_hemisphere || ""} · E ${a.utm_easting.toFixed(1)} m · ` +
+    `N ${a.utm_northing.toFixed(1)} m (EPSG:${a.epsg || "?"})`;
+}
+
+function displayGnss(g) {
+  const panel = $("gnss-panel");
+  if (!g || !g.enabled) { panel.hidden = true; return; }
+  panel.hidden = false;
+  const warnRow = $("gnss-warnings-row");
+
+  if (!g.available) {
+    $("gnss-status").textContent = "unavailable";
+    $("gnss-fixes").textContent = "—";
+    $("gnss-anchor").textContent = g.reason || "no position";
+    $("gnss-utm").textContent = "—";
+    $("gnss-log").textContent = g.path || "—";
+    warnRow.hidden = true;
+    return;
+  }
+
+  const sats = g.satellites_median != null ? ` · ${g.satellites_median} sats` : "";
+  const hdop = g.hdop_median != null ? ` · HDOP ${g.hdop_median}` : "";
+  $("gnss-status").textContent =
+    `${g.fixes_valid}/${g.gga_total} fixes (${Math.round((g.fix_rate || 0) * 100)}%)${sats}${hdop}`;
+  const a = g.anchor || {};
+  $("gnss-fixes").textContent = a.lat != null
+    ? `${g.first_fix_utc || "?"} → ${g.last_fix_utc || "?"}` : "—";
+  $("gnss-anchor").textContent = a.lat != null
+    ? `${fmtLatLon(a.lat, a.lon)} · ${a.alt_m} m MSL` : "not available";
+  $("gnss-utm").textContent = fmtUtm(a);
+  $("gnss-log").textContent = g.path || "—";
+  if (g.warnings && g.warnings.length) {
+    $("gnss-warnings").textContent = g.warnings.join("; ");
+    warnRow.hidden = false;
+  } else {
+    warnRow.hidden = true;
   }
 }
 
@@ -275,6 +324,19 @@ function displayDem(data) {
   $("dm-filters").textContent =
     `clip ${f.clip_range_m || "off"} m · min ${f.min_range_m} m · ${f.ground_filter}`;
   $("dm-rendertime").textContent = (data.render_seconds || 0).toFixed(2) + " s";
+
+  const gnss = data.gnss;
+  const gnssRow = $("dm-gnss-row");
+  if (gnss && gnss.anchor) {
+    const a = gnss.anchor;
+    $("dm-gnss").textContent =
+      `${fmtLatLon(a.lat, a.lon)} · ${a.alt_m} m MSL` +
+      (a.utm_easting != null ? ` · UTM E ${a.utm_easting.toFixed(0)} N ${a.utm_northing.toFixed(0)}` : "") +
+      ` · ${gnss.fixes_valid} fixes (grid not georeferenced)`;
+    gnssRow.hidden = false;
+  } else {
+    gnssRow.hidden = true;
+  }
 
   const warnRow = $("dm-warnings-row");
   if (data.warnings && data.warnings.length) {

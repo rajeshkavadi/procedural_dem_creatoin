@@ -8,11 +8,21 @@ You have:
 
 ### View in browser now
 ```bash
-export PATH=/home/rajesh:$PATH
 cd /home/rajesh/procedural_dem_creatoin
-./tools/viewer/scripts/start_remote.sh ~/livox_bags/20261030_221123_mid360s.bag /livox/lidar
+./tools/viewer/scripts/start_cloudflare.sh
 ```
-Public URL + token will be shown. Stop with `./tools/viewer/scripts/stop_all.sh`
+
+This starts the service on the repository bag + `ublox7_raw.txt`, opens the
+Cloudflare tunnel, and self-tests snapshot, DEM and live stream (local and
+through the public URL). Public URL + token will be printed. Stop with
+`./tools/viewer/scripts/stop_all.sh`.
+
+Other bag:
+```bash
+./tools/viewer/scripts/start_cloudflare.sh \
+    --bag ~/livox_bags/20261030_221123_mid360s.bag \
+    --gnss ~/gps_raw/ublox7_raw.txt --topic /livox/lidar
+```
 
 ### Run DEM pipeline (if you want georeferenced outputs)
 ```bash

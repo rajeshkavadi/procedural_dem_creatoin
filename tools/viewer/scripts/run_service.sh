@@ -1,47 +1,37 @@
 #!/usr/bin/env bash
+# Run the snapshot service in the foreground.
+#
+# All arguments are passed straight to `python -m pc_snapshot` (see
+# `python -m pc_snapshot --help`), so the service owns the option list:
+#
+#   ./run_service.sh --bag rec.bag --topic /livox/lidar --port 8085 \
+#                    --gnss ublox7_raw.txt
+#
+# The interpreter is the project virtualenv when present; override with
+# PCSNAP_PYTHON.  Use scripts/bootstrap_env.sh to create the venv.
 set -eo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJ_DIR="$(dirname "$SCRIPT_DIR")"
 VENV="$PROJ_DIR/.venv"
 
-PYTHON="python3"
-if [ -f "$VENV/bin/python" ]; then
-  PYTHON="$VENV/bin/python"
+PYTHON="${PCSNAP_PYTHON:-}"
+if [ -z "$PYTHON" ]; then
+  if [ -x "$VENV/bin/python" ]; then
+    PYTHON="$VENV/bin/python"
+  else
+    PYTHON="$(command -v python3.8 || command -v python3.9 \
+              || command -v python3.10 || command -v python3.11 \
+              || command -v python3.12 || command -v python3)"
+  fi
 fi
+[ -n "$PYTHON" ] || { echo "ERROR: no Python interpreter found (see scripts/bootstrap_env.sh)" >&2; exit 1; }
 
-# Defaults
-BAG=""
-TOPIC="/livox/lidar"
-PORT=8085
-RATE=1.0
-CLIP=60
-HOST="127.0.0.1"
-
-while [ $# -gt 0 ]; do
-  case "$1" in
-    --bag) BAG="$2"; shift 2;;
-    --topic) TOPIC="$2"; shift 2;;
-    --port) PORT="$2"; shift 2;;
-    --bag-rate) RATE="$2"; shift 2;;
-    --clip-range) CLIP="$2"; shift 2;;
-    --host) HOST="$2"; shift 2;;
-    *) shift;;
-  esac
-done
-
-[ -z "$BAG" ] && { echo "ERROR: --bag required"; exit 1; }
-
-export PCSNAP_BAG_PATH="$BAG"
-export PCSNAP_BAG_TOPIC="$TOPIC"
-export PCSNAP_BAG_RATE="$RATE"
-export PCSNAP_CLIP_RANGE_M="$CLIP"
-export PCSNAP_PORT="$PORT"
-export PCSNAP_HOST="$HOST"
-export PCSNAP_STATIC_DIR="$PROJ_DIR/static"
-export PCSNAP_API_TOKEN="${PCSNAP_API_TOKEN:-lidar-snap-2026}"
-export PYTHONPATH="/home/rajesh/.local/lib/python3.6/site-packages:$PROJ_DIR:$PYTHONPATH"
-export PATH="/home/rajesh/.local/bin:$PATH"
+# The package lives in the project root; dem_mapping is found by the service
+# itself (ws/src/dem_mapping).  Never inject foreign site-packages here.
+export PCSNAP_STATIC_DIR="${PCSNAP_STATIC_DIR:-$PROJ_DIR/static}"
+export PYTHONPATH="$PROJ_DIR${PYTHONPATH:+:$PYTHONPATH}"
+export PCSNAP_API_TOKEN="${PCSNAP_API_TOKEN:-}"
 
 cd "$PROJ_DIR"
-exec python3 -m uvicorn pc_snapshot.api:app --host "$HOST" --port "$PORT"
+exec "$PYTHON" -m pc_snapshot "$@"

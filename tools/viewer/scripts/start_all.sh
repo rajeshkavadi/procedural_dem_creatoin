@@ -26,8 +26,10 @@ TOPIC="${PCSNAP_TOPIC:-/mid360/livox/lidar}"
 PORT="${PCSNAP_PORT:-8085}"
 CLIP="${PCSNAP_CLIP_RANGE_M:-60}"
 RATE="${PCSNAP_BAG_RATE:-1.0}"
+GNSS="${PCSNAP_GNSS:-}"
 
 ARGS=(--topic "$TOPIC" --port "$PORT" --clip-range "$CLIP")
+[ -n "$GNSS" ] && ARGS+=(--gnss "$GNSS")
 if [ -n "$BAG" ]; then
   ARGS+=(--bag "$BAG" --bag-rate "$RATE")
   echo "Starting snapshot service (bag=$BAG, topic=$TOPIC, port=$PORT, clip=${CLIP}m)..."

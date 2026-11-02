@@ -24,3 +24,7 @@ __pycache__/
 out/*.npz
 out/*.tif
 out/*.png
+
+# downloaded Cloudflare tunnel binary
+tools/viewer/cloudflared
+tools/viewer/cloudflared.tmp

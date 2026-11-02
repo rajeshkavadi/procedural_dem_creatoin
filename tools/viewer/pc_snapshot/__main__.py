@@ -24,6 +24,7 @@ from .api import create_app
 from .bag_source import BagCloudSource, BagSourceError, inspect_bag
 from .config import Config, VIEW_NAMES
 from .dem import DemAccumulator
+from .gnss import load_gnss
 from .jobs import DemCoordinator, RenderCoordinator, SnapshotRegistry
 from .ros_subscriber import Ros1CloudListener
 from .store import SnapshotStore
@@ -63,6 +64,9 @@ def build_parser() -> argparse.ArgumentParser:
                    action="store_false", default=None,
                    help="do not auto-select the only PointCloud2 topic when "
                         "--topic is missing from the bag")
+    p.add_argument("--gnss", dest="gnss_path", metavar="PATH",
+                   help="raw NMEA/gpspipe GNSS log (e.g. ublox7_raw.txt) used "
+                        "to report the recording position and annotate the DEM")
     p.add_argument("--inspect", action="store_true",
                    help="print the bag's topics/duration and exit")
     p.add_argument("--ros-master", dest="ros_master_uri",
@@ -137,6 +141,7 @@ def main(argv=None) -> int:
         "bag_loop": args.bag_loop,
         "bag_start_offset_sec": args.bag_start_offset_sec,
         "bag_auto_topic": args.bag_auto_topic,
+        "gnss_path": args.gnss_path,
         "ros_master_uri": args.ros_master_uri,
         "stream_fps": args.stream_fps,
         "stream_view": args.stream_view,
@@ -159,9 +164,21 @@ def main(argv=None) -> int:
     dem_registry = SnapshotRegistry(work_dir / "dem", cfg.max_snapshots,
                                     cfg.snapshot_retention_sec)
     dem_coordinator = DemCoordinator(cfg, dem_registry)
+    # DEM first: importing dem_mapping puts the shared georef module on
+    # sys.path, which the GNSS UTM anchor reuses.
     dem = DemAccumulator(cfg)
     if not dem.enabled:
         logging.warning("DEM disabled: %s", dem.reason)
+    gnss = load_gnss(cfg.gnss_path)
+    if gnss is not None:
+        if gnss.available:
+            anchor = gnss.anchor() or {}
+            logging.info("GNSS: %d valid fixes from %s, anchor %.6f, %.6f",
+                         gnss.fixes_valid, gnss.path, anchor.get("lat", 0.0),
+                         anchor.get("lon", 0.0))
+        else:
+            logging.warning("GNSS unavailable: %s", gnss.reason)
+    dem.gnss = gnss
     stream = StreamManager(cfg, store)
 
     # ------------------------------------------------------------- source
@@ -191,7 +208,7 @@ def main(argv=None) -> int:
                 logging.info("using bag topic %s", active)
 
     app = create_app(cfg, store, coordinator, listener=source, stream=stream,
-                     dem=dem, dem_coordinator=dem_coordinator)
+                     dem=dem, dem_coordinator=dem_coordinator, gnss=gnss)
 
     import uvicorn
     logging.info("starting HTTP server on %s:%d (topic=%s, source=%s, "

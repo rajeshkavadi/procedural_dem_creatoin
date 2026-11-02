@@ -27,6 +27,22 @@
     <button id="btn-zip" disabled>Download All Images ZIP</button>
   </section>
 
+  <section id="gnss-panel" class="dem gnss" hidden>
+    <div class="dem-head">
+      <h2>GNSS <span class="hint">(raw gpspipe/NMEA log)</span></h2>
+      <span id="gnss-status" class="live-status">&mdash;</span>
+    </div>
+    <p class="live-hint">Position of the recording from the separate GPS
+       log. The DEM stays in the sensor frame; this anchors it to Earth.</p>
+    <section class="meta">
+      <div><span class="k">Fixes</span><span id="gnss-fixes">&mdash;</span></div>
+      <div><span class="k">Anchor</span><span id="gnss-anchor">&mdash;</span></div>
+      <div><span class="k">UTM</span><span id="gnss-utm">&mdash;</span></div>
+      <div><span class="k">Log</span><span id="gnss-log">&mdash;</span></div>
+      <div id="gnss-warnings-row" hidden><span class="k">Warnings</span><span id="gnss-warnings"></span></div>
+    </section>
+  </section>
+
   <section class="live">
     <div class="live-head">
       <h2>Live View</h2>
@@ -110,6 +126,7 @@
       <div><span class="k">Elevation range</span><span id="dm-z">&mdash;</span></div>
       <div><span class="k">Filters</span><span id="dm-filters">&mdash;</span></div>
       <div><span class="k">Render time</span><span id="dm-rendertime">&mdash;</span></div>
+      <div id="dm-gnss-row" hidden><span class="k">GNSS anchor</span><span id="dm-gnss"></span></div>
       <div id="dm-warnings-row" hidden><span class="k">Warnings</span><span id="dm-warnings"></span></div>
     </section>
 

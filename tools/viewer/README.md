@@ -69,6 +69,13 @@ Notes:
   (`dem_min_range_m`, which also drops the Mid-360 driver's `(0,0,0)` filler
   points) and a height band around the sensor (`dem_band_below` /
   `dem_band_above`).
+* **GNSS anchor.** `--gnss ublox7_raw.txt` reads the separate gpspipe/NMEA log
+  (the recording script stores GPS outside the bag). It reports the valid-fix
+  count, satellites, HDOP, first/last fix and the median position with UTM
+  coordinates in `/api/health`, annotates the DEM heatmap and includes the
+  anchor in the DEM JSON. It does **not** transform the grid: the log has its
+  own clock and the service does no registration, so the DEM is still
+  sensor-frame and every response says so.
 
 ### Renderer threading
 
@@ -87,7 +94,7 @@ fallback when Open3D is unavailable.
 | Item | Value |
 |------|-------|
 | OS | Ubuntu 18.04/20.04+ (developed on 22.04, WSL 2) |
-| Python | 3.8+ (**required**: FastAPI) |
+| Python | 3.8+ (**required**: FastAPI). 3.8.0 works via `scripts/bootstrap_env.sh`, which installs rosbags despite its 3.8.2 metadata floor |
 | ROS | neither `rospy` nor `rosbag` is needed; this runs alongside a ROS Melodic (Python 2) install |
 | Open3D | optional (0.17+); Matplotlib is the guaranteed fallback |
 | Bag format | ROS 1 `.bag` v2.0 (read with the `rosbags` package) |
@@ -150,21 +157,46 @@ Env overrides: `PCSNAP_TOPIC` (default `/mid360/livox/lidar`),
 `PCSNAP_PORT` (8085), `PCSNAP_CLIP_RANGE_M` (60), `PCSNAP_BAG_RATE` (1.0),
 `PCSNAP_API_TOKEN`.
 
-### 4.2 Remote access (Cloudflare quick tunnel)
+### 4.2 Remote access (Cloudflare quick tunnel) — one command
 
 ```bash
-./scripts/start_remote.sh /path/to/recording.bag
+./scripts/start_cloudflare.sh
 ```
 
-Same as above, plus a `cloudflared` quick tunnel; the script prints the public
-`https://…trycloudflare.com` URL and the API token. `cloudflared` uses only
-outbound HTTPS, so it works on networks that block UDP/VPNs. The URL changes
-on every restart; for a stable hostname use a named Cloudflare tunnel or
-Tailscale/`tailscale serve` instead.
+That is the whole run. With no arguments it uses the recording shipped in the
+repository root — `20261030_221123_mid360s.bag` and the GPS log
+`ublox7_raw.txt` — on topic `/livox/lidar`, port 8085, and:
+
+1. refuses to run on an unfetched Git LFS pointer (prints the `git lfs pull`
+   command instead of starting on a 135-byte file),
+2. creates/repairs the Python virtualenv (`scripts/bootstrap_env.sh`),
+3. downloads `cloudflared` once if it is missing (Linux x86_64/arm64/arm),
+4. starts the service and waits until point clouds really are arriving,
+5. opens the quick tunnel and waits until the public URL answers,
+6. proves **snapshot**, **DEM** and **live stream** work — first locally, then
+   through the Cloudflare URL — and keeps the service running.
+
+```bash
+# another dataset / port / playback speed
+./scripts/start_cloudflare.sh --bag ~/livox_bags/rec.bag \
+    --gnss ~/gps_raw/ublox7_20261030.txt \
+    --topic /livox/lidar --port 8085 --rate 1.0
+
+# local only, no tunnel / no self-test
+./scripts/start_cloudflare.sh --no-tunnel
+./scripts/start_cloudflare.sh --no-test
+```
+
+It prints the local URL, the public `https://…trycloudflare.com` URL and the
+API token to paste into the UI. `cloudflared` uses only outbound HTTPS, so it
+works on networks that block UDP/VPNs. The URL changes on every restart; for
+a stable hostname use a named Cloudflare tunnel or Tailscale instead.
 
 A quick-tunnel URL is **publicly reachable by anyone who has the link**, so
-`start_remote.sh` sets an API token (`lidar-snap-2026` by default — override
-with `PCSNAP_API_TOKEN`). Do not run a public tunnel without the token.
+the script sets an API token (`lidar-snap-2026` by default — override with
+`PCSNAP_API_TOKEN` or `--token`). Do not run a public tunnel without the token.
+`start_remote.sh <bag> [topic]` is kept as a backward-compatible wrapper over
+this script.
 
 ### 4.3 Manual (two terminals)
 
@@ -200,6 +232,7 @@ python3 -m pc_snapshot \
   --bag-rate 1.0 \                    # playback speed
   --bag-start-offset 0 \              # skip seconds into the recording
   --topic /mid360/livox/lidar \
+  --gnss /path/to/ublox7_raw.txt \   # raw NMEA: position + DEM annotation
   --port 8085 \
   --renderer auto \                   # auto | open3d | matplotlib
   --up-axis z \                       # z (ROS/robotics) or y (aerospace)
@@ -253,7 +286,7 @@ interpreter (`ros_master_uri` / `--ros-master`). On a stock Melodic install
 
 | Method | Path | Description |
 |--------|------|-------------|
-| GET | `/api/health` | Status, source state, topic, message age, frame id, diagnostics |
+| GET | `/api/health` | Status, source state, topic, message age, frame id, DEM and GNSS diagnostics |
 | POST | `/api/snapshot` | Capture one message, render five views, return metadata + image URLs |
 | GET | `/api/snapshot/{id}/{view}.png` | One PNG (`top`, `front`, `back`, `left`, `right`) |
 | GET | `/api/snapshot/{id}/download.zip` | ZIP of all five PNGs + `metadata.json` |
@@ -388,14 +421,16 @@ snapshot_service/
 │   ├── ros_subscriber.py    # optional live rospy subscriber
 │   ├── synthetic.py         # synthetic scene + ROS 1 bag writer (tests)
 │   ├── renderer.py          # Open3D headless + Matplotlib fallback
-│   ├── dem.py               # incremental DEM accumulation + heatmap render
-│   ├── stream.py            # live MJPEG frame manager
+│   ├── dem.py               # incremental DEM accumulation + heatmap render│   ├── gnss.py             # gpspipe/NMEA log -> fix summary + anchor
+│   ├── stream.py           # live MJPEG frame manager
 │   ├── jobs.py              # bounded render jobs + snapshot registry + zip
 │   └── api.py               # FastAPI app
 ├── static/                  # index.html, style.css, app.js
 ├── scripts/
+│   ├── bootstrap_env.sh     # create/repair the Python 3 virtualenv
+│   ├── start_cloudflare.sh  # one command: env + bag + tunnel + self-test
 │   ├── start_all.sh         # service + looping bag
-│   ├── start_remote.sh      # … + Cloudflare quick tunnel
+│   ├── start_remote.sh      # wrapper: start_cloudflare.sh <bag> [topic]
 │   ├── run_service.sh       # foreground service
 │   ├── stop_all.sh          # stop service + tunnel (+ orphans)
 │   ├── bag_info.sh          # topics/duration of a .bag

@@ -5,6 +5,9 @@ numpy>=1.21,<2
 Pillow>=9.0
 
 # ROS 1 bag reading (pure Python, no ROS installation needed)
+# NOTE: rosbags declares Python >=3.8.2; on Ubuntu 18.04's 3.8.0 it installs
+# and runs fine, but pip refuses it. Use scripts/bootstrap_env.sh, which
+# installs the compatible wheels explicitly.
 rosbags>=0.9.20,<0.10
 
 # Rendering: Matplotlib is the guaranteed fallback, Open3D is used when the

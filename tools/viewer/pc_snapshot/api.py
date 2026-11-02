@@ -50,7 +50,8 @@ def create_app(cfg: Config, store: SnapshotStore,
                listener=None,
                stream: Optional[StreamManager] = None,
                dem: Optional[DemAccumulator] = None,
-               dem_coordinator: Optional[DemCoordinator] = None) -> FastAPI:
+               dem_coordinator: Optional[DemCoordinator] = None,
+               gnss=None) -> FastAPI:
     app = FastAPI(title="Remote LiDAR Snapshot Service", version=__version__)
     app.state.cfg = cfg
     app.state.store = store
@@ -58,6 +59,7 @@ def create_app(cfg: Config, store: SnapshotStore,
     app.state.listener = listener
     app.state.dem = dem
     app.state.dem_coordinator = dem_coordinator
+    app.state.gnss = gnss
     if dem is not None and dem_coordinator is None:
         log.warning("DEM accumulator given without a DemCoordinator; "
                     "POST /api/dem will fail until one is provided")
@@ -125,6 +127,9 @@ def create_app(cfg: Config, store: SnapshotStore,
             "dem": (dem.status() if dem is not None
                     else {"enabled": False,
                           "reason": "DEM not configured for this service"}),
+            "gnss": (gnss.health() if gnss is not None
+                     else {"enabled": False,
+                           "reason": "no GNSS log configured (--gnss)"}),
             "host": {"platform": platform.platform(),
                      "python": platform.python_version()},
             "time": time.time(),
@@ -288,6 +293,7 @@ def create_app(cfg: Config, store: SnapshotStore,
             },
             "image_size": meta.get("image_size"),
             "colormap": meta.get("colormap"),
+            "gnss": meta.get("gnss"),
             "image": f"{base}/api/dem/{artifact.snapshot_id}/dem.png",
             "download_zip": f"{base}/api/dem/{artifact.snapshot_id}/download.zip",
             "warnings": warnings,
