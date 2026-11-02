@@ -1,5 +1,5 @@
 # ROS bag / point-cloud data
-*.bag
+# *.bag
 *.db3
 *.pcd
 *.lvx2
