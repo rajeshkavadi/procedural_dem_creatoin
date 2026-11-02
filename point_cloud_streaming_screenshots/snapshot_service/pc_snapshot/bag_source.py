@@ -32,7 +32,7 @@ The ``rosbags`` import is lazy: the rest of the package (decoder, renderer,
 API, tests) keeps working without the dependency installed.
 """
 
-from __future__ import annotations
+
 
 import logging
 import threading

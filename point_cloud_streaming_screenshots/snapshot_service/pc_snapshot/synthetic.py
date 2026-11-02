@@ -5,7 +5,7 @@ build a real ``.bag`` fixture without importing a script module. Requires
 ``rosbags`` only when :func:`write_test_bag` is called.
 """
 
-from __future__ import annotations
+
 
 import math
 import struct

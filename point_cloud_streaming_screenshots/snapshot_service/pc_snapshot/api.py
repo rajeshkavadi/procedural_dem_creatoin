@@ -16,7 +16,7 @@ unit-tested without ROS or a bag. The DEM is optional: when no DemAccumulator
 is wired in, /api/health reports it as disabled and POST /api/dem returns 409.
 """
 
-from __future__ import annotations
+
 
 import logging
 import platform

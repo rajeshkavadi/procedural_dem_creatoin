@@ -28,7 +28,7 @@ so `radial_range` gates range around the sensor (and conveniently drops the
 `height_band` gates elevation around the sensor height.
 """
 
-from __future__ import annotations
+
 
 import logging
 import os

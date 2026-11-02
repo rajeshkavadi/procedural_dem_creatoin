@@ -10,7 +10,7 @@ row_step, width, height, is_big_endian), which allows unit testing without a
 ROS environment.
 """
 
-from __future__ import annotations
+
 
 from dataclasses import dataclass
 from typing import List, Optional, Sequence, Tuple

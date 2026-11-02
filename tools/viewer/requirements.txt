@@ -1,0 +1,17 @@
+# Runtime (install into a Python 3.8+ virtualenv: python3.8 -m venv .venv)
+fastapi>=0.110
+uvicorn>=0.27
+numpy>=1.21,<2
+Pillow>=9.0
+
+# ROS 1 bag reading (pure Python, no ROS installation needed)
+rosbags>=0.9.20,<0.10
+
+# Rendering: Matplotlib is the guaranteed fallback, Open3D is used when the
+# wheel is available for this platform (pip install open3d).
+matplotlib>=3.5
+# open3d>=0.17
+
+# Tests
+pytest>=7.0
+httpx>=0.24

@@ -36,7 +36,7 @@ Coordinate conventions (configurable up_axis):
 All views share: same captured points, same colors, same bounding box.
 """
 
-from __future__ import annotations
+
 
 import atexit
 import concurrent.futures

@@ -20,7 +20,7 @@ The manager is transport-agnostic: FastAPI's StreamingResponse consumes
 wait_for_frame(); unit tests can inject a stub render_fn.
 """
 
-from __future__ import annotations
+
 
 import io
 import logging

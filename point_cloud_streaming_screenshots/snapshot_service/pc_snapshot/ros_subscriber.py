@@ -16,7 +16,7 @@ without ROS installed.
    (source build / ROS Noetic) the same code works unchanged.
 """
 
-from __future__ import annotations
+
 
 import logging
 import os

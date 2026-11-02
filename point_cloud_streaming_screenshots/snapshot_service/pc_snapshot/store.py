@@ -6,7 +6,7 @@ message. Rendering operates only on the snapshot, never on the live buffer,
 so the subscriber is never blocked by rendering.
 """
 
-from __future__ import annotations
+
 
 import threading
 import time

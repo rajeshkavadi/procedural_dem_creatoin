@@ -13,7 +13,7 @@ supported mode on Ubuntu 18.04 / ROS Melodic, whose ``rospy`` is Python 2
 only while this service requires Python 3.
 """
 
-from __future__ import annotations
+
 
 import argparse
 import logging

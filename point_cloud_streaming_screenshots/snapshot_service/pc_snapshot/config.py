@@ -1,6 +1,6 @@
 """Configuration: JSON config file < environment variables < CLI overrides."""
 
-from __future__ import annotations
+
 
 import json
 import os

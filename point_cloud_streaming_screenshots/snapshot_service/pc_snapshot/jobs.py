@@ -8,7 +8,7 @@
   automatically cleaned-up storage.
 """
 
-from __future__ import annotations
+
 
 import io
 import json
