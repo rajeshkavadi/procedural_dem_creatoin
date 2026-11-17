@@ -436,9 +436,10 @@ def render_views_offscreen(ro, prepared: PreparedCloud, snap: PointCloudSnapshot
         ro.scene.add_geometry("cloud", pcd, mat)
 
         # Distance that keeps the whole bbox inside a vertical-fov camera.
-        # 1.05 = tight fit (slight margin) so the scene fills the frame.
+        # 1.05 = tight fit (slight margin) so the scene fills the frame;
+        # view_zoom then pushes the camera closer for a more zoomed-in look.
         vfov = math.radians(cfg.fov_deg)
-        dist = prepared.radius / math.tan(vfov / 2.0) * 1.05
+        dist = prepared.radius / math.tan(vfov / 2.0) * 1.05 / cfg.view_zoom
 
         out: Dict[str, np.ndarray] = {}
         for view in views:
@@ -524,9 +525,14 @@ def _render_matplotlib(prepared: PreparedCloud, snap: PointCloudSnapshot,
         "left": (0.0, -90.0),    # camera at -Y, looking +Y
         "right": (0.0, 90.0),    # camera at +Y, looking -Y
     }
-    pmin = pts.min(axis=0)
-    pmax = pts.max(axis=0)
-    extents = np.maximum(pmax - pmin, 1e-2)
+    # Frame the robust percentile bounds (same as the Open3D path), not the
+    # raw min/max: a few distant returns would otherwise blow the autoscale
+    # up and leave the scene a thin strip in the middle of the frame.
+    lo = np.asarray(prepared.bbox_min, dtype=np.float64)
+    hi = np.asarray(prepared.bbox_max, dtype=np.float64)
+    if up_swap:
+        lo, hi = lo[[0, 2, 1]], hi[[0, 2, 1]]
+    extents = np.maximum(hi - lo, 1e-2)
 
     out: Dict[str, np.ndarray] = {}
     for view in views:
@@ -539,7 +545,15 @@ def _render_matplotlib(prepared: PreparedCloud, snap: PointCloudSnapshot,
                    rasterized=True)
         elev, azim = cam[view]
         ax.view_init(elev=elev, azim=azim)
-        ax.set_box_aspect(extents.tolist())
+        # Zoom scales the projected scene about the view centre.  The
+        # overhead view is already framed to the full ring, so the same
+        # first-person factor would crop it; cap it there instead.
+        zoom = cfg.view_zoom if view != "top" else min(cfg.view_zoom, 2.0)
+        # Older Matplotlib builds without the keyword fall back to a fit.
+        try:
+            ax.set_box_aspect(extents.tolist(), zoom=zoom)
+        except TypeError:
+            ax.set_box_aspect(extents.tolist())
         ax.set_axis_off()
         try:
             fig.subplots_adjust(left=-0.15, right=1.15, top=1.15, bottom=-0.15)
@@ -587,6 +601,16 @@ def prepare_cloud(snap: PointCloudSnapshot, cfg: Config,
             points_ds = points_ds[keep]
             if intensity_ds is not None:
                 intensity_ds = intensity_ds[keep]
+    # Livox drivers pad each message with (0,0,0) filler points (the DEM path
+    # drops them too).  They sit on the sensor origin and, being the vast
+    # majority of the cloud, drag the camera bounds down to nothing and leave
+    # the real scene a thin strip.  Only strip them when they dominate the
+    # message, so a lone legitimate origin return is kept.
+    nonzero = ~np.all(points_ds == 0.0, axis=1)
+    if nonzero.mean() < 0.95:
+        points_ds = points_ds[nonzero]
+        if intensity_ds is not None:
+            intensity_ds = intensity_ds[nonzero]
     if points_ds.shape[0] == 0:
         raise RenderError("downsampling produced an empty cloud (internal error)")
     return PreparedCloud(points_ds, intensity_ds, cfg), points_ds.shape[0]

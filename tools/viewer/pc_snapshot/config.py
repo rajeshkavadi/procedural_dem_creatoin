@@ -60,6 +60,9 @@ class Config:
     up_axis: str = "z"                   # z (ROS/robotics) or y (aerospace)
     point_size: float = 3.0
     fov_deg: float = 60.0
+    view_zoom: float = 2.5               # >1 zooms the camera into the scene
+                                         # (first-person views; the overhead
+                                         # view is capped at 1.25); 1.0 = fit
     clip_range_m: float = 0.0            # radial clip from sensor origin; 0 = off
 
     # Resource bounds
@@ -152,6 +155,8 @@ class Config:
             raise ValueError("max_render_points must be >= 1000")
         if self.clip_range_m < 0:
             raise ValueError("clip_range_m must be >= 0")
+        if not (0.1 <= self.view_zoom <= 10.0):
+            raise ValueError("view_zoom must be between 0.1 and 10")
         if self.stream_view not in VIEW_NAMES:
             raise ValueError(f"stream_view must be one of {VIEW_NAMES}, "
                              f"got {self.stream_view!r}")

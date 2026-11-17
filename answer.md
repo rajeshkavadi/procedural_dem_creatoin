@@ -480,3 +480,109 @@ Where PDAL *is* a good fit, if you want it offline: export the bag to LAS/LAZ
 once (`rosbag` → PCD → `pdal translate`), then run a classic
 `filters.smrf` + `writers.gdal` pipeline and compare against this grid. That is a
 batch product, not the live tab.
+
+---
+
+# Result: all five camera views are now zoomed in
+
+Request: "the point cloud is a bit zoomed out — all the views should be more
+zoomed in."
+
+## Why it looked zoomed out
+
+The camera was not the main problem. On `/mid360/livox/lidar` **~85 % of every
+message is `(0,0,0)` filler** that the driver pads the cloud with:
+
+| scan | total points | exact `(0,0,0)` points | kept |
+| --- | --- | --- | --- |
+| 300 of `OutdoorRoad_cut1.bag` | 19,968 | 16,994 (85 %) | 3,080 |
+
+Those padding points sit on the sensor origin, so they dominated
+`compute_bounds()`'s 10–90 percentile bounds and collapsed them (`y`/`z` half
+extents came out at 0.0008 m). The autoscale then framed a 30 m × 0.001 m box and
+the real scene rendered as a thin faint strip in the middle of the frame.
+
+## What changed
+
+1. **`prepare_cloud()` drops the filler** (`pc_snapshot/renderer.py`) — but only
+   when zeros dominate the message (`nonzero.mean() < 0.95`), so a lone
+   legitimate origin return in a normal cloud is preserved. The DEM path already
+   rejected these points via the ground filter.
+2. **`view_zoom`** — new config field / `--view-zoom` flag. First-person views
+   (front/back/left/right) render at **2.5**, the overhead view at **2.0** (capped
+   with `min(view_zoom, 2.0)`, because `top` is already framed to the full ring
+   and the stronger factor cropped it). Applied in both backends: Matplotlib via
+   `set_box_aspect(..., zoom=...)`, Open3D by dividing the camera `dist`.
+3. The explicit `set_xlim/ylim/zlim` experiment on the robust bbox was removed —
+   with the zeros gone, autoscale frames the scene correctly on its own.
+
+## Framing measured before/after (one 19,968-point message, front view)
+
+| | cloud span across frame |
+| --- | --- |
+| before (filler included, zoom 1.0) | 12 % wide, 8 % tall |
+| after (filler dropped, first-person zoom 2.5) | 45–50 % wide, ~35 % tall |
+| overhead view, zoom 2.0 | ring spans ~60 % of frame height, not cropped |
+
+## Command used
+
+```bash
+cd /home/procedural_dem_creatoin/tools/viewer
+./scripts/start_cloudflare.sh \
+  --bag /workspace/OutdoorRoad_cut1.bag \
+  --gnss "" \
+  --topic /mid360/livox/lidar \
+  --port 8085
+```
+
+`--gnss ""` because the bag has no usable GNSS track (the repo's
+`ublox7_raw.txt` is from a different recording), and the topic must be
+`/mid360/livox/lidar` — the script's `/livox/lidar` default does not exist in
+this bag.
+
+Self-test output:
+
+```
+--- local ---
+PASS DEM (747 scans, 64382 cells)
+PASS live stream (97 JPEG frames in ~10 s)
+
+--- through Cloudflare (https://recipes-gabriel-occurs-richard.trycloudflare.com) ---
+PASS DEM (885 scans, 64382 cells)
+PASS live stream (90 JPEG frames in ~10 s)
+
+Live  : 2540 pts/frame, 7.33 fps delivered, cap 8.0
+```
+
+Tuning the zoom without a code edit:
+
+```bash
+.venv/bin/python -m pc_snapshot --bag /workspace/OutdoorRoad_cut1.bag \
+  --topic /mid360/livox/lidar --view-zoom 3.0 --no-tunnel
+# or in config.json
+{ "view_zoom": 3.0 }
+```
+
+## Verified
+
+* `pytest tests -q` → **108 passed, 2 skipped** (one synthetic-cloud assertion in
+  `tests/test_renderer.py` forced the *conditional* zero filter rather than
+  dropping every origin point).
+* Rendered all five views offline from message 300 of the real bag and inspected
+  the images: front/back/left/right fill the middle of the frame instead of a
+  thin strip; top shows the ring without cropping.
+* Live frame pulled from the running service (`/api/stream?view=front`) matched
+  the offline framing; public URL `/` and `/api/health` both returned 200
+  through the tunnel.
+* Service and tunnel were then stopped on request (`scripts/stop_all.sh`); no
+  `pc_snapshot` or `cloudflared` processes remained. The public link is dead —
+  it is regenerated on every start.
+
+## Caveat
+
+Because the filler is removed, a live frame now shows the ~2–3 k real returns of
+that scan rather than a 20 k-point block at the origin. Density is lower and
+noisier-looking, but every visible point is a real measurement; raise
+`--stream-points` does not add points that do not exist in the scan. The zoom
+itself is per-view and relative to the scan's bounding box, so it adapts as the
+bag moves instead of cropping a fixed volume.

@@ -49,6 +49,9 @@ def build_parser() -> argparse.ArgumentParser:
                    help="seconds before latest message counts as stale (default 5)")
     p.add_argument("--clip-range", type=float, dest="clip_range_m",
                    help="radial clip from sensor origin in meters (default 0 = off)")
+    p.add_argument("--view-zoom", type=float, dest="view_zoom",
+                   help="camera zoom for the first-person views; >1 is closer "
+                        "(default 2.5)")
     # --- ROS 1 bag replay ----------------------------------------------
     p.add_argument("--bag", dest="bag_path", metavar="PATH",
                    help="ROS 1 .bag file (or directory of split bags) to replay; "
@@ -139,6 +142,7 @@ def main(argv=None) -> int:
         "max_render_points": args.max_render_points,
         "stale_after_sec": args.stale_after_sec,
         "clip_range_m": args.clip_range_m,
+        "view_zoom": args.view_zoom,
         "api_token": args.api_token,
         "bag_path": args.bag_path,
         "bag_rate": args.bag_rate,
