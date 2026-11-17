@@ -1,0 +1,4 @@
+# PyTorch is intentionally NOT listed: on Jetson it must be the NVIDIA wheel
+# matching your JetPack/L4T release (see install_deps.sh).
+numpy>=1.16,<1.24
+PyYAML>=5.1

@@ -1,0 +1,78 @@
+rosbag2_bagfile_information:
+  compression_format: ''
+  compression_mode: ''
+  custom_data: null
+  duration:
+    nanoseconds: 657303892020
+  files:
+  - duration:
+      nanoseconds: 657303892020
+    message_count: 432794
+    path: OutdoorRoad_dataset_ros2.db3
+    starting_time:
+      nanoseconds_since_epoch: 1747409703152839744
+  message_count: 432794
+  relative_file_paths:
+  - OutdoorRoad_dataset_ros2.db3
+  ros_distro: rosbags
+  starting_time:
+    nanoseconds_since_epoch: 1747409703152839744
+  storage_identifier: sqlite3
+  topics_with_message_count:
+  - message_count: 131462
+    topic_metadata:
+      name: /mid360/livox/imu
+      offered_qos_profiles: ''
+      serialization_format: cdr
+      type: sensor_msgs/msg/Imu
+      type_description_hash: 
+        RIHS01_7d9a00ff131080897a5ec7e26e315954b8eae3353c3f995c55faf71574000b5b
+  - message_count: 65732
+    topic_metadata:
+      name: /gnss_pose
+      offered_qos_profiles: ''
+      serialization_format: cdr
+      type: geometry_msgs/msg/PoseStamped
+      type_description_hash: 
+        RIHS01_10f3786d7d40fd2b54367835614bff85d4ad3b5dab62bf8bca0cc232d73b4cd8
+  - message_count: 82162
+    topic_metadata:
+      name: /ouster/imu
+      offered_qos_profiles: ''
+      serialization_format: cdr
+      type: sensor_msgs/msg/Imu
+      type_description_hash: 
+        RIHS01_7d9a00ff131080897a5ec7e26e315954b8eae3353c3f995c55faf71574000b5b
+  - message_count: 6573
+    topic_metadata:
+      name: /ouster/points
+      offered_qos_profiles: ''
+      serialization_format: cdr
+      type: sensor_msgs/msg/PointCloud2
+      type_description_hash: 
+        RIHS01_9198cabf7da3796ae6fe19c4cb3bdd3525492988c70522628af5daa124bae2b5
+  - message_count: 133719
+    topic_metadata:
+      name: /avia/livox/imu
+      offered_qos_profiles: ''
+      serialization_format: cdr
+      type: sensor_msgs/msg/Imu
+      type_description_hash: 
+        RIHS01_7d9a00ff131080897a5ec7e26e315954b8eae3353c3f995c55faf71574000b5b
+  - message_count: 6573
+    topic_metadata:
+      name: /avia/livox/lidar
+      offered_qos_profiles: ''
+      serialization_format: cdr
+      type: sensor_msgs/msg/PointCloud2
+      type_description_hash: 
+        RIHS01_9198cabf7da3796ae6fe19c4cb3bdd3525492988c70522628af5daa124bae2b5
+  - message_count: 6573
+    topic_metadata:
+      name: /mid360/livox/lidar
+      offered_qos_profiles: ''
+      serialization_format: cdr
+      type: sensor_msgs/msg/PointCloud2
+      type_description_hash: 
+        RIHS01_9198cabf7da3796ae6fe19c4cb3bdd3525492988c70522628af5daa124bae2b5
+  version: 8

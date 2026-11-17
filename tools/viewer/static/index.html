@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LiDAR Live Viewer</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <h1>LiDAR Live Viewer</h1>
+      <span id="topic" class="topic">—</span>
+    </div>
+    <div class="conn">
+      <span id="conn-dot" class="dot dot-unknown"></span>
+      <span id="conn-text">connecting…</span>
+    </div>
+  </header>
+
+  <div class="toolbar">
+    <button id="btn-start" class="primary">Start</button>
+    <label for="view-select">View</label>
+    <select id="view-select">
+      <option value="front" selected>Front (at sensor)</option>
+      <option value="back">Back</option>
+      <option value="left">Left</option>
+      <option value="right">Right</option>
+      <option value="top">Top</option>
+    </select>
+    <span id="live-status" class="live-status">stopped</span>
+  </div>
+
+  <nav class="tabs">
+    <button class="tab active" data-tab="live">Live Point Cloud</button>
+    <button class="tab" data-tab="dem">DEM</button>
+  </nav>
+
+  <main>
+    <section id="tab-live" class="tabpanel">
+      <div id="live-idle" class="idle">
+        Press <strong>Start</strong> to stream the point cloud.
+      </div>
+      <figure id="live-figure" hidden>
+        <img id="live-frame" alt="Live point cloud stream" />
+      </figure>
+      <div id="live-error" class="error" hidden></div>
+    </section>
+
+    <section id="tab-dem" class="tabpanel" hidden>
+      <div class="bar">
+        <span id="dem-status" class="live-status">idle</span>
+        <span class="hint">refreshes every 10 s</span>
+      </div>
+      <div id="dem-idle" class="idle">Waiting for the first scans to accumulate…</div>
+      <figure id="dem-figure" hidden>
+        <img id="img-dem" alt="DEM elevation heatmap" />
+      </figure>
+      <div id="dem-error" class="error" hidden></div>
+      <section id="dem-meta" class="meta" hidden>
+        <div><span class="k">Scans</span><span id="dm-scans">—</span></div>
+        <div><span class="k">Points merged / seen</span><span id="dm-points">—</span></div>
+        <div><span class="k">Coverage</span><span id="dm-coverage">—</span></div>
+        <div><span class="k">Elevation</span><span id="dm-z">—</span></div>
+        <div><span class="k">Grid</span><span id="dm-grid">—</span></div>
+        <div><span class="k">Window</span><span id="dm-window">—</span></div>
+        <div><span class="k">Updated</span><span id="dm-updated">—</span></div>
+      </section>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

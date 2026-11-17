@@ -1,0 +1,274 @@
+Here is your complete Ubuntu 18.04 + ROS Melodic + Livox Mid-360S + u-blox 7 recording procedure, starting from connecting the GPS and LiDAR.
+
+We'll save two separate datasets:
+
+Raw GPS NMEA data (.txt)
+Livox LiDAR + IMU data (.bag)
+PART 1 — GPS SETUP AND RECORDING
+Step 1. Connect the u-blox 7 GPS
+
+Connect your GPS receiver via USB.
+
+Check its serial port:
+
+bash
+ls /dev/ttyACM*
+
+
+Your device should appear as:
+
+text
+/dev/ttyACM0
+
+Step 2. Start GPSD
+
+Open Terminal 1:
+
+bash
+sudo systemctl stop gpsd
+sudo systemctl stop gpsd.socket
+
+
+Start GPSD:
+
+bash
+sudo gpsd -N -n /dev/ttyACM0
+
+
+Keep this terminal open.
+
+Step 3. Start raw GPS recording
+
+Open Terminal 2:
+
+bash
+mkdir -p ~/gps_raw
+
+
+Start recording:
+
+bash
+gpspipe -r | tee ~/gps_raw/ublox7_$(date +%Y%m%d_%H%M%S).txt
+
+
+You'll see raw NMEA sentences:
+
+text
+$GPGGA,...
+$GPRMC,...
+$GPGSV,...
+$GPGSA,...
+
+
+Your data is simultaneously being saved to a text file.
+
+Step 4. Stop GPS recording
+
+Press:
+
+text
+Ctrl+C
+
+Step 5. Verify GPS recording
+bash
+ls -lh ~/gps_raw/
+
+
+Count recorded lines:
+
+bash
+wc -l ~/gps_raw/*.txt
+
+
+View the data:
+
+bash
+tail -20 ~/gps_raw/*.txt
+
+PART 2 — LIVox MID-360S SETUP
+
+Your known configuration:
+
+Parameter	Value
+LiDAR IP	192.168.1.193
+Laptop Ethernet IP	192.168.1.50
+Ethernet interface	enp0s31f6
+LiDAR model	MID-360S
+Step 1. Connect the LiDAR Ethernet cable
+
+Connect your MID-360S to the laptop through Ethernet.
+
+Step 2. Configure laptop IP
+
+Open Terminal 3:
+
+bash
+sudo ip link set enp0s31f6 up
+
+
+Assign the IP:
+
+bash
+sudo ip addr flush dev enp0s31f6
+sudo ip addr add 192.168.1.50/24 dev enp0s31f6
+
+
+Verify:
+
+bash
+ip -br addr
+
+
+You should see:
+
+text
+enp0s31f6 UP 192.168.1.50/24
+
+Step 3. Verify LiDAR connection
+bash
+ping -c 4 192.168.1.193
+
+
+You should receive four replies.
+
+Step 4. Source ROS and your Livox workspace
+bash
+source /opt/ros/melodic/setup.bash
+source ~/ws_livox/devel/setup.bash
+
+Step 5. Start Livox MID-360S driver
+bash
+roslaunch livox_ros_driver2 rviz_MID360s.launch
+
+
+Keep this terminal open.
+
+PART 3 — VERIFY LIDAR AND IMU
+
+Open Terminal 4:
+
+bash
+source /opt/ros/melodic/setup.bash
+source ~/ws_livox/devel/setup.bash
+
+
+Check available topics:
+
+bash
+rostopic list
+
+
+Expected:
+
+text
+/livox/lidar
+/livox/imu
+
+
+Check LiDAR frequency:
+
+bash
+rostopic hz /livox/lidar
+
+
+Check IMU frequency:
+
+bash
+rostopic hz /livox/imu
+
+
+Both should show incoming messages.
+
+Inspect IMU:
+
+bash
+rostopic echo -n 1 /livox/imu
+
+
+Inspect LiDAR:
+
+bash
+rostopic echo -n 1 /livox/lidar
+
+PART 4 — RECORD LIDAR + IMU ROS BAG
+
+Open Terminal 5:
+
+bash
+source /opt/ros/melodic/setup.bash
+source ~/ws_livox/devel/setup.bash
+
+
+Create the recording directory:
+
+bash
+mkdir -p ~/livox_bags
+
+
+Start recording:
+
+bash
+rosbag record -O ~/livox_bags/mid360s_$(date +%Y%m%d_%H%M%S).bag /livox/lidar /livox/imu
+
+
+Let it record for however long you need.
+
+To stop:
+
+text
+Ctrl+C
+
+PART 5 — VERIFY YOUR ROS BAG
+
+List recordings:
+
+bash
+ls -lh ~/livox_bags/
+
+
+Inspect the latest recording:
+
+bash
+rosbag info ~/livox_bags/NAME_OF_YOUR_FILE.bag
+
+
+You should see something similar to:
+
+text
+topics:
+    /livox/lidar    XXXX msgs : sensor_msgs/PointCloud2
+    /livox/imu      XXXX msgs : sensor_msgs/Imu
+
+
+Check that:
+
+Both topics are present.
+Both message counts are nonzero.
+Duration matches your recording time.
+File size is reasonable.
+PART 6 — YOUR FINAL DATA ORGANIZATION
+
+Your data will be stored separately:
+
+text
+/home/rajesh/
+│
+├── gps_raw/
+│   ├── ublox7_20261030_220000.txt
+│   └── ublox7_20261030_230000.txt
+│
+└── livox_bags/
+    ├── mid360s_20261030_220000.bag
+    └── mid360s_20261030_230000.bag
+
+Important notes for data collection
+GPS: Keep the antenna outdoors with a clear view of the sky.
+LiDAR: Maintain the Ethernet connection throughout recording.
+IMU: Verify that messages are continuously arriving.
+Storage: Your earlier 56.7-second LiDAR + IMU recording occupied approximately 286 MB. Make sure you have sufficient disk space.
+Synchronization: These are separate recordings, so their timestamps are not automatically synchronized. For later sensor fusion, we'll need to establish a common time reference.
+One recommendation
+
+For your eventual LiDAR–IMU–GPS SLAM dataset, I recommend eventually recording all three sensors in one ROS bag, while also preserving the original raw GPS NMEA text file as a backup.
+
+That gives you both ROS-compatible data and the original GPS measurements.

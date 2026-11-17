@@ -1,0 +1,52 @@
+# PointPillars (single class "Car") inference config.
+#
+# The three REQUIRED values below are NOT stored in checkpoint_epoch_20.pth.
+# They were derived from the training dataset by
+# ship_pointpillars_scratch_livox_data.ipynb and must match that run exactly.
+#
+#   * point_cloud_range .............. printed by section 7 as "POINT_CLOUD_RANGE: [...]"
+#   * anchor_sizes ................... section 5/7 "Car n=... mean l,w,h=[...]"
+#   * anchor_bottom_height ........... section 5/7 "... mean bottom z=..."
+#
+# Faster alternative: run
+#   python3 tools/derive_config_from_dataset.py --data-root /path/to/custom_livox_data
+# which recomputes them from custom_infos_train.pkl with the notebook's rules.
+
+checkpoint: ../checkpoint_epoch_20.pth
+device: auto
+
+class_names: [Car]
+num_point_features: 4
+
+# TODO: paste the values from the training notebook.
+point_cloud_range: null        # e.g. [-10.24, -409.6, -3.0, 1013.76, 409.6, 3.0]
+voxel_size_xy: 0.64            # VOXEL_XY from the notebook's Config cell
+anchor_sizes: null             # e.g. [4.5, 1.8, 1.6]  (length, width, height)
+anchor_bottom_height: null     # e.g. -1.5
+
+# Anchor / head settings, fixed by the training config.
+anchor_rotations: [0.0, 1.57]
+feature_map_stride: 2
+num_dir_bins: 2
+dir_offset: 0.78539
+use_direction_classifier: true
+
+# Post-processing (OpenPCDet PointPillar defaults from the training config).
+score_thresh: 0.1
+nms_thresh: 0.01
+nms_pre_maxsize: 4096
+nms_post_maxsize: 500
+
+# Voxelisation.
+max_points_per_voxel: 32
+max_voxels: 100000
+
+# Sensor handling.
+#   intensity_scale: "auto" divides by 255 when a frame is in 0..255 and leaves
+#   0..1 data untouched. The notebook normalised training intensities to 0..1;
+#   set this to 255 (or whatever fixed scale your data used) for consistency.
+intensity_scale: auto
+z_offset: 0.0                  # add to z if the bag's ground plane is not at training height
+z_rotation_deg: 0.0            # rotate points about z if the bag frame is misaligned
+
+topic: /livox/lidar

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Remote LiDAR Snapshot Viewer</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>Remote LiDAR Snapshot Viewer</h1>
+    <div class="conn">
+      <span id="conn-dot" class="dot dot-unknown"></span>
+      <span id="conn-text">Checking API&hellip;</span>
+      <button id="btn-check" class="small" title="Re-check API health">Check</button>
+    </div>
+  </header>
+
+  <section class="controls">
+    <label for="api-base">API endpoint</label>
+    <input id="api-base" type="text" spellcheck="false"
+           placeholder="http://100.x.y.z:8085  (same origin by default)" />
+    <label for="api-token">API token (optional)</label>
+    <input id="api-token" type="password" placeholder="only if the host requires one" />
+    <button id="btn-fetch" class="primary">Fetch Point Cloud</button>
+    <button id="btn-dem" class="primary">Get DEM</button>
+    <button id="btn-zip" disabled>Download All Images ZIP</button>
+  </section>
+
+  <section class="live">
+    <div class="live-head">
+      <h2>Live View</h2>
+      <div class="live-controls">
+        <label for="live-view">Camera</label>
+        <select id="live-view">
+          <option value="front" selected>Front (at sensor)</option>
+          <option value="back">Back</option>
+          <option value="left">Left</option>
+          <option value="right">Right</option>
+          <option value="top">Top</option>
+        </select>
+        <button id="btn-live" class="primary">Start Live View</button>
+        <span id="live-status" class="live-status">idle</span>
+      </div>
+    </div>
+    <p class="live-hint">Opt-in continuous render of the incoming topic
+       (MJPEG over <code>multipart/x-mixed-replace</code>) &mdash; rendering
+       starts only while this view is running.</p>
+    <figure id="live-figure" hidden>
+      <img id="live-frame" alt="Live point cloud stream" />
+    </figure>
+    <div id="live-error" class="error" hidden></div>
+  </section>
+
+  <div id="status" class="status" role="status"></div>
+  <div id="spinner" class="spinner" hidden>
+    <div class="spin"></div>
+    <span>Capturing point cloud and rendering five views&hellip;</span>
+  </div>
+  <div id="error" class="error" hidden></div>
+
+  <section id="meta" class="meta" hidden>
+    <div><span class="k">Snapshot</span><span id="m-id">&mdash;</span></div>
+    <div><span class="k">Capture time</span><span id="m-capture">&mdash;</span></div>
+    <div><span class="k">ROS msg time</span><span id="m-ros">&mdash;</span></div>
+    <div><span class="k">Frame</span><span id="m-frame">&mdash;</span></div>
+    <div><span class="k">Topic</span><span id="m-topic">&mdash;</span></div>
+    <div><span class="k">Points (valid / rendered)</span><span id="m-points">&mdash;</span></div>
+    <div><span class="k">Render time</span><span id="m-rendertime">&mdash;</span></div>
+    <div id="m-warnings-row" hidden><span class="k">Warnings</span><span id="m-warnings"></span></div>
+  </section>
+
+  <section class="panels">
+    <figure><figcaption>Top</figcaption><img id="img-top" alt="Top view" />
+      <a id="dl-top" class="dl" download="top.png">Download PNG</a></figure>
+    <figure><figcaption>Front <span class="hint">(from sensor)</span></figcaption><img id="img-front" alt="Front view" />
+      <a id="dl-front" class="dl" download="front.png">Download PNG</a></figure>
+    <figure><figcaption>Back <span class="hint">(from sensor)</span></figcaption><img id="img-back" alt="Back view" />
+      <a id="dl-back" class="dl" download="back.png">Download PNG</a></figure>
+    <figure><figcaption>Left <span class="hint">(from sensor)</span></figcaption><img id="img-left" alt="Left view" />
+      <a id="dl-left" class="dl" download="left.png">Download PNG</a></figure>
+    <figure><figcaption>Right <span class="hint">(from sensor)</span></figcaption><img id="img-right" alt="Right view" />
+      <a id="dl-right" class="dl" download="right.png">Download PNG</a></figure>
+  </section>
+
+  <section class="dem">
+    <div class="dem-head">
+      <h2>DEM <span class="hint">(everything accumulated since playback started)</span></h2>
+      <div class="dem-controls">
+        <span id="dem-status" class="live-status">idle</span>
+        <button id="btn-dem-dl" disabled>Download PNG</button>
+      </div>
+    </div>
+    <p class="live-hint">Click <strong>Get DEM</strong> to render the digital
+       elevation model built so far &mdash; every point cloud received since
+       the service started is merged in place, so the map covers the initial
+       position up to the instant you click.</p>
+    <div id="dem-spinner" class="spinner" hidden>
+      <div class="spin"></div>
+      <span>Merging scans and rendering the DEM heatmap&hellip;</span>
+    </div>
+    <div id="dem-error" class="error" hidden></div>
+
+    <section id="dem-meta" class="meta" hidden>
+      <div><span class="k">Scans accumulated</span><span id="dm-scans">&mdash;</span></div>
+      <div><span class="k">Points merged / seen</span><span id="dm-points">&mdash;</span></div>
+      <div><span class="k">Window</span><span id="dm-window">&mdash;</span></div>
+      <div><span class="k">Grid</span><span id="dm-grid">&mdash;</span></div>
+      <div><span class="k">Coverage</span><span id="dm-coverage">&mdash;</span></div>
+      <div><span class="k">Elevation range</span><span id="dm-z">&mdash;</span></div>
+      <div><span class="k">Filters</span><span id="dm-filters">&mdash;</span></div>
+      <div><span class="k">Render time</span><span id="dm-rendertime">&mdash;</span></div>
+      <div id="dm-warnings-row" hidden><span class="k">Warnings</span><span id="dm-warnings"></span></div>
+    </section>
+
+    <figure id="dem-figure" hidden>
+      <figcaption>Top-down elevation heatmap <span class="hint">(sensor frame)</span></figcaption>
+      <img id="img-dem" alt="DEM heatmap" />
+      <a id="dl-dem" class="dl" download="dem.png">Download PNG</a>
+    </figure>
+  </section>
+
+  <footer>
+    <p>One-shot snapshots on demand (<strong>Fetch Point Cloud</strong>) plus
+       the accumulated <strong>DEM</strong> on demand (<strong>Get
+       DEM</strong>), and an opt-in <strong>Live View</strong> that streams
+       rendered frames of the incoming topic while running.</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
